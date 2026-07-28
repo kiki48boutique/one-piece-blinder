@@ -1,0 +1,139 @@
+{
+    "Luffy": {
+        "cards": [
+            {
+                "card_number": "OP01-005",
+                "image_url": "/static/OP01-005.jpg",
+                "name": "Uta",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "OP01-006",
+                "image_url": "/static/OP01-006.jpg",
+                "name": "Otama",
+                "quantite_deck": 3
+            },
+            {
+                "card_number": "OP01-025",
+                "image_url": "/static/OP01-025_p1.jpg",
+                "name": "Roronoa Zoro",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "OP01-014",
+                "image_url": "/static/OP01-014.jpg",
+                "name": "Jinbe",
+                "quantite_deck": 2
+            },
+            {
+                "card_number": "OP01-009",
+                "image_url": "/static/OP01-009.jpg",
+                "name": "Carrot",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "OP01-010",
+                "image_url": "/static/OP01-010.jpg",
+                "name": "Komachiyo",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "OP09-002",
+                "name": "Uta",
+                "image_url": "/static/OP09-002.jpg",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "OP01-004",
+                "name": "Usopp",
+                "image_url": "/static/OP01-004.jpg",
+                "quantite_deck": 3
+            }
+        ],
+        "leader": {
+            "card_number": "OP01-003_p1",
+            "name": "Monkey.D.Luffy",
+            "image_url": "/static/OP01-003_p1.jpg"
+        }
+    },
+    "test": {
+        "cards": [],
+        "leader": {
+            "card_number": "OP01-001",
+            "name": "Roronoa Zoro",
+            "image_url": "/static/OP01-001.jpg"
+        }
+    },
+    "pau": {
+        "cards": [
+            {
+                "card_number": "OP01-047",
+                "name": "Trafalgar Law",
+                "image_url": "/static/OP01-047_p1.jpg",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "OP01-048",
+                "name": "Nekomamushi",
+                "image_url": "/static/OP01-048_p1.jpg",
+                "quantite_deck": 2
+            },
+            {
+                "card_number": "EB04-012",
+                "name": "Kikunojo - EB04-012",
+                "image_url": "/static/EB04-012.jpg",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "OP03-002",
+                "name": "Adio",
+                "image_url": "/static/OP03-002.jpg",
+                "quantite_deck": 2
+            }
+        ],
+        "leader": {
+            "card_number": "OP01-031_p1",
+            "name": "Kouzuki Oden",
+            "image_url": "/static/OP01-031_p1.jpg"
+        }
+    },
+    "hugo": {
+        "cards": [
+            {
+                "card_number": "OP03-002",
+                "name": "Adio",
+                "image_url": "/static/OP03-002.jpg",
+                "quantite_deck": 3
+            },
+            {
+                "card_number": "OP13-007",
+                "name": "Ace & Sabo & Luffy",
+                "image_url": "/static/OP13-007.jpg",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "EB04-012_p1",
+                "name": "Kikunojo - EB04-012",
+                "image_url": "/static/EB04-012_p1.jpg",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "EB04-013_p1",
+                "name": "Carrot",
+                "image_url": "/static/EB04-013_p1.jpg",
+                "quantite_deck": 1
+            },
+            {
+                "card_number": "EB04-018_p1",
+                "name": "Megalo",
+                "image_url": "/static/EB04-018_p1.jpg",
+                "quantite_deck": 1
+            }
+        ],
+        "leader": {
+            "card_number": "OP13-001_p7",
+            "name": "Monkey.D.Luffy",
+            "image_url": "/static/OP13-001_p7.jpg"
+        }
+    }
+}

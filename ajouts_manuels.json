@@ -1,0 +1,269 @@
+[
+    {
+        "card_number": "ST10-OP01-016",
+        "name": "Nami",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Rouge",
+        "serie": "ST10",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 1.50
+    },
+    {
+        "card_number": "ST10-OP01-025",
+        "name": "Zoro",
+        "rarity": "SR",
+        "type": "Character",
+        "color": "Rouge",
+        "serie": "ST10",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.8
+    },
+    {
+        "card_number": "ST11-OP02-028",
+        "name": "Usopp",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-033",
+        "name": "Jinbe",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-039",
+        "name": "Franky",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-043",
+        "name": "Zoro",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-035",
+        "name": "Trafalgar Law",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-034",
+        "name": "Tony Tony.Vhopper",
+        "rarity": "UC",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-037",
+        "name": "Nico Robin",
+        "rarity": "UC",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-040",
+        "name": "Brook",
+        "rarity": "R",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-041",
+        "name": "Monkey.D.Luffy",
+        "rarity": "R",
+        "type": "Character",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+     {
+        "card_number": "ST11-OP02-045",
+        "name": "Three Sword Style Oni Giri",
+        "rarity": "C",
+        "type": "Event",
+        "color": "Vert",
+        "serie": "ST11",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST15-OP03-009",
+        "name": "Haruta",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Rouge",
+        "serie": "ST15",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST15-OP02-023",
+        "name": "You May Be a Fool...but I Still Love You",
+        "rarity": "C",
+        "type": "Event",
+        "color": "Rouge",
+        "serie": "ST15",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST17-OP01-086",
+        "name": "Overheat",
+        "rarity": "R",
+        "type": "Event",
+        "color": "Bleu",
+        "serie": "ST17",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST17-ST03-002",
+        "name": "Edward Weevil",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Bleu",
+        "serie": "ST17",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST17-ST03-004",
+        "name": "Gecko Moria",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Bleu",
+        "serie": "ST17",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST17-ST03-005",
+        "name": "Dracule Mihawk",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Bleu",
+        "serie": "ST17",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST17-ST03-008",
+        "name": "Trafalgar Law",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Bleu",
+        "serie": "ST17",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST19-OP02-117",
+        "name": "Ice Age",
+        "rarity": "UC",
+        "type": "Event",
+        "color": "Noir",
+        "serie": "ST19",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST20-OP03-115",
+        "name": "Streusen",
+        "rarity": "R",
+        "type": "Character",
+        "color": "Jaune",
+        "serie": "ST20",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST20-ST07-014",
+        "name": "Pekoms",
+        "rarity": "C",
+        "type": "Character",
+        "color": "Jaune",
+        "serie": "ST20",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST20-OP03-121",
+        "name": "Thunder Bolt",
+        "rarity": "C",
+        "type": "Event",
+        "color": "Jaune",
+        "serie": "ST20",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    },
+    {
+        "card_number": "ST20-OP03-118",
+        "name": "Ikoku Sovereignty",
+        "rarity": "UC",
+        "type": "Event",
+        "color": "Jaune",
+        "serie": "ST20",
+        "is_alternative": false,
+        "quantite": 0,
+        "prix": 0.02
+    }
+
+
+
+]

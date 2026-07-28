@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Classeur One Piece Card Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            padding-top: 80px;
+        }
+        h1 {
+            text-align: center;
+            color: #ffcc00;
+            margin-top: 10px;
+        }
+
+        /* BOUTON RETOUR NAVIGATION */
+        .nav-back-container {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            z-index: 999;
+        }
+        .btn-back {
+            background-color: #333;
+            color: #ffcc00;
+            border: 2px solid #ffcc00;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-back:hover {
+            background-color: #ffcc00;
+            color: #121212;
+            transform: scale(1.05);
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .filter-container input, .filter-container select {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .filter-container input { width: 250px; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #333;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #ffcc00;
+        }
+        .card img {
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            aspect-ratio: 2/3;
+            object-fit: cover;
+            background-color: #2a2a2a;
+        }
+        .card-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-top: 10px;
+            color: #ffcc00;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-id {
+            color: #aaa;
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+        .card-price {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        /* NOUVEAU : Étape 2 - Couleurs dynamiques selon disponibilité */
+        .prix-dispo {
+            color: #4caf50; /* Vert si en stock */
+        }
+        .prix-indispo {
+            color: #9e9e9e; /* Gris si estimé/hors stock */
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .btn {
+            background-color: #ffcc00;
+            color: #000;
+            border: none;
+            padding: 5px 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        .btn:hover { background-color: #e6b800; }
+        .qty {
+            font-size: 1.2rem;
+            font-weight: bold;
+            min-width: 25px;
+            display: inline-block;
+        }
+        .btn-deck {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            margin-top: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+        }
+        .btn-deck:hover { background-color: #0b7dda; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 10px;
+        }
+    </style>
+<!-- Configuration PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#121212">
+
+<!-- Compatibilité iOS / Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OP Binder">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
+
+<!-- Enregistrement du Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+</head>
+<body>
+
+    <div class="nav-back-container">
+        <a href="/" class="btn-back">⬅️ Retour au Menu</a>
+    </div>
+
+    <h1>🏴‍☠️ Mon Classeur Card Game — {{ nom_de_la_serie }}</h1>
+    
+    <div style="text-align: center; margin-bottom: 15px; font-size: 1.2rem; background: #222; display: inline-block; padding: 10px 20px; border-radius: 20px; border: 1px solid #4caf50; margin-left: 50%; transform: translateX(-50%);">
+        💰 Valeur estimée des cartes possédées : <span id="global-total-price" style="color: #4caf50; font-weight: bold;">{{ "%.2f"|format(total_prix) }}</span> €
+    </div>
+
+    <div id="deck-status-indicator" style="text-align: center; color: #2196f3; font-weight: bold; margin-bottom: 15px;">
+        📢 Clic "Ajouter au Deck" ciblera : Session libre (Non sauvegardé)
+    </div>
+
+    <div class="filter-container">
+        <input type="text" id="search-bar" placeholder="🔍 Rechercher un nom ou ID..." oninput="filtrerLesCartes()">
+
+        <select id="filter-color" onchange="filtrerLesCartes()">
+    <option value="tous">Toutes les Couleurs</option>
+    <option value="rouge">Rouge</option>
+    <option value="vert">Vert</option>
+    <option value="bleu">Bleu</option>
+    <option value="violet">Violet</option>
+    <option value="jaune">Jaune</option>
+    <option value="noir">Noir</option>
+</select>
+
+        <select id="filter-rarity" onchange="filtrerLesCartes()">
+            <option value="tous">Toutes les Raretés</option>
+            <option value="only_alts">✨ Seulement les Alternatives (Alt/Manga/SP)</option>
+            <option value="l">Leader (L)</option>
+            <option value="sec">Secret Rare (SEC)</option>
+            <option value="sr">Super Rare (SR)</option>
+            <option value="r">Rare (R)</option>
+            <option value="uc">Uncommon (UC)</option>
+            <option value="c">Common (C)</option>
+        </select>
+
+        <select id="filter-type" onchange="filtrerLesCartes()">
+            <option value="tous">Tous les Types</option>
+            <option value="leader">Leader</option>
+            <option value="character">Character</option>
+            <option value="event">Event</option>
+            <option value="stage">Stage</option>
+        </select>
+
+        <select id="sort-order" onchange="trierLaGrille()">
+            <option value="num">Trier par : Numéro (Défaut)</option>
+            <option value="rarete_decroissante">Trier par : Rareté (Plus Rare au moins Rare)</option>
+            <option value="rarete_croissante">Trier par : Rareté (Moins Rare au plus Rare)</option>
+	    <option value="prix_desc">Trier par : Prix (Plus cher au moins cher)</option>
+            <option value="prix_asc">Trier par : Prix (Moins cher au plus cher)</option>
+        </select>
+    </div>
+
+    <div class="grid" id="main-grid">
+        {% for carte in cartes_python %}
+        <div class="card" 
+             data-id="{{ carte.card_number }}"
+             data-name="{{ carte.name }}" 
+             data-color="{{ carte.couleur_propre }}"
+             data-rarity="{{ carte.rarity|lower if carte.rarity else 'unknown' }}"
+             data-type="{{ carte.type|lower if carte.type else 'unknown' }}"
+	     data-price="{{ carte.prix or 0.0 }}">
+            
+            <img src="{{ carte.image_url or '/static/images/placeholder.png' }}" alt="{{ carte.name }}" onclick="ouvrirZoom(this.src)">
+            
+            <div class="card-title">
+                {{ carte.name }} 
+                {% if carte.is_alt_p2 %} (Alt 2) 
+                {% elif carte.is_alternative %} (Alt) 
+                {% endif %}
+            </div>
+
+            <div class="card-id">Réf : {{ carte.card_number }}</div>
+            <!-- NOUVEAU : Étape 2 - Affichage conditionnel de la classe CSS -->
+            <div class="card-price {% if carte.disponible %}prix-dispo{% else %}prix-indispo{% endif %}">
+                {{ "%.2f"|format(carte.prix or 0.0) }} €
+            </div>
+            
+            <div class="controls">
+                <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', '{{ carte.name }}', 'moins', {{ carte.is_alternative|lower }})">-</button>
+                <span class="qty">{{ carte.quantite }}</span>
+                <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', '{{ carte.name }}', 'plus', {{ carte.is_alternative|lower }})">+</button>
+            </div>
+            
+            <button class="btn-deck" onclick="ajouterAuDeckActif('{{ carte.card_number }}', '{{ carte.name|escape }}', {{ 'true' if carte.type|lower == 'leader' else 'false' }}, {{ 'true' if carte.is_alternative else 'false' }},event)">➕ Ajouter au Deck</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="modal-zoom-generique" class="modal" onclick="fermerZoom()">
+        <img id="image-zoomee-cible" src="">
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Récupération du statut du deck
+        fetch('/api/get_deck_status')
+            .then(r => r.json())
+            .then(status => {
+                const indicator = document.getElementById('deck-status-indicator');
+                if(status.nom_deck) {
+                    indicator.innerText = `🎯 Deck Actif : "${status.nom_deck}" (Les cartes s'ajouteront dedans automatiquement !)`;
+                    indicator.style.color = "#4caf50";
+                } else {
+                    indicator.innerText = "📢 Aucun deck sélectionné dans l'Atelier (Modifications temporaires)";
+                    indicator.style.color = "#2196f3";
+                }
+            }).catch(err => console.log("Créateur de deck en veille"));
+
+        // 2. FORCE LE TRI PAR DÉFAUT (Série + Numéro) dès l'ouverture de la page
+        trierLaGrille();
+    });
+
+    function filtrerLesCartes() {
+        const recherche = document.getElementById('search-bar').value.toLowerCase().trim();
+        const colFiltre = document.getElementById('filter-color').value.toLowerCase().trim();
+        const rarFiltre = document.getElementById('filter-rarity').value;
+        const typFiltre = document.getElementById('filter-type').value;
+
+        const cards = document.querySelectorAll('#main-grid .card');
+
+        cards.forEach(card => {
+            const id = card.getAttribute('data-id').toLowerCase();
+            const nom = card.getAttribute('data-name').toLowerCase();
+            const colorAttr = (card.getAttribute('data-color') || '').toLowerCase();
+            const rarity = (card.getAttribute('data-rarity') || '').toLowerCase();
+            const type = card.getAttribute('data-type');
+
+            const matchRecherche = id.includes(recherche) || nom.includes(recherche);
+            
+            let matchColor = false;
+            if (colFiltre === 'tous') {
+                matchColor = true;
+            } else {
+                const traductions = {
+                    'rouge': 'red', 'vert': 'green', 'bleu': 'blue',
+                    'violet': 'purple', 'jaune': 'yellow', 'noir': 'black'
+                };
+                const colFiltreAnglais = traductions[colFiltre] || colFiltre;
+                if (colorAttr.includes(colFiltre) || colorAttr.includes(colFiltreAnglais)) {
+                    matchColor = true;
+                }
+            }
+            
+            let matchRarity = false;
+            const estUneSpOuTr = rarity === 'sp' || rarity === 'tr' || rarity.includes('special') || rarity.includes('treasure');
+            const aSuffixeAlt = [1, 2, 3, 4, 5, 6,7].some(i => id.includes(`_p${i}`));
+
+            if (rarFiltre === 'tous') {
+                matchRarity = true;
+            } else if (rarFiltre === 'only_alts') {
+                if (aSuffixeAlt || estUneSpOuTr) {
+                    matchRarity = true;
+                }
+            } else {
+                if (rarity === rarFiltre && !aSuffixeAlt && !estUneSpOuTr) {
+                    matchRarity = true;
+                }
+            }
+
+            const matchType = (typFiltre === 'tous') || (type === typFiltre);
+
+            if (matchRecherche && matchColor && matchRarity && matchType) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+function trierLaGrille() {
+    const grille = document.getElementById('main-grid');
+    const cartes = Array.from(grille.querySelectorAll('.card'));
+    const critere = document.getElementById('sort-order').value;
+
+    cartes.sort((a, b) => {
+        const idA = a.getAttribute('data-id').toLowerCase();
+        const idB = b.getAttribute('data-id').toLowerCase();
+        
+        // 1. SI TRI PAR NUMÉRO (DÉFAUT)
+        if (critere === 'num') {
+            return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+        } 
+        
+        // 🆕 2. AJOUT : SI TRI PAR PRIX
+        else if (critere === 'prix_desc' || critere === 'prix_asc') {
+            const prixA = parseFloat(a.getAttribute('data-price') || 0);
+            const prixB = parseFloat(b.getAttribute('data-price') || 0);
+            
+            if (prixA !== prixB) {
+                return critere === 'prix_desc' ? prixB - prixA : prixA - prixB;
+            }
+            // Si le prix est identique, on range par numéro de carte (plus propre !)
+            return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+        }
+        
+        // 3. SI TRI PAR RARETÉ (ton ancien bloc "else" devient un "else" général)
+        else {
+            const rareteA = a.getAttribute('data-rarity').toLowerCase();
+            const rareteB = b.getAttribute('data-rarity').toLowerCase();
+            const typeA = a.getAttribute('data-type').toLowerCase();
+            const typeB = b.getAttribute('data-type').toLowerCase();
+
+            const isAltP2_A = idA.includes("_p2");
+            const isAltP2_B = idB.includes("_p2");
+            
+            const isAltP1_A = idA.includes("_p1");
+            const isAltP1_B = idB.includes("_p1");
+            
+            const isLeaderA = (typeA === 'leader' || rareteA === 'l');
+            const isLeaderB = (typeB === 'leader' || rareteB === 'l');
+
+            function determinerPoidsStrict(isAltP2, isAltP1, isLeader, rarete) {
+                if (isAltP2) return 1; // Manga
+                if (rarete === 'sp' || rarete === 'tr' || rarete.includes('special') || rarete.includes('treasure')) return 2; // SP / TR
+                if (isAltP1 && isLeader) return 3; // Leader Alt
+                if (isAltP1 && !isLeader) return 4; // Character Alt / SEC Alt
+                if (rarete === 'sec') return 5; // SEC classique
+                if (rarete === 'sr') return 6; // SR
+                if (rarete === 'r') return 7; // R
+                if (rarete === 'uc') return 8; // UC
+                if (rarete === 'c') return 9; // C
+                if (isLeader && !isAltP1) return 10; // Leader classique
+                return 11;
+            }
+
+            const poidsA = determinerPoidsStrict(isAltP2_A, isAltP1_A, isLeaderA, rareteA);
+            const poidsB = determinerPoidsStrict(isAltP2_B, isAltP1_B, isLeaderB, rareteB);
+
+            if (critere === 'rarete_croissante') {
+                if (poidsA !== poidsB) return poidsB - poidsA;
+            } else if (critere === 'rarete_decroissante') {
+                if (poidsA !== poidsB) return poidsA - poidsB;
+            }
+
+            return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' }); 
+        }
+    });
+
+    cartes.forEach(carte => grille.appendChild(carte));
+}
+
+    function ouvrirZoom(urlImage) {
+        document.getElementById('modal-zoom-generique').style.display = 'flex';
+        document.getElementById('image-zoomee-cible').src = urlImage;
+    }
+    
+    function fermerZoom() {
+        document.getElementById('modal-zoom-generique').style.display = 'none';
+    }
+
+    function modifierQty(btn, id, nom, action, isAlt) {
+        const label = btn.parentElement.querySelector('.qty');
+        fetch('/modifier_quantite', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                card_number: id, 
+                name: nom, 
+                action: action, 
+                contexte: "{{ nom_de_la_serie }}", 
+                is_alternative: isAlt 
+            })
+        })
+        .then(r => r.json())
+        .then(d => { 
+            if(d.status === 'success') { 
+                label.innerText = d.nouvelle_quantite; 
+                if(document.getElementById('global-total-price')) {
+                    document.getElementById('global-total-price').innerText = d.nouveau_total_prix.toFixed(2);
+                }
+            } 
+        }).catch(err => alert("Erreur serveur collection"));
+    }
+
+    function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
+    fetch('/api/add_to_deck', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            card_number: cardId,
+            name: cardName,
+            is_leader: isLeader,
+            is_alternative: isAlt
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log(`${cardName} ajouté au deck actif !`);
+            
+            // --- AJOUT OPTION 1 : ANIMATION DU BOUTON ---
+            if (event) {
+                const bouton = event.currentTarget || event.target;
+                const texteOrigine = bouton.innerHTML;
+                
+                bouton.innerHTML = "✓ Ajouté !";
+                bouton.style.backgroundColor = "#2ecc71"; // Vert moderne
+                bouton.style.pointerEvents = "none";      // Évite les doubles clics
+                
+                setTimeout(() => {
+                    bouton.innerHTML = texteOrigine;
+                    bouton.style.backgroundColor = "";     // Reprend sa couleur d'origine
+                    bouton.style.pointerEvents = "auto";    // Réactive le clic
+                }, 1500);
+            }
+            // --------------------------------------------
+            
+            const indicator = document.getElementById('deck-status-indicator');
+            if (indicator) {
+                const originalText = indicator.innerText;
+                indicator.innerText = `✅ "${cardName}" ajouté au deck !`;
+                setTimeout(() => { indicator.innerText = originalText; }, 500);
+            }
+
+            const priceSpan = document.getElementById('classeur-deck-price');
+            if (priceSpan && data.prix_total_deck !== undefined) {
+                priceSpan.innerText = parseFloat(data.prix_total_deck).toFixed(2);
+            }
+        } else {
+            alert("Avertissement Atelier : " + data.message);
+        }
+    })
+    .catch(err => console.error("Erreur d'envoi à l'atelier de deck :", err));
+}
+</script>
+</body>
+</html>
+
+

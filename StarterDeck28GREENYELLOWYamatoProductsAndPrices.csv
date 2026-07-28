@@ -1,0 +1,54 @@
+productId,name,cleanName,imageUrl,categoryId,groupId,url,modifiedOn,imageCount,lowPrice,midPrice,highPrice,marketPrice,directLowPrice,subTypeName,extRarity,extNumber,extDescription,extColor,extCardType,extLife,extPower,extSubtypes,extAttribute,extCost,extCounterplus
+627680,Starter Deck 28: GREEN/YELLOW Yamato Display,Starter Deck 28 GREEN YELLOW Yamato Display,https://tcgplayer-cdn.tcgplayer.com/product/627680_200w.jpg,68,24287,https://cpt.tcgcsv.com/D527,2025-06-06T04:10:20.23,1,300.0,304.0,314.95,161.32,,Normal,,,,,,,,,,,
+627681,Starter Deck 28: GREEN/YELLOW Yamato,Starter Deck 28 GREEN YELLOW Yamato,https://tcgplayer-cdn.tcgplayer.com/product/627681_200w.jpg,68,24287,https://cpt.tcgcsv.com/F527,2025-06-06T04:10:20.23,1,30.0,35.5,50.0,32.12,,Normal,,,,,,,,,,,
+634623,Yamato (OP06-022),Yamato OP06 022,https://tcgplayer-cdn.tcgplayer.com/product/634623_200w.jpg,68,24287,https://cpt.tcgcsv.com/tS57,2025-06-06T04:10:20.23,1,1.35,2.43,10.0,2.33,,Foil,L,OP06-022,"[Double Attack] <em>(This card deals 2 damage.)</em>
+<br>[Activate:Main] [Once Per Turn] If your opponent has 3 or less Life cards, give up to 2 rested DON!! cards to 1 of your Characters.",Green;Yellow,Leader,4,5000,Land of Wano,Strike,,
+635303,Inuarashi (Reprint),Inuarashi Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635303_200w.jpg,68,24287,https://cpt.tcgcsv.com/5867,2025-06-06T04:10:20.23,1,0.01,0.15,4.99,0.03,,Normal,UC,OP06-100,"[DON!! x2][When Attacking] <strong>You may trash 1 card from your hand</strong>: K.O. up to 1 of your opponent's Characters with a cost equal to or less than the number of your opponent's Life cards.
+<br>
+[Trigger] If your opponent has 3 or less Life cards, play this card.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the OP06 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Yellow,Character,,5000,Land of Wano;Minks;The Akazaya Nine,Slash,4,1000
+635304,Kawamatsu (Reprint),Kawamatsu Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635304_200w.jpg,68,24287,https://cpt.tcgcsv.com/6867,2025-06-06T04:10:20.23,1,0.01,0.15,4.99,0.02,,Normal,C,OP06-103,"[When Attacking] <strong>You may trash 2 cards from your hand</strong>: Add up to 1 of your Characters with 0 power to the top or bottom of the owner's Life cards face-up.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the OP06 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Yellow,Character,,5000,Fish-Man;Land of Wano;The Akazaya Nine,Slash,3,
+635305,Kikunojo (Reprint),Kikunojo Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635305_200w.jpg,68,24287,https://cpt.tcgcsv.com/7867,2025-06-06T04:10:20.23,1,0.5,1.1,6.0,0.86,,Normal,R,OP06-104,"[On K.O.] If your opponent has 3 or less Life cards, add up to 1 card from the top of your deck to the top of your Life cards.
+<br>[Trigger] If your opponent has 3 or less Life cards, play this card.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the OP06 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Yellow,Character,,6000,Land of Wano;The Akazaya Nine,Slash,4,
+635306,Denjiro (Reprint),Denjiro Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635306_200w.jpg,68,24287,https://cpt.tcgcsv.com/8867,2025-06-06T04:10:20.23,1,0.01,0.15,4.99,0.07,,Normal,UC,OP06-109,"[DON!! x2] If your opponent has 3 or less Life cards, this Character cannot be K.O.'d by effects.
+<br>
+[Trigger] If your opponent has 3 or less Life cards, play this card.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the OP06 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Yellow,Character,,6000,Land of Wano;The Akazaya Nine,Slash,5,
+635307,Nekomamushi (Reprint),Nekomamushi Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635307_200w.jpg,68,24287,https://cpt.tcgcsv.com/9867,2025-06-06T04:10:20.23,1,0.01,0.15,4.99,0.08,,Normal,UC,OP06-110,"[DON!! x2] This Character can also attack your opponent's active Characters.
+<br>
+[Trigger] If your opponent has 3 or less Life cards, play this card.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the OP06 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Yellow,Character,,5000,Land of Wano;Minks;The Akazaya Nine,Slash,4,1000
+635308,Raizo (Reprint),Raizo Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635308_200w.jpg,68,24287,https://cpt.tcgcsv.com/b867,2025-06-06T04:10:20.23,1,0.01,0.15,4.99,0.04,,Normal,C,OP06-112,"[When Attacking] <strong>You may trash 1 card from your hand</strong>: Rest up to 1 of your opponent's DON!! cards.
+<br>
+[Trigger] If your opponent has 3 or less Life cards, play this card.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the OP06 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Yellow,Character,,4000,Land of Wano;The Akazaya Nine,Slash,3,1000
+635309,Blaze Slice (Reprint),Blaze Slice Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635309_200w.jpg,68,24287,https://cpt.tcgcsv.com/c867,2025-06-06T04:10:20.23,1,0.01,0.2,5.0,0.12,,Normal,R,OP07-116,"[Main] / [Counter] Up to 1 of your Leader or Character cards gains +1000 power during this turn. Then, if your opponent has 2 or less Life cards, rest up to 1 of your opponent's Characters with a cost of 4 or less.
+<br>
+[Trigger] Rest up to 1 of your opponent's Characters with a cost of 4 or less.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the OP07 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Yellow,Event,,,Land of Wano;The Akazaya Nine,,1,
+635310,Portgas.D.Ace (Reprint),PortgasDAce Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635310_200w.jpg,68,24287,https://cpt.tcgcsv.com/d867,2025-06-06T04:10:20.23,1,0.02,0.15,4.99,0.1,,Normal,UC,OP09-035,"[On Play] If you have 2 or more rested Characters, rest up to 1 of your opponent's Characters with a cost of 5 or less.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the OP09 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Green,Character,,5000,Whitebeard Pirates;ODYSSEY,Special,5,2000
+635311,Yamato (Reprint),Yamato Reprint,https://tcgplayer-cdn.tcgplayer.com/product/635311_200w.jpg,68,24287,https://cpt.tcgcsv.com/f867,2025-06-06T04:10:20.23,1,0.01,0.15,19.99,0.11,,Normal,C,ST13-016,"[Rush] <em>(This card can attack on the turn in which it is played.)</em>
+<br>
+[On Play] Look at all your Life cards; place 1 at the top of your deck and place the rest back in your Life area in any order.
+<br>
+<br><span style=""color:red"">DISCLAIMER: This card is a reprint of the pre-existing card in the ST13 set. The main difference between this card and the original print is the inclusion of ""EN"" on the right side, by the copyright information.</span>",Yellow,Character,,4000,Land of Wano,Strike,5,2000
+635312,Ashura Doji,Ashura Doji,https://tcgplayer-cdn.tcgplayer.com/product/635312_200w.jpg,68,24287,https://cpt.tcgcsv.com/g867,2025-06-06T04:10:20.23,1,0.04,0.18,5.0,0.12,,Normal,C,ST28-001,"[On Play] If your Leader has the ""Land of Wano"" type and your opponent has 3 or more Life cards, K.O. up to 1 of your opponent's Characters with a base cost of 5 or less.",Yellow,Character,,3000,Land of Wano;The Akazaya Nine,Slash,3,1000
+635313,Izo,Izo,https://tcgplayer-cdn.tcgplayer.com/product/635313_200w.jpg,68,24287,https://cpt.tcgcsv.com/h867,2025-06-06T04:10:20.23,1,0.07,0.24,5.0,0.13,,Normal,C,ST28-002,"[DON!! x2] This Character gains [Blocker].
+<br>[On Play] Your ""Land of Wano"" type Leader gains [Banish] during this turn.",Yellow,Character,,1000,Former Whitebeard Pirates;Land of Wano,Ranged,2,1000
+635314,Kin'emon,Kinemon,https://tcgplayer-cdn.tcgplayer.com/product/635314_200w.jpg,68,24287,https://cpt.tcgcsv.com/j867,2025-06-06T04:10:20.23,1,0.2,0.5,10.0,0.3,,Normal,C,ST28-003,"[Trigger] If your Leader has the ""Land of Wano"" type and your opponent has 3 or less Life cards, play this card.",Yellow,Character,,5000,Land of Wano;The Akazaya Nine,Slash,4,2000
+635315,Kouzuki Momonosuke,Kouzuki Momonosuke,https://tcgplayer-cdn.tcgplayer.com/product/635315_200w.jpg,68,24287,https://cpt.tcgcsv.com/k867,2025-06-06T04:10:20.23,1,0.25,0.55,10.0,0.45,,Foil,SR,ST28-004,"[Your Turn] If you have 2 or less Life cards, your Leader gains +1000 power.
+<br>[Activate: Main] [Once Per Turn] <strong>You may return 2 total of your currently given DON!! cards to your cost area rested:</strong> This Character gains [Rush] and +1000 power during this turn.
+<br><em>(This card can attack on the turn in which it is played.)</em>",Yellow,Character,,7000,Land of Wano;Kouzuki Clan,Slash,6,
+635316,Yamato,Yamato,https://tcgplayer-cdn.tcgplayer.com/product/635316_200w.jpg,68,24287,https://cpt.tcgcsv.com/l867,2025-06-06T04:10:20.23,1,0.5,1.33,50.0,1.06,,Foil,SR,ST28-005,"[DON!! x2] [Your Turn] This Character gains +3000 power.
+<br>[On Play] Look at 5 cards from the top of your deck; reveal up to 1 ""Land of Wano"" type card with a cost of 2 or more and add it to your hand. Then, place the rest at the bottom of your deck in any order.",Yellow,Character,,0,Land of Wano,Strike,1,1000

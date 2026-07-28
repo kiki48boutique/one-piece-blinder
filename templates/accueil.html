@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Classeur One Piece - Menu Principal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 40px 10px;
+        }
+
+        /* CONTENEUR GLOBAL EN 3 COLONNES */
+        .page-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 25px;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        /* STYLE DES BANNIÈRES LATÉRALES (Elles défilent normalement avec la page) */
+        .banner-side {
+            width: 200px;           /* Largeur maîtrisée pour ne jamais déborder sur les boutons */
+            height: auto;           /* L'image garde ses proportions et s'affiche entièrement en hauteur */
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        /* CONTENU CENTRAL (Titre + Menu) */
+        .central-content {
+            flex: 1;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #ffcc00;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 2.3rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .menu-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .menu-section {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .menu-section h2 {
+            color: #ffcc00;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .btn-main {
+            display: block;
+            background-color: #2a2a2a;
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 8px;
+            border: 2px solid #444;
+            transition: all 0.2s ease;
+        }
+
+        .btn-main:hover {
+            background-color: #ffcc00;
+            color: #121212;
+            border-color: #ffcc00;
+            transform: translateY(-2px);
+        }
+
+        .btn-global { border-color: #ffcc00; color: #ffcc00; background: rgba(255, 204, 0, 0.05); }
+        .btn-global:hover { background: #ffcc00; color: #121212; }
+
+        .btn-collection { border-color: #4caf50; color: #4caf50; background: rgba(76, 175, 80, 0.05); }
+        .btn-collection:hover { background: #4caf50; color: #fff; }
+
+        .btn-deck { border-color: #2196f3; color: #2196f3; background: rgba(33, 150, 243, 0.05); }
+        .btn-deck:hover { background: #2196f3; color: #fff; }
+
+        .series-specific-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-serie {
+            background: #2a2a2a;
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            padding: 12px 5px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            border: 1px solid #444;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-serie:hover {
+            background: #ffcc00;
+            color: #121212;
+            border-color: #ffcc00;
+        }
+
+        /* Masque les bannières si la fenêtre est trop petite (tablettes / téléphones) pour garder un affichage propre */
+        @media (max-width: 1200px) {
+            .banner-side {
+                display: none;
+            }
+        }
+    </style>
+    <!-- Configuration PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#121212">
+
+<!-- Compatibilité iOS / Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OP Binder">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
+
+<!-- Enregistrement du Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+</head>
+<body>
+
+    <div class="page-container">
+        
+        <!-- BANNIÈRE GAUCHE -->
+        <img src="/static/bannieres/accueil_gauche.png" class="banner-side" alt="Bannière Gauche">
+
+        <!-- CONTENU CENTRAL -->
+        <div class="central-content">
+            <h1>🏴‍☠️ One Piece Card Game — Mon Manager</h1>
+
+            <div class="menu-container">    
+
+                <!-- 1. MA COLLECTION -->
+                <div class="menu-section">
+                    <h2>🃏 Ma Collection</h2>
+                    <a href="/cartes/possedees" class="btn-main btn-collection">⭐ Voir Uniquement Mes Cartes Possédées</a>
+                </div>
+
+                <!-- 2. ATELIER DES DECKS -->
+                <div class="menu-section">
+                    <h2>⚔️ Mes decks </h2>
+                    <a href="/atelier_de_deck" class="btn-main btn-deck">🛠️ Ouvrir l'Atelier / Mes Decks</a>
+                </div>
+
+                <!-- 3. PARCOURIR PAR SÉRIE -->
+                <div class="menu-section">
+                    <h2>📦 Parcourir par Série</h2>
+                    <div class="series-specific-menu">
+                        <a href="/serie/OP01" class="btn-serie">OP-01</a>
+                        <a href="/serie/OP02" class="btn-serie">OP-02</a>
+                        <a href="/serie/OP03" class="btn-serie">OP-03</a>
+                        <a href="/serie/OP04" class="btn-serie">OP-04</a>
+                        <a href="/serie/OP05" class="btn-serie">OP-05</a>
+                        <a href="/serie/OP06" class="btn-serie">OP-06</a>
+                        <a href="/serie/OP07" class="btn-serie">OP-07</a>
+                        <a href="/serie/OP08" class="btn-serie">OP-08</a>
+                        <a href="/serie/OP09" class="btn-serie">OP-09</a>
+                        <a href="/serie/OP10" class="btn-serie">OP-10</a>
+                        <a href="/serie/OP11" class="btn-serie">OP-11</a>
+                        <a href="/serie/OP12" class="btn-serie">OP-12</a>
+                        <a href="/serie/OP13" class="btn-serie">OP-13</a>
+                        <a href="/serie/OP14" class="btn-serie">OP-14</a>
+                        <a href="/serie/OP15" class="btn-serie">OP-15</a>
+                        <a href="/serie/OP16" class="btn-serie">OP-16</a>
+
+                        <div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
+                            <hr style="border: 0; border-top: 1px solid #3a3a3a;">
+                        </div>
+
+                        <a href="/serie/EB01" class="btn-serie">EB-01</a>
+                        <a href="/serie/EB02" class="btn-serie">EB-02</a>
+                        <a href="/serie/EB03" class="btn-serie">EB-03</a>
+
+                        <div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
+                            <hr style="border: 0; border-top: 1px solid #3a3a3a;">
+                        </div>
+
+                        <a href="/serie/PRB01" class="btn-serie">PRB01</a>
+                        <a href="/serie/PRB02" class="btn-serie">PRB02</a>
+
+                        <div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
+                            <hr style="border: 0; border-top: 1px solid #3a3a3a;">
+                        </div>
+
+                        <a href="/serie/ST01" class="btn-serie">ST01</a>
+                        <a href="/serie/ST02" class="btn-serie">ST02</a>
+                        <a href="/serie/ST03" class="btn-serie">ST03</a>
+                        <a href="/serie/ST04" class="btn-serie">ST04</a>
+                        <a href="/serie/ST05" class="btn-serie">ST05</a>
+                        <a href="/serie/ST06" class="btn-serie">ST06</a>
+                        <a href="/serie/ST07" class="btn-serie">ST07</a>
+                        <a href="/serie/ST08" class="btn-serie">ST08</a>
+                        <a href="/serie/ST09" class="btn-serie">ST09</a>
+                        <a href="/serie/ST10" class="btn-serie">ST10</a>
+                        <a href="/serie/ST11" class="btn-serie">ST11</a>
+                        <a href="/serie/ST12" class="btn-serie">ST12</a>
+                        <a href="/serie/ST13" class="btn-serie">ST13</a>
+                        <a href="/serie/ST14" class="btn-serie">ST14</a>
+                        <a href="/serie/ST15" class="btn-serie">ST15</a>
+                        <a href="/serie/ST16" class="btn-serie">ST16</a>
+                        <a href="/serie/ST17" class="btn-serie">ST17</a>
+                        <a href="/serie/ST18" class="btn-serie">ST18</a>
+                        <a href="/serie/ST19" class="btn-serie">ST19</a>
+                        <a href="/serie/ST20" class="btn-serie">ST20</a>
+                        <a href="/serie/ST21" class="btn-serie">ST21</a>
+                        <a href="/serie/ST22" class="btn-serie">ST22</a>
+                        <a href="/serie/ST23" class="btn-serie">ST23</a>
+                        <a href="/serie/ST24" class="btn-serie">ST24</a>
+                        <a href="/serie/ST25" class="btn-serie">ST25</a>
+                        <a href="/serie/ST26" class="btn-serie">ST26</a>
+                        <a href="/serie/ST27" class="btn-serie">ST27</a>
+                        <a href="/serie/ST28" class="btn-serie">ST28</a>
+                        <a href="/serie/ST29" class="btn-serie">ST29</a>
+                        <a href="/serie/ST30" class="btn-serie">ST30</a>
+                    
+
+			<div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
+                            <hr style="border: 0; border-top: 1px solid #3a3a3a;">
+                        </div>
+
+			<a href="/serie/P" class="btn-serie">Promo</a>
+			<a href="/serie/D" class="btn-serie">Demo Deck</a>
+			<a href="/serie/LD" class="btn-serie">Learn Deck</a>
+
+		   </div>
+
+                </div>
+
+                <!-- 4. VUE GLOBALE -->
+                <div class="menu-section">
+                    <h2>🌐 Vue Globale</h2>
+                    <a href="/cartes/toutes" class="btn-main btn-global">👁️ Voir Toutes les Cartes (Toutes Séries)</a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- BANNIÈRE DROITE -->
+        <img src="/static/bannieres/accueil_droite.jpg" class="banner-side" alt="Bannière Droite">
+
+    </div>
+
+</body>
+</html>

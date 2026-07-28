@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Atelier de Deck - One Piece Card Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            padding-top: 80px;
+        }
+        h1 {
+            text-align: center;
+            color: #2196f3;
+            margin-bottom: 5px;
+        }
+        .nav-back-container {
+            position: fixed;
+            top: 15px;
+            left: 20px;
+            z-index: 999;
+        }
+        .btn-back {
+            background-color: #333;
+            color: #2196f3;
+            border: 2px solid #2196f3;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .btn-back:hover {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        /* BANDEAU DE GESTION DES DECKS */
+        .deck-manager-bar {
+            max-width: 1400px;
+            margin: 0 auto 25px auto;
+            background: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .deck-manager-bar select, .deck-manager-bar input {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #2a2a2a;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .btn-action {
+            padding: 10px 15px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            transition: 0.2s;
+        }
+        .btn-create { background-color: #4caf50; color: white; }
+        .btn-create:hover { background-color: #43a047; }
+        .btn-save { background-color: #2196f3; color: white; }
+        .btn-save:hover { background-color: #1e88e5; }
+        .btn-delete { background-color: #f44336; color: white; }
+        .btn-delete:hover { background-color: #e53935; }
+
+        .deck-workspace {
+            display: flex;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .deck-section {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #333;
+        }
+        .leader-box {
+            flex: 1;
+            max-width: 300px;
+            text-align: center;
+        }
+        .leader-slot {
+            width: 100%;
+            aspect-ratio: 2/3;
+            border: 2px dashed #444;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+            background: #2a2a2a;
+            color: #888;
+        }
+        .leader-slot img {
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .main-deck-box {
+            flex: 3;
+        }
+        .deck-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .counter {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #4caf50;
+        }
+        .counter.invalid {
+            color: #f44336;
+        }
+        .deck-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        .deck-item {
+            background: #2a2a2a;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            position: relative;
+            border: 1px solid #444;
+        }
+        .deck-item img {
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .deck-item-qty {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #2196f3;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .deck-item-name {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .btn-remove {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 3px 8px;
+            font-size: 0.75rem;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: pointer;
+        }
+        .modal img {
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+        }
+    </style>
+<!-- Configuration PWA -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#121212">
+
+<!-- Compatibilité iOS / Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OP Binder">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
+
+<!-- Enregistrement du Service Worker -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js');
+    });
+  }
+</script>
+</head>
+<body>
+
+    <div class="nav-back-container">
+        <a href="/" class="btn-back">⬅️ Retour aux Menus</a>
+    </div>
+
+    <h1>🛠️ Atelier de Deck</h1>
+    <div style="text-align:center; color:#888; margin-bottom:20px;" id="current-deck-title">Deck en cours : Aucun (Modification libre)</div>
+
+    <div class="deck-manager-bar">
+        <label for="deck-selector">📂 Choisir un Deck :</label>
+        <select id="deck-selector" onchange="chargerUnDeckSelectionne()">
+            <option value="">-- Sélectionner un deck sauvegardé --</option>
+        </select>
+
+        <span style="color: #444;">|</span>
+
+        <input type="text" id="new-deck-name" placeholder="Nom de ton deck...">
+        <button class="btn-action btn-create" onclick="creerNouveauDeck()">✨ Créer / Sauver</button>
+        <button class="btn-action btn-delete" onclick="supprimerLeDeckActif()">🗑️ Supprimer</button>
+    </div>
+
+    <div class="deck-workspace">
+        <div class="deck-section leader-box">
+            <h3>Leader du Deck</h3>
+            <div id="leader-container" class="leader-slot">
+                <span>Aucun Leader</span>
+            </div>
+        </div>
+
+        <div class="deck-section main-deck-box">
+            <div class="deck-stats">
+                <h3>Cartes du Deck</h3>
+                <div style="display: flex; gap: 25px;">
+                    <div class="counter" id="deck-price-counter" style="color: #2196f3;">Prix : 0.00 €</div>
+                    <div class="counter" id="deck-counter">Total : 0 / 50</div>
+                </div>
+            </div>
+
+            <div class="deck-grid" id="deck-grid-container">
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-zoom-deck" class="modal" onclick="fermerZoomDeck()">
+        <img id="image-zoomee-deck" src="">
+    </div>
+
+    <script>
+        let structureDonneesDeckLocale = { leader: null, cards: [] };
+        let prixTotalDuServeur = 0.0; // Variable locale pour le prix
+
+        document.addEventListener("DOMContentLoaded", () => {
+            rafraichirListeDecksEtContenu();
+        });
+
+        function rafraichirListeDecksEtContenu() {
+            fetch('/api/get_deck_status')
+                .then(res => res.json())
+                .then(data => {
+                    structureDonneesDeckLocale = data.deck;
+                    prixTotalDuServeur = data.prix_total_deck || 0.0; // Extraction du prix
+                     
+                    if (data.nom_deck) {
+                        document.getElementById('current-deck-title').innerText = "Deck en cours : " + data.nom_deck;
+                        document.getElementById('new-deck-name').value = data.nom_deck;
+                        document.getElementById('deck-selector').value = data.nom_deck;
+                    } else {
+                        document.getElementById('current-deck-title').innerText = "Deck en cours : Aucun (Modification libre)";
+                    }
+                    renderVisualDeck();
+                });
+
+            fetch('/api/get_all_saved_deks_json')
+                .then(res => res.json())
+                .then(listeDecks => {
+                    const selector = document.getElementById('deck-selector');
+                    const valeurActuelle = selector.value;
+                    selector.innerHTML = '<option value="">-- Sélectionner un deck sauvegardé --</option>';
+                     
+                    Object.keys(listeDecks).forEach(nomDeck => {
+                        selector.innerHTML += `<option value="${nomDeck}">${nomDeck}</option>`;
+                    });
+                     
+                    fetch('/api/get_deck_status').then(r => r.json()).then(status => {
+                        if(status.nom_deck) selector.value = status.nom_deck;
+                        else selector.value = valeurActuelle;
+                    });
+                });
+        }
+
+        function renderVisualDeck() {
+            const grid = document.getElementById('deck-grid-container');
+            const leaderBox = document.getElementById('leader-container');
+            const counter = document.getElementById('deck-counter');
+            const priceCounter = document.getElementById('deck-price-counter');
+             
+            grid.innerHTML = "";
+            let totalCartes = 0;
+
+            if (structureDonneesDeckLocale.leader) {
+                const imgUrl = structureDonneesDeckLocale.leader.image_url || '/static/images/placeholder.png';
+                leaderBox.innerHTML = `
+                    <div>
+                        <img src="${imgUrl}" alt="${structureDonneesDeckLocale.leader.name}" onclick="ouvrirZoomDeck('${imgUrl}')">
+                        <div style="margin-top:5px; font-weight:bold; font-size:0.9rem;">${structureDonneesDeckLocale.leader.name}</div>
+                        <button class="btn-remove" onclick="retirerDuDeck('${structureDonneesDeckLocale.leader.card_number}', true)">Retirer</button>
+                    </div>
+                `;
+            } else {
+                leaderBox.innerHTML = "<span>Aucun Leader</span>";
+            }
+
+            structureDonneesDeckLocale.cards.forEach(card => {
+                totalCartes += card.quantite_deck;
+                const cardImgUrl = card.image_url || '/static/images/placeholder.png';
+                grid.innerHTML += `
+                    <div class="deck-item">
+                        <div class="deck-item-qty">x${card.quantite_deck}</div>
+                        <img src="${cardImgUrl}" alt="${card.name}" onclick="ouvrirZoomDeck('${cardImgUrl}')">
+                        <div class="deck-item-name">${card.name}</div>
+                        <button class="btn-remove" onclick="retirerDuDeck('${card.card_number}', false)">Retirer</button>
+                    </div>
+                `;
+            });
+
+            counter.innerText = `Total : ${totalCartes} / 50`;
+            counter.className = (totalCartes === 50) ? "counter" : "counter invalid";
+            
+            // Mise à jour de l'affichage du prix
+            if (priceCounter) {
+                priceCounter.innerText = `Prix : ${parseFloat(prixTotalDuServeur).toFixed(2)} €`;
+            }
+        }
+
+        function chargerUnDeckSelectionne() {
+            const nomDeckSelectionne = document.getElementById('deck-selector').value;
+            fetch('/api/load_specific_deck', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nom: nomDeckSelectionne })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    rafraichirListeDecksEtContenu();
+                }
+            });
+        }
+
+        function creerNouveauDeck() {
+            const nom = document.getElementById('new-deck-name').value.trim();
+            if(!nom) { alert("Indique un nom pour ton deck !"); return; }
+            
+            fetch('/sauvegarder_deck', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nom: nom, deck: structureDonneesDeckLocale })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                fetch('/api/load_specific_deck', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nom: nom })
+                }).then(() => rafraichirListeDecksEtContenu());
+            });
+        }
+
+        function supprimerLeDeckActif() {
+            const selector = document.getElementById('deck-selector');
+            const nomDeck = selector.value;
+            if(!nomDeck) { alert("Sélectionne un deck à supprimer dans la liste déroulante."); return; }
+            
+            if(confirm(`Es-tu sûr de vouloir supprimer définitivement le deck "${nomDeck}" ?`)) {
+                fetch('/supprimer_deck', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nom: nomDeck })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    fetch('/api/load_specific_deck', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nom: "" })
+                    }).then(() => rafraichirListeDecksEtContenu());
+                });
+            }
+        }
+
+        function retirerDuDeck(cardNumber, isLeader) {
+            fetch('/api/remove_from_deck', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ card_number: cardNumber, is_leader: isLeader })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    rafraichirListeDecksEtContenu();
+                }
+            });
+        }
+
+        function ouvrirZoomDeck(url) {
+            document.getElementById('image-zoomee-deck').src = url;
+            document.getElementById('modal-zoom-deck').style.display = 'flex';
+        }
+        function fermerZoomDeck() {
+            document.getElementById('modal-zoom-deck').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,407 @@
+productId,name,cleanName,imageUrl,categoryId,groupId,url,modifiedOn,imageCount,lowPrice,midPrice,highPrice,marketPrice,directLowPrice,subTypeName,extRarity,extNumber,extDescription,extColor,extCardType,extLife,extPower,extSubtypes,extAttribute,extCost,extCounterplus
+450085,Romance Dawn - Booster Pack,Romance Dawn Booster Pack,https://tcgplayer-cdn.tcgplayer.com/product/450085_200w.jpg,68,3188,https://cpt.tcgcsv.com/K2D5,2023-12-15T14:52:18.553,1,71.99,89.99,307.99,68.51,,Normal,,,,,,,,,,,
+450086,Romance Dawn - Booster Box (Wave 1 - Blue),Romance Dawn Booster Box Wave 1 Blue,https://tcgplayer-cdn.tcgplayer.com/product/450086_200w.jpg,68,3188,https://cpt.tcgcsv.com/L2D5,2024-06-28T20:30:29.883,1,4983.0,11250.0,75000.0,5993.83,,Normal,,,,,,,,,,,
+450087,Romance Dawn - Booster Box Case (Wave 2 - White),Romance Dawn Booster Box Case Wave 2 White,https://tcgplayer-cdn.tcgplayer.com/product/450087_200w.jpg,68,3188,https://cpt.tcgcsv.com/M2D5,2025-08-26T12:16:11.847,1,24200.0,33498.35,99999.99,,,Normal,,,,,,,,,,,
+453505,Trafalgar Law (002),Trafalgar Law 002,https://tcgplayer-cdn.tcgplayer.com/product/453505_200w.jpg,68,3188,https://cpt.tcgcsv.com/7qF5,2023-01-04T21:14:11.327,1,2.35,3.99,20.0,2.79,,Normal,L,OP01-002,"[Activate:Main] [Once Per Turn] (2) <em>(You may rest the specified number of DON!! cards in your cost area.)</em>: If you have 5 Characters, return 1 of your Characters to your hand. Then, play up to 1 Character with a cost of 5 or less from your hand that is a different color than the returned Character.<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-1"">This card has been officially errata'd.</a>",Green;Red,Leader,4,5000,Heart Pirates;Supernovas,Slash,,
+453506,Monkey.D.Luffy (003) (Parallel),MonkeyDLuffy 003 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/453506_200w.jpg,68,3188,https://cpt.tcgcsv.com/8qF5,2023-01-04T21:23:17.22,1,1469.99,1599.5,10000.0,1030.27,,Foil,L,OP01-003,"[Activate:Main] [Once Per Turn] (4) <em>(You may rest the specified number of DON!! cards in your cost area)</em>: Set up to 1 of your ""Supernova"" or ""Straw Hat Crew"" type Character cards with a cost of 5 or less as active. It gains +1000 power during this turn.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-4"">This card has been officially errata'd.</a>",Green;Red,Leader,4,5000,Straw Hat Crew;Supernovas,Strike,,
+453507,Cavendish (Box Topper),Cavendish Box Topper,https://tcgplayer-cdn.tcgplayer.com/product/453507_200w.jpg,68,3188,https://cpt.tcgcsv.com/9qF5,2026-01-16T19:06:58.187,1,2.0,8.37,25.0,5.92,,Foil,C,OP01-008,"[On Play] <strong>You may add 1 card from your Life area to your hand:</strong> This Character gains [Rush] during this turn. <em>(This card can attack on the turn in which it is played.)</em><br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/announcements/op01.php"">This card has been officially errata'd.</a>",Red,Character,,5000,Beautiful Pirates;Straw Hat Crew;Supernovas,Slash,4,
+453508,Monkey.D.Luffy (024),MonkeyDLuffy 024,https://tcgplayer-cdn.tcgplayer.com/product/453508_200w.jpg,68,3188,https://cpt.tcgcsv.com/bqF5,2022-12-02T05:03:12.237,1,2.0,5.99,60.0,3.96,,Foil,SR,OP01-024,"[DON!! x2] This Character cannot be K.O.'d in battle by ""Strike"" attribute Characters.
+<br>
+[Activate:Main] [Once Per Turn] Give this Character up to 2 rested DON!! cards.",Red,Character,,3000,Straw Hat Crew;Supernovas,Strike,2,1000
+453509,Monkey.D.Luffy (024) (Parallel),MonkeyDLuffy 024 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/453509_200w.jpg,68,3188,https://cpt.tcgcsv.com/cqF5,2022-12-02T05:03:12.237,1,175.0,268.48,1000.0,227.85,,Foil,SR,OP01-024,"[DON!! x2] This Character cannot be K.O.'d in battle by ""Strike"" attribute Characters.
+<br>
+[Activate:Main] [Once Per Turn] Give this Character up to 2 rested DON!! cards.",Red,Character,,3000,Straw Hat Crew;Supernovas,Strike,2,1000
+453510,Roronoa Zoro (025),Roronoa Zoro 025,https://tcgplayer-cdn.tcgplayer.com/product/453510_200w.jpg,68,3188,https://cpt.tcgcsv.com/dqF5,2022-12-02T05:03:12.237,1,3.0,6.1,39.99,4.75,,Foil,SR,OP01-025,[Rush] <em>(This card can attack on the turn in which it is played.)</em>,Red,Character,,5000,Straw Hat Crew;Supernovas,Slash,3,
+453511,Roronoa Zoro (025) (Parallel),Roronoa Zoro 025 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/453511_200w.jpg,68,3188,https://cpt.tcgcsv.com/fqF5,2022-12-02T05:03:12.237,1,270.0,372.0,2500.0,234.91,,Foil,SR,OP01-025,[Rush] <em>(This card can attack on the turn in which it is played.)</em>,Red,Character,,5000,Straw Hat Crew;Supernovas,Slash,3,
+453512,In Two Years!! At the Sabaody Archipelago!!,In Two Years At the Sabaody Archipelago,https://tcgplayer-cdn.tcgplayer.com/product/453512_200w.jpg,68,3188,https://cpt.tcgcsv.com/gqF5,2023-01-04T21:46:51.287,1,0.25,1.25,5.0,0.81,,Normal,UC,OP01-030,"[Main] Look at 5 cards from the top of your deck; reveal up to 1 ""Straw Hat Crew"" type Character card and add it to your hand. Then, place the rest at the bottom of your deck in any order.
+<br>
+[Trigger] Activate this card's [Main] effect.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-18"">This card has been officially errata'd.</a>",Red,Event,,,Straw Hat Crew,,1,
+453513,Inuarashi (Box Topper),Inuarashi Box Topper,https://tcgplayer-cdn.tcgplayer.com/product/453513_200w.jpg,68,3188,https://cpt.tcgcsv.com/hqF5,2023-01-04T21:48:59.003,1,2.97,5.99,100.0,5.76,,Foil,C,OP01-034,"[DON!! x2] [When Attacking] Set up to 1 of your DON!! cards as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-21"">This card has been officially errata'd.</a>",Green,Character,,4000,Land of Wano;Minks;The Akazaya Nine,Slash,3,1000
+453514,Kin'emon,Kinemon,https://tcgplayer-cdn.tcgplayer.com/product/453514_200w.jpg,68,3188,https://cpt.tcgcsv.com/jqF5,2023-01-04T21:56:58.26,1,0.25,0.99,14.99,0.61,,Foil,SR,OP01-040,"[On Play] If your Leader is [Kouzuki Oden], play up to 1 ""The Akazaya Nine"" type Character card with a cost of 3 or less from your hand.
+<br>
+[DON!! x1] [When Attacking] [Once Per Turn] Set up to 1 of your ""The Akazaya Nine"" type Character cards with a cost of 3 or less as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-24"">This card has been officially errata'd.</a>",Green,Character,,6000,Land of Wano;The Akazaya Nine,Slash,6,
+453515,Trafalgar Law (047) (Parallel),Trafalgar Law 047 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/453515_200w.jpg,68,3188,https://cpt.tcgcsv.com/kqF5,2023-01-04T22:00:17.107,1,60.0,69.0,99.99,62.12,,Foil,SR,OP01-047,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On Play] <strong>You may return 1 Character to your hand:</strong> Play up to 1 Character card with a cost of 3 or less from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-30"">This card has been officially errata'd.</a>",Green,Character,,6000,Heart Pirates;Supernovas,Slash,5,
+453516,Nekomamushi (Box Topper),Nekomamushi Box Topper,https://tcgplayer-cdn.tcgplayer.com/product/453516_200w.jpg,68,3188,https://cpt.tcgcsv.com/lqF5,2023-01-04T22:01:40.05,1,3.47,5.0,20.0,4.63,,Foil,C,OP01-048,"[On Play] Rest up to 1 of your opponent's Characters with a cost of 3 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-32"">This card has been officially errata'd.</a>",Green,Character,,3000,Land of Wano;Minks;The Akazaya Nine,Slash,2,1000
+453517,Kaido (061),Kaido 061,https://tcgplayer-cdn.tcgplayer.com/product/453517_200w.jpg,68,3188,https://cpt.tcgcsv.com/mqF5,2023-01-04T22:13:13.893,1,0.2,0.49,2.0,0.35,,Normal,L,OP01-061,"[DON!! x1] [Your Turn] [Once Per Turn] When your opponent's Character is K.O.'d, add up to 1 DON!! card from your DON!! deck and set it as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-42"">This card has been officially errata'd.</a>",Blue;Purple,Leader,4,5000,Animal Kingdom Pirates;The Four Emperors,Strike,,
+453518,Alvida (Box Topper),Alvida Box Topper,https://tcgplayer-cdn.tcgplayer.com/product/453518_200w.jpg,68,3188,https://cpt.tcgcsv.com/nqF5,2023-01-04T22:16:29.703,1,10.99,14.49,99.99,14.48,,Foil,C,OP01-064,"[DON!! x1] [When Attacking] <strong>You may trash 1 card from your hand:</strong> Return up to 1 of your opponent's Characters with a cost of 3 or less to the owner's hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-46"">This card has been officially errata'd.</a>",Blue,Character,,3000,Buggy Pirates,Strike,2,2000
+453519,Crocodile (067),Crocodile 067,https://tcgplayer-cdn.tcgplayer.com/product/453519_200w.jpg,68,3188,https://cpt.tcgcsv.com/pqF5,2022-12-02T05:03:12.237,1,0.25,0.99,14.99,0.64,,Foil,SR,OP01-067,"[Banish] <em>(When this card deals damage, the target card is trashed without activating its Trigger.)</em>
+<br>
+[DON!! x1] Give blue Events in your hand -1 cost.",Blue,Character,,7000,Baroque Works;The Seven Warlords of the Sea,Special,7,1000
+453520,Perona (Box Topper),Perona Box Topper,https://tcgplayer-cdn.tcgplayer.com/product/453520_200w.jpg,68,3188,https://cpt.tcgcsv.com/qqF5,2022-12-02T05:03:12.237,1,40.49,50.0,155.0,46.5,,Foil,UC,OP01-077,[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.,Blue,Character,,2000,Thriller Bark Pirates,Special,1,1000
+453521,Kaido (094),Kaido 094,https://tcgplayer-cdn.tcgplayer.com/product/453521_200w.jpg,68,3188,https://cpt.tcgcsv.com/rqF5,2022-12-02T05:03:12.237,1,0.99,3.34,50.0,1.51,,Foil,SR,OP01-094,"[On Play] DON!! -6 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: If your Leader has the ""Animal Kingdom Pirates"" type, K.O. all Characters other than this Character.",Purple,Character,,12000,Animal Kingdom Pirates;The Four Emperors,Strike,10,
+453522,Who's.Who (Box Topper),WhosWho Box Topper,https://tcgplayer-cdn.tcgplayer.com/product/453522_200w.jpg,68,3188,https://cpt.tcgcsv.com/sqF5,2022-12-02T05:03:12.237,1,2.02,4.21,35.0,3.89,,Foil,UC,OP01-109,"[DON!! x1] [Your Turn] If you have 8 or more DON!! cards on your field, this Character gains +1000 power.",Purple,Character,,3000,Animal Kingdom Pirates,Slash,2,1000
+454512,Roronoa Zoro (001),Roronoa Zoro 001,https://tcgplayer-cdn.tcgplayer.com/product/454512_200w.jpg,68,3188,https://cpt.tcgcsv.com/gQF5,2022-12-02T05:03:12.237,1,4.38,6.07,34.99,5.95,,Normal,L,OP01-001,[DON!! x1] [Your Turn] All of your Characters gain +1000 power.,Red,Leader,5,5000,Straw Hat Crew;Supernovas,Slash,,
+454513,Roronoa Zoro (001) (Parallel),Roronoa Zoro 001 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454513_200w.jpg,68,3188,https://cpt.tcgcsv.com/hQF5,2022-12-02T05:03:12.237,1,780.0,1150.0,10000.0,586.52,,Foil,L,OP01-001,[DON!! x1] [Your Turn] All of your Characters gain +1000 power.,Red,Leader,5,5000,Straw Hat Crew;Supernovas,Slash,,
+454514,Trafalgar Law (002) (Parallel),Trafalgar Law 002 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454514_200w.jpg,68,3188,https://cpt.tcgcsv.com/jQF5,2023-01-04T21:16:49.067,1,490.0,498.0,789.87,442.26,,Foil,L,OP01-002,"[Activate:Main] [Once Per Turn] (2) <em>(You may rest the specified number of DON!! cards in your cost area)</em>: If you have 5 Characters, return 1 of your Characters to your hand. Then, play up to 1 Character with a cost of 5 or less from your hand that is a different color than the returned character.<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-2"">This card has been officially errata'd.</a>",Green;Red,Leader,4,5000,Heart Pirates;Supernovas,Slash,,
+454515,Monkey.D.Luffy (003),MonkeyDLuffy 003,https://tcgplayer-cdn.tcgplayer.com/product/454515_200w.jpg,68,3188,https://cpt.tcgcsv.com/kQF5,2023-01-04T21:22:53.413,1,11.45,25.39,75.0,27.04,,Normal,L,OP01-003,"[Activate:Main] [Once Per Turn] (4) <em>(You may rest the specified number of DON!! cards in your cost area)</em>: Set up to 1 of your ""Supernova"" or ""Straw Hat Crew"" type Character cards with a cost of 5 or less as active. It gains +1000 power during this turn.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-3"">This card has been officially errata'd.</a>",Green;Red,Leader,4,5000,Straw Hat Crew;Supernovas,Strike,,
+454516,Usopp,Usopp,https://tcgplayer-cdn.tcgplayer.com/product/454516_200w.jpg,68,3188,https://cpt.tcgcsv.com/lQF5,2022-12-02T05:03:12.237,1,0.06,0.3,5.0,0.28,,Foil,R,OP01-004,[DON!! x1] [Your Turn] [Once Per Turn] Draw 1 card when your opponent activates an Event.,Red,Character,,3000,Straw Hat Crew,Ranged,2,2000
+454517,Uta,Uta,https://tcgplayer-cdn.tcgplayer.com/product/454517_200w.jpg,68,3188,https://cpt.tcgcsv.com/mQF5,2025-06-25T18:40:51.073,1,0.2,0.32,3.99,0.32,,Normal,R,OP01-005,"[On Play] Add up to 1 red Character card other than [Uta] with a cost of 3 or less from your trash to your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-5"">This card has been officially errata'd.</a>",Red,Character,,4000,,Special,4,
+454517,Uta,Uta,https://tcgplayer-cdn.tcgplayer.com/product/454517_200w.jpg,68,3188,https://cpt.tcgcsv.com/mQF5,2025-06-25T18:40:51.073,1,0.15,0.47,9.99,0.45,,Foil,R,OP01-005,"[On Play] Add up to 1 red Character card other than [Uta] with a cost of 3 or less from your trash to your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-5"">This card has been officially errata'd.</a>",Red,Character,,4000,,Special,4,
+454518,Otama,Otama,https://tcgplayer-cdn.tcgplayer.com/product/454518_200w.jpg,68,3188,https://cpt.tcgcsv.com/nQF5,2023-01-04T21:25:38.637,1,0.21,0.5,9.0,0.33,,Normal,UC,OP01-006,"[On Play] Give up to 1 of your opponent's Characters -2000 power during this turn.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-6"">This card has been officially errata'd.</a>",Red,Character,,0,Land of Wano,Special,1,2000
+454519,Caribou,Caribou,https://tcgplayer-cdn.tcgplayer.com/product/454519_200w.jpg,68,3188,https://cpt.tcgcsv.com/pQF5,2023-01-04T21:26:09.923,1,0.01,0.15,3.0,0.07,,Normal,C,OP01-007,"[On K.O.] K.O. up to 1 of your opponent's Characters with 4000 power or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-7"">This card has been officially errata'd.</a>",Red,Character,,4000,Caribou Pirates;Supernovas,Special,3,1000
+454520,Cavendish,Cavendish,https://tcgplayer-cdn.tcgplayer.com/product/454520_200w.jpg,68,3188,https://cpt.tcgcsv.com/qQF5,2026-01-16T19:07:04.12,1,0.02,0.18,3.0,0.08,,Normal,C,OP01-008,"[On Play] <strong>You may add 1 card from your Life area to your hand:</strong> This Character gains [Rush] during this turn. <em>(This card can attack on the turn in which it is played.)</em><br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/announcements/op01.php"">This card has been officially errata'd.</a>",Red,Character,,5000,Beautiful Pirates;Supernovas,Slash,4,
+454522,Carrot,Carrot,https://tcgplayer-cdn.tcgplayer.com/product/454522_200w.jpg,68,3188,https://cpt.tcgcsv.com/sQF5,2022-12-02T05:03:12.237,1,0.02,0.2,3.0,0.16,,Normal,C,OP01-009,[Trigger] Play this card.,Red,Character,,3000,Minks,Strike,2,1000
+454525,Komachiyo,Komachiyo,https://tcgplayer-cdn.tcgplayer.com/product/454525_200w.jpg,68,3188,https://cpt.tcgcsv.com/wQF5,2022-12-02T05:03:12.237,1,0.02,0.17,3.0,0.07,,Normal,C,OP01-010,,Red,Character,,3000,Animal;Land of Wano,Strike,1,1000
+454526,Gordon,Gordon,https://tcgplayer-cdn.tcgplayer.com/product/454526_200w.jpg,68,3188,https://cpt.tcgcsv.com/xQF5,2022-12-02T05:03:12.237,1,0.04,0.2,15.0,0.08,,Normal,UC,OP01-011,[On Play] <strong>You may place 1 card from your hand at the bottom of your deck:</strong> Draw 1 card.,Red,Character,,3000,Film,Wisdom,2,2000
+454527,Sai,Sai,https://tcgplayer-cdn.tcgplayer.com/product/454527_200w.jpg,68,3188,https://cpt.tcgcsv.com/zQF5,2022-12-02T05:03:12.237,1,0.01,0.16,3.0,0.07,,Normal,C,OP01-012,,Red,Character,,4000,Happosui Army,Slash,2,1000
+454529,Sanji,Sanji,https://tcgplayer-cdn.tcgplayer.com/product/454529_200w.jpg,68,3188,https://cpt.tcgcsv.com/CQF5,2022-12-02T05:03:12.237,1,0.4,1.09,20.69,0.54,,Foil,R,OP01-013,"[Activate:Main] [Once Per Turn] <strong>You may add 1 card from your Life area to your hand:</strong> This Character gains +2000 power during this turn. Then, give this Character up to 2 rested DON!! cards.",Red,Character,,3000,Straw Hat Crew,Strike,2,2000
+454530,Sanji (Parallel),Sanji Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454530_200w.jpg,68,3188,https://cpt.tcgcsv.com/DQF5,2022-12-02T05:03:12.237,1,91.49,185.0,400.0,106.18,,Foil,R,OP01-013,"[Activate:Main] [Once Per Turn] <strong>You may add 1 card from your Life area to your hand:</strong> This Character gains +2000 power during this turn. Then, give this Character up to 2 rested DON!! cards.",Red,Character,,3000,Straw Hat Crew,Strike,2,2000
+454532,Jinbe (014),Jinbe 014,https://tcgplayer-cdn.tcgplayer.com/product/454532_200w.jpg,68,3188,https://cpt.tcgcsv.com/GQF5,2023-01-04T21:27:37.037,1,0.05,0.21,3.0,0.15,,Normal,UC,OP01-014,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[DON!! x1] [On Block] Play up to 1 red Character card with a cost of 2 or less from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-8"">This card has been officially errata'd.</a>",Red,Character,,5000,Fish-Man;Straw Hat Crew,Strike,4,
+454533,Tony Tony.Chopper,Tony TonyChopper,https://tcgplayer-cdn.tcgplayer.com/product/454533_200w.jpg,68,3188,https://cpt.tcgcsv.com/HQF5,2023-01-04T21:30:19.267,1,0.15,0.57,3.16,0.58,,Normal,UC,OP01-015,"[DON!! x1] [When Attacking] <strong>You may trash 1 card from your hand:</strong> Add up to 1 ""Straw Hat Crew"" type Character card other than [Tony Tony.Chopper] with a cost of 4 or less from your trash to your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-9"">This card has been officially errata'd.</a>",Red,Character,,4000,Animal;Straw Hat Crew,Wisdom,3,1000
+454534,Nami,Nami,https://tcgplayer-cdn.tcgplayer.com/product/454534_200w.jpg,68,3188,https://cpt.tcgcsv.com/JQF5,2025-10-17T19:17:14.35,1,3.0,4.99,30.0,3.68,,Foil,R,OP01-016,"[On Play] Look at 5 cards from the top of your deck; reveal up to 1 ""Straw Hat Crew"" type Character card other than [Nami] and add it to your hand. Then, place the rest at the bottom of your deck in any order.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-10"">This card has been officially errata'd.</a>",Red,Character,,2000,Straw Hat Crew,Special,1,2000
+454536,Nami (Parallel),Nami Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454536_200w.jpg,68,3188,https://cpt.tcgcsv.com/LQF5,2025-10-17T19:18:00.843,1,569.0,722.0,5000.0,412.29,,Foil,R,OP01-016,"[On Play] Look at 5 cards from the top of your deck; reveal up to 1 ""Straw Hat Crew"" type Character card other than [Nami] and add it to your hand. Then, place the rest at the bottom of your deck in any order.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-11"">This card has been officially errata'd.</a>",Red,Character,,2000,Straw Hat Crew,Special,1,2000
+454538,Nico Robin,Nico Robin,https://tcgplayer-cdn.tcgplayer.com/product/454538_200w.jpg,68,3188,https://cpt.tcgcsv.com/NQF5,2023-01-04T21:35:21.707,1,0.2,0.5,9.99,0.45,,Foil,R,OP01-017,"[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's Characters with 3000 power or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-12"">This card has been officially errata'd.</a>",Red,Character,,4000,Straw Hat Crew,Strike,3,1000
+454540,Hajrudin,Hajrudin,https://tcgplayer-cdn.tcgplayer.com/product/454540_200w.jpg,68,3188,https://cpt.tcgcsv.com/QQF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.06,,Normal,C,OP01-018,,Red,Character,,6000,Giant;New Giant Pirate Crew,Strike,4,1000
+454542,Bartolomeo,Bartolomeo,https://tcgplayer-cdn.tcgplayer.com/product/454542_200w.jpg,68,3188,https://cpt.tcgcsv.com/SQF5,2022-12-02T05:03:12.237,1,0.04,0.2,3.0,0.11,,Normal,C,OP01-019,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[DON!! x2] [Opponent's Turn] This Character gains +3000 power.",Red,Character,,2000,Barto Club Pirates;Supernovas,Special,2,1000
+454543,Hyogoro,Hyogoro,https://tcgplayer-cdn.tcgplayer.com/product/454543_200w.jpg,68,3188,https://cpt.tcgcsv.com/TQF5,2023-01-04T21:36:01.24,1,0.02,0.16,3.0,0.07,,Normal,C,OP01-020,"[Activate:Main] <strong>You may rest this Character:</strong> Up to 1 of your Leader or Character cards gains +2000 power during this turn.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-13"">This card has been officially errata'd.</a>",Red,Character,,3000,Land of Wano,Strike,2,1000
+454544,Franky,Franky,https://tcgplayer-cdn.tcgplayer.com/product/454544_200w.jpg,68,3188,https://cpt.tcgcsv.com/VQF5,2022-12-02T05:03:12.237,1,0.01,0.2,3.0,0.13,,Normal,UC,OP01-021,[DON!! x1] This Character can also attack your opponent's active Characters.,Red,Character,,4000,Straw Hat Crew,Ranged,3,
+454545,Brook,Brook,https://tcgplayer-cdn.tcgplayer.com/product/454545_200w.jpg,68,3188,https://cpt.tcgcsv.com/WQF5,2022-12-02T05:03:12.237,1,0.1,0.3,4.25,0.25,,Normal,UC,OP01-022,[DON!! x1] [When Attacking] Give up to 2 of your opponent's Characters -2000 power during this turn.,Red,Character,,5000,Straw Hat Crew,Slash,4,1000
+454546,Marco,Marco,https://tcgplayer-cdn.tcgplayer.com/product/454546_200w.jpg,68,3188,https://cpt.tcgcsv.com/XQF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.07,,Normal,C,OP01-023,,Red,Character,,5000,Former Whitebeard Pirates,Special,3,1000
+454547,Gum-Gum Fire-Fist Pistol Red Hawk,Gum Gum Fire Fist Pistol Red Hawk,https://tcgplayer-cdn.tcgplayer.com/product/454547_200w.jpg,68,3188,https://cpt.tcgcsv.com/ZQF5,2023-01-04T21:37:12.73,1,0.45,1.07,10.0,0.82,,Foil,R,OP01-026,"[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, K.O. up to 1 of your opponent's Characters with 4000 power or less.
+<br>
+[Trigger] Give up to 1 of your opponent's Leader or Character cards -10000 power during this turn.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-14"">This card has been officially errata'd.</a>",Red,Event,,,Straw Hat Crew;Supernovas,,2,
+454548,Round Table,Round Table,https://tcgplayer-cdn.tcgplayer.com/product/454548_200w.jpg,68,3188,https://cpt.tcgcsv.com/-QF5,2023-01-04T21:37:35.993,1,0.16,0.92,4.0,0.64,,Normal,C,OP01-027,"[Main] Give up to 1 of your opponent's Characters -10000 power during this turn.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-15"">This card has been officially errata'd.</a>",Red,Event,,,Beautiful Pirates;Supernovas,,4,
+454549,Green Star Rafflesia,Green Star Rafflesia,https://tcgplayer-cdn.tcgplayer.com/product/454549_200w.jpg,68,3188,https://cpt.tcgcsv.com/_QF5,2023-01-04T21:43:28.94,1,0.01,0.18,3.0,0.06,,Normal,C,OP01-028,"[Counter] Give up to 1 of your opponent's Leader or Character cards -2000 power during this turn.
+<br>
+[Trigger] Activate this card's [Counter] effect.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-16"">This card has been officially errata'd.</a>",Red,Event,,,Straw Hat Crew,,1,
+454550,Radical Beam!!,Radical Beam,https://tcgplayer-cdn.tcgplayer.com/product/454550_200w.jpg,68,3188,https://cpt.tcgcsv.com/0RF5,2024-11-08T20:16:42.363,1,0.15,0.39,7.0,0.3,,Normal,UC,OP01-029,"[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, if you have 2 or less Life cards, that card gains an additional +2000 power.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-17"">This card has been officially errata'd.</a>",Red,Event,,,Straw Hat Crew,,1,
+454551,Kouzuki Oden,Kouzuki Oden,https://tcgplayer-cdn.tcgplayer.com/product/454551_200w.jpg,68,3188,https://cpt.tcgcsv.com/2RF5,2022-12-02T05:03:12.237,1,0.15,0.32,4.99,0.27,,Normal,L,OP01-031,"[Activate:Main] [Once Per Turn] <strong>You can trash 1 ""Land of Wano"" type card from your hand:</strong> Set up to 2 of your DON!! cards as active.",Green,Leader,5,5000,Land of Wano;Kouzuki Clan,Slash,,
+454552,Kouzuki Oden (Parallel),Kouzuki Oden Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454552_200w.jpg,68,3188,https://cpt.tcgcsv.com/3RF5,2022-12-02T05:03:12.237,1,78.8,102.0,420.69,79.01,,Foil,L,OP01-031,"[Activate:Main] [Once Per Turn] <strong>You can trash 1 ""Land of Wano"" type card from your hand:</strong> Set up to 2 of your DON!! cards as active.",Green,Leader,5,5000,Land of Wano;Kouzuki Clan,Slash,,
+454553,Ashura Doji,Ashura Doji,https://tcgplayer-cdn.tcgplayer.com/product/454553_200w.jpg,68,3188,https://cpt.tcgcsv.com/5RF5,2022-12-02T05:03:12.237,1,0.03,0.2,3.0,0.1,,Normal,UC,OP01-032,"[DON!! x1] If your opponent has 2 or more rested Characters, this Character gains +2000 power.",Green,Character,,4000,Land of Wano;The Akazaya Nine,Slash,3,1000
+454554,Izo,Izo,https://tcgplayer-cdn.tcgplayer.com/product/454554_200w.jpg,68,3188,https://cpt.tcgcsv.com/6RF5,2024-11-08T20:17:06.447,1,0.15,0.32,10.0,0.23,,Normal,UC,OP01-033,"[On Play] Rest up to 1 of your opponent's Characters with a cost of 4 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-19"">This card has been officially errata'd.</a>",Green,Character,,3000,Former Whitebeard Pirates;Land of Wano,Ranged,3,2000
+454555,Inuarashi,Inuarashi,https://tcgplayer-cdn.tcgplayer.com/product/454555_200w.jpg,68,3188,https://cpt.tcgcsv.com/7RF5,2023-01-04T21:48:26.817,1,0.02,0.16,3.0,0.07,,Normal,C,OP01-034,"[DON!! x2] [When Attacking] Set up to 1 of your DON!! cards as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-20"">This card has been officially errata'd.</a>",Green,Character,,4000,Former Whitebeard Pirates;Land of Wano;Minks;The Akazaya Nine,Slash,3,1000
+454556,Okiku,Okiku,https://tcgplayer-cdn.tcgplayer.com/product/454556_200w.jpg,68,3188,https://cpt.tcgcsv.com/8RF5,2023-01-04T21:52:09.673,1,0.1,0.29,5.0,0.26,,Foil,R,OP01-035,"[DON!! x1] [When Attacking] [Once Per Turn] Rest up to 1 of your opponent's Characters with a cost of 5 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-22"">This card has been officially errata'd.</a>",Green,Character,,5000,Land of Wano;The Akazaya Nine,Slash,3,
+454558,Otsuru,Otsuru,https://tcgplayer-cdn.tcgplayer.com/product/454558_200w.jpg,68,3188,https://cpt.tcgcsv.com/bRF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.05,,Normal,C,OP01-036,,Green,Character,,3000,Land of Wano,Wisdom,1,1000
+454560,Kawamatsu,Kawamatsu,https://tcgplayer-cdn.tcgplayer.com/product/454560_200w.jpg,68,3188,https://cpt.tcgcsv.com/dRF5,2022-12-02T05:03:12.237,1,0.02,0.15,3.0,0.1,,Normal,C,OP01-037,[Trigger] Play this card.,Green,Character,,3000,Fish-Man;Land of Wano;The Akazaya Nine,Slash,2,1000
+454562,Kanjuro,Kanjuro,https://tcgplayer-cdn.tcgplayer.com/product/454562_200w.jpg,68,3188,https://cpt.tcgcsv.com/gRF5,2023-01-04T21:53:26.45,1,0.01,0.15,20.03,0.05,,Normal,C,OP01-038,"[DON!! x1] [When Attacking] K.O. up to 1 of your opponent's rested Characters with a cost of 2 or less.
+<br>
+[On K.O.] Your opponent chooses 1 card from your hand; trash that card.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-23"">This card has been officially errata'd.</a>",Green,Character,,3000,Land of Wano;The Akazaya Nine,Slash,2,1000
+454563,Killer,Killer,https://tcgplayer-cdn.tcgplayer.com/product/454563_200w.jpg,68,3188,https://cpt.tcgcsv.com/hRF5,2022-12-02T05:03:12.237,1,0.07,0.25,5.0,0.22,,Normal,UC,OP01-039,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[DON!! x1] [On Block] If you have 3 or more Characters, draw 1 card.",Green,Character,,2000,Kid Pirates;Supernovas,Slash,2,1000
+454564,Kin'emon (Parallel),Kinemon Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454564_200w.jpg,68,3188,https://cpt.tcgcsv.com/jRF5,2023-01-04T21:56:21.577,1,5.49,13.89,64.49,9.42,,Foil,SR,OP01-040,"[On Play] If your Leader is [Kouzuki Oden], play up to 1 ""The Akazaya Nine"" type Character card with a cost of 3 or less from your hand.
+<br>
+[DON!! x1] [When Attacking] [Once Per Turn] Set up to 1 of your ""The Akazaya Nine"" type Character cards with a cost of 3 or less as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-25"">This card has been officially errata'd.</a>",Green,Character,,6000,Land of Wano;The Akazaya Nine,Slash,6,
+454565,Kouzuki Momonosuke,Kouzuki Momonosuke,https://tcgplayer-cdn.tcgplayer.com/product/454565_200w.jpg,68,3188,https://cpt.tcgcsv.com/kRF5,2023-01-04T21:57:50.25,1,0.1,0.3,5.0,0.22,,Foil,R,OP01-041,"[Activate:Main] (1) <em>(You may rest the specified number of DON!! cards in your cost area)</em> <strong>You may rest this Character:</strong> Look at 5 cards from the top of your deck; reveal up to 1 ""Land of Wano"" type card and add it to your hand. Then, place the rest at the bottom of your deck in any order.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-26"">This card has been officially errata'd.</a>",Green,Character,,0,Land of Wano;Kouzuki Clan,Slash,1,1000
+454566,Komurasaki,Komurasaki,https://tcgplayer-cdn.tcgplayer.com/product/454566_200w.jpg,68,3188,https://cpt.tcgcsv.com/lRF5,2023-01-04T21:58:49.567,1,0.03,0.2,3.0,0.11,,Normal,UC,OP01-042,"[On Play] (3) <em>(You may rest the specified number of DON!! cards in your cost area)</strong>: If your Leader is [Kouzuki Oden], set up to 1 of your ""Land of Wano"" type Character cards with a cost of 3 or less as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-27"">This card has been officially errata'd.</a>",Green,Character,,0,Land of Wano;Kouzuki Clan,Wisdom,1,1000
+454567,Shinobu,Shinobu,https://tcgplayer-cdn.tcgplayer.com/product/454567_200w.jpg,68,3188,https://cpt.tcgcsv.com/mRF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.07,,Normal,C,OP01-043,,Green,Character,,5000,Land of Wano,Special,3,1000
+454568,Shachi,Shachi,https://tcgplayer-cdn.tcgplayer.com/product/454568_200w.jpg,68,3188,https://cpt.tcgcsv.com/nRF5,2023-01-04T21:59:22.243,1,0.01,0.15,3.0,0.11,,Normal,C,OP01-044,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On Play] If you don't have [Penguin], play up to 1 [Penguin] from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-28"">This card has been officially errata'd.</a>",Green,Character,,4000,Heart Pirates,Strike,3,1000
+454569,Jean Bart,Jean Bart,https://tcgplayer-cdn.tcgplayer.com/product/454569_200w.jpg,68,3188,https://cpt.tcgcsv.com/pRF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.06,,Normal,C,OP01-045,,Green,Character,,6000,Heart Pirates,Strike,4,1000
+454570,Denjiro,Denjiro,https://tcgplayer-cdn.tcgplayer.com/product/454570_200w.jpg,68,3188,https://cpt.tcgcsv.com/qRF5,2022-12-05T13:40:44.597,1,0.18,0.38,5.0,0.27,,Foil,R,OP01-046,"[DON!! x1] [When Attacking] If your Leader is [Kouzuki Oden], set up to 2 of your DON!! cards as active.",Green,Character,,7000,Land of Wano;The Akazaya Nine,Slash,5,
+454571,Trafalgar Law (047),Trafalgar Law 047,https://tcgplayer-cdn.tcgplayer.com/product/454571_200w.jpg,68,3188,https://cpt.tcgcsv.com/rRF5,2023-01-04T22:00:00.227,1,0.24,1.0,30.0,0.5,,Foil,SR,OP01-047,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On Play] <strong>You may return 1 Character to your hand:</strong> Play up to 1 Character card with a cost of 3 or less from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-29"">This card has been officially errata'd.</a>",Green,Character,,6000,Heart Pirates;Supernovas,Slash,5,
+454572,Nekomamushi,Nekomamushi,https://tcgplayer-cdn.tcgplayer.com/product/454572_200w.jpg,68,3188,https://cpt.tcgcsv.com/sRF5,2023-01-04T22:01:22.58,1,0.02,0.17,3.0,0.08,,Normal,C,OP01-048,"[On Play] Rest up to 1 of your opponent's Characters with a cost of 3 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-31"">This card has been officially errata'd.</a>",Green,Character,,3000,Land of Wano;Minks;The Akazaya Nine,Slash,2,1000
+454573,Bepo,Bepo,https://tcgplayer-cdn.tcgplayer.com/product/454573_200w.jpg,68,3188,https://cpt.tcgcsv.com/tRF5,2023-01-04T22:02:15.69,1,0.1,0.33,5.0,0.34,,Foil,R,OP01-049,"[DON!! x1] [When Attacking] Play up to 1 ""Heart Pirates"" type card other than [Bepo] with a cost of 4 or less from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-33"">This card has been officially errata'd.</a>",Green,Character,,4000,Heart Pirates;Minks,Strike,4,2000
+454574,Penguin,Penguin,https://tcgplayer-cdn.tcgplayer.com/product/454574_200w.jpg,68,3188,https://cpt.tcgcsv.com/vRF5,2023-01-04T22:02:43.52,1,0.02,0.16,3.0,0.12,,Normal,C,OP01-050,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On Play] If you don't have [Shachi], play up to 1 [Shachi] from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-34"">This card has been officially errata'd.</a>",Green,Character,,2000,Heart Pirates,Strike,3,1000
+454575,"Eustass""Captain""Kid",EustassCaptainKid,https://tcgplayer-cdn.tcgplayer.com/product/454575_200w.jpg,68,3188,https://cpt.tcgcsv.com/wRF5,2023-01-04T22:03:12.927,1,0.39,1.18,34.05,0.52,,Foil,SR,OP01-051,"[DON!! x1] [Opponent's Turn] If this Character is rested, your opponent cannot attack any card other than the Character [Eustass""Captain""Kid].
+<br>
+[Activate:Main] [Once Per Turn] <strong>You may rest this Character:</strong> Play up to 1 Character card with a cost of 3 or less from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-35"">This card has been officially errata'd.</a>",Green,Character,,8000,Kid Pirates;Supernovas,Special,8,
+454576,"Eustass""Captain""Kid (Parallel)",EustassCaptainKid Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454576_200w.jpg,68,3188,https://cpt.tcgcsv.com/xRF5,2023-01-04T22:08:33.717,1,25.98,34.23,145.0,34.59,,Foil,SR,OP01-051,"[DON!! x1] [Opponent's Turn] If this Character is rested, your opponent cannot attack any card other than the Character [Eustass""Captain""Kid].
+<br>
+[Activate:Main] [Once Per Turn] <strong>You may rest this Character:</strong> Play up to 1 Character card with a cost of 3 or less from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-36"">This card has been officially errata'd.</a>",Green,Character,,8000,Kid Pirates;Supernovas,Special,8,
+454577,Raizo,Raizo,https://tcgplayer-cdn.tcgplayer.com/product/454577_200w.jpg,68,3188,https://cpt.tcgcsv.com/zRF5,2022-12-02T05:03:12.237,1,0.02,0.2,3.0,0.08,,Normal,UC,OP01-052,"[When Attacking] [Once Per Turn] If you have 2 or more rested Characters, draw 1 card.",Green,Character,,4000,Land of Wano;The Akazaya Nine,Slash,3,1000
+454578,Wire,Wire,https://tcgplayer-cdn.tcgplayer.com/product/454578_200w.jpg,68,3188,https://cpt.tcgcsv.com/BRF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.06,,Normal,C,OP01-053,,Green,Character,,4000,Kid Pirates,Slash,2,1000
+454579,X.Drake (054),XDrake 054,https://tcgplayer-cdn.tcgplayer.com/product/454579_200w.jpg,68,3188,https://cpt.tcgcsv.com/CRF5,2023-01-04T22:09:24.653,1,0.19,0.38,6.99,0.33,,Foil,R,OP01-054,"[On Play] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-37"">This card has been officially errata'd.</a>",Green,Character,,6000,Drake Pirates;Navy;Supernovas,Slash,5,1000
+454580,You Can Be My Samurai!!,You Can Be My Samurai,https://tcgplayer-cdn.tcgplayer.com/product/454580_200w.jpg,68,3188,https://cpt.tcgcsv.com/DRF5,2022-12-02T05:03:12.237,1,0.05,0.28,4.0,0.25,,Normal,C,OP01-055,[Main] <strong>You may rest 2 of your Characters:</strong> Draw 2 cards.,Green,Event,,,Land of Wano;Kouzuki Clan,,1,
+454581,Demon Face,Demon Face,https://tcgplayer-cdn.tcgplayer.com/product/454581_200w.jpg,68,3188,https://cpt.tcgcsv.com/FRF5,2023-01-04T22:09:55.697,1,0.01,0.2,3.0,0.1,,Normal,UC,OP01-056,"[Main] K.O. up to 2 of your opponent's rested Characters with a cost of 5 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-38"">This card has been officially errata'd.</a>",Green,Event,,,Hawkins Pirates;Supernovas,,6,
+454582,Paradise Waterfall,Paradise Waterfall,https://tcgplayer-cdn.tcgplayer.com/product/454582_200w.jpg,68,3188,https://cpt.tcgcsv.com/GRF5,2023-01-04T22:10:32.627,1,0.5,1.0,5.0,0.68,,Normal,UC,OP01-057,"[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, set up to 1 of your Characters as active.
+<br>
+[Trigger] K.O. up to 1 of your opponent's rested Characters with a cost of 4 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-39"">This card has been officially errata'd.</a>",Green,Event,,,Land of Wano;Kouzuki Clan,,1,
+454583,Punk Gibson,Punk Gibson,https://tcgplayer-cdn.tcgplayer.com/product/454583_200w.jpg,68,3188,https://cpt.tcgcsv.com/HRF5,2023-01-04T22:12:18.1,1,0.25,0.6,9.99,0.42,,Foil,R,OP01-058,"[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, rest up to 1 of your opponent's Characters with a cost of 4 or less.
+<br>
+[Trigger] Rest up to 1 of your opponent's Characters.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-40"">This card has been officially errata'd.</a>",Green,Event,,,Kid Pirates;Supernovas,,2,
+454584,BE-BENG!!,BE BENG,https://tcgplayer-cdn.tcgplayer.com/product/454584_200w.jpg,68,3188,https://cpt.tcgcsv.com/JRF5,2023-01-04T22:12:40.743,1,0.01,0.15,3.0,0.07,,Normal,C,OP01-059,"[Main] <strong>You may trash 1 ""Land of Wano"" type card from your hand:</strong> Set up to 1 of your ""Land of Wano"" type Character cards with a cost of 3 or less as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-41"">This card has been officially errata'd.</a>",Green,Event,,,Land of Wano,,3,
+454585,Donquixote Doflamingo (060),Donquixote Doflamingo 060,https://tcgplayer-cdn.tcgplayer.com/product/454585_200w.jpg,68,3188,https://cpt.tcgcsv.com/KRF5,2022-12-02T05:03:12.237,1,0.1,0.5,20.46,0.44,,Normal,L,OP01-060,"[DON!! x2] [When Attacking] (1) <em>(You may rest the specified number of DON!! cards in your cost area.)</em>: Reveal 1 card from the top of your deck. If that card is a ""The Seven Warlords of the Sea"" type Character card with a cost of 4 or less, you may play that card rested.",Blue,Leader,5,5000,Donquixote Pirates;The Seven Warlords of the Sea,Special,,
+454586,Donquixote Doflamingo (060) (Parallel),Donquixote Doflamingo 060 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454586_200w.jpg,68,3188,https://cpt.tcgcsv.com/LRF5,2022-12-02T05:03:12.237,1,245.0,400.0,1500.0,252.23,,Foil,L,OP01-060,"[DON!! x2] [When Attacking] (1) <em>(You may rest the specified number of DON!! cards in your cost area.)</em>: Reveal 1 card from the top of your deck. If that card is a ""The Seven Warlords of the Sea"" type Character card with a cost of 4 or less, you may play that card rested.",Blue,Leader,5,5000,Donquixote Pirates;The Seven Warlords of the Sea,Special,,
+454587,Kaido (061) (Parallel),Kaido 061 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454587_200w.jpg,68,3188,https://cpt.tcgcsv.com/MRF5,2023-01-04T22:14:13.44,1,126.32,185.0,799.99,127.81,,Foil,L,OP01-061,"[DON!! x1] [Your Turn] [Once Per Turn] When your opponent's Character is K.O.'d, add up to 1 DON!! card from your DON!! deck and set it as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-43"">This card has been officially errata'd.</a>",Blue;Purple,Leader,4,5000,Animal Kingdom Pirates;The Four Emperors,Strike,,
+454588,Crocodile (062),Crocodile 062,https://tcgplayer-cdn.tcgplayer.com/product/454588_200w.jpg,68,3188,https://cpt.tcgcsv.com/NRF5,2022-12-02T05:03:12.237,1,0.15,0.38,69.99,0.34,,Normal,L,OP01-062,"[DON!! x1] When you activate an Event, you may draw 1 card if you have 4 or less cards in your hand and haven't drawn a card using this Leader's effect during this turn.",Blue;Purple,Leader,4,5000,Baroque Works;The Seven Warlords of the Sea,Special,,
+454589,Crocodile (062) (Parallel),Crocodile 062 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454589_200w.jpg,68,3188,https://cpt.tcgcsv.com/PRF5,2022-12-02T05:03:12.237,1,127.99,144.97,399.99,139.86,,Foil,L,OP01-062,"[DON!! x1] When you activate an Event, you may draw 1 card if you have 4 or less cards in your hand and haven't drawn a card using this Leader's effect during this turn.",Blue;Purple,Leader,4,5000,Baroque Works;The Seven Warlords of the Sea,Special,,
+454590,Arlong,Arlong,https://tcgplayer-cdn.tcgplayer.com/product/454590_200w.jpg,68,3188,https://cpt.tcgcsv.com/QRF5,2023-01-04T22:15:33.29,1,0.02,0.2,12.0,0.13,,Normal,UC,OP01-063,"[DON!! x1] [Activate:Main] <strong>You may rest this Character:</strong> Choose 1 card from your opponent's hand; your opponent reveals that card. If the revealed card is an Event, place up to 1 card from your opponent's Life area at the bottom of the owner's deck.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-44"">This card has been officially errata'd.</a>",Blue,Character,,5000,Fish-Man;Arlong Pirates,Slash,4,1000
+454591,Alvida,Alvida,https://tcgplayer-cdn.tcgplayer.com/product/454591_200w.jpg,68,3188,https://cpt.tcgcsv.com/RRF5,2023-01-04T22:16:09.917,1,0.03,0.2,3.0,0.13,,Normal,C,OP01-064,"[DON!! x1] [When Attacking] <strong>You may trash 1 card from your hand:</strong> Return up to 1 of your opponent's Characters with a cost of 3 or less to the owner's hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-45"">This card has been officially errata'd.</a>",Blue,Character,,3000,Buggy Pirates,Strike,2,2000
+454592,Vergo,Vergo,https://tcgplayer-cdn.tcgplayer.com/product/454592_200w.jpg,68,3188,https://cpt.tcgcsv.com/SRF5,2022-12-02T05:03:12.237,1,0.02,0.15,3.0,0.07,,Normal,C,OP01-065,,Blue,Character,,7000,Donquixote Pirates;Navy;Punk Hazard,Strike,5,1000
+454593,Krieg,Krieg,https://tcgplayer-cdn.tcgplayer.com/product/454593_200w.jpg,68,3188,https://cpt.tcgcsv.com/TRF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.06,,Normal,C,OP01-066,,Blue,Character,,6000,Krieg Pirates,Slash,4,1000
+454594,Crocodile (067) (Parallel),Crocodile 067 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454594_200w.jpg,68,3188,https://cpt.tcgcsv.com/VRF5,2022-12-02T05:03:12.237,1,8.24,17.5,100.0,12.08,,Foil,SR,OP01-067,"[Banish] <em>(When this card deals damage, the target card is trashed without activating its Trigger.)</em>
+<br>
+[DON!! x1] Give blue Events in your hand -1 cost.",Blue,Character,,7000,Baroque Works;The Seven Warlords of the Sea,Special,7,1000
+454596,Gecko Moria,Gecko Moria,https://tcgplayer-cdn.tcgplayer.com/product/454596_200w.jpg,68,3188,https://cpt.tcgcsv.com/XRF5,2023-03-07T14:02:46.597,1,0.15,0.32,5.0,0.3,,Foil,R,OP01-068,[Your Turn] This Character gains [Double Attack] if you have 5 or more cards in your hand. <em>(This card deals 2 damage.)</em>,Blue,Character,,5000,The Seven Warlords of the Sea;Thriller Bark Pirates,Special,4,1000
+454596,Gecko Moria,Gecko Moria,https://tcgplayer-cdn.tcgplayer.com/product/454596_200w.jpg,68,3188,https://cpt.tcgcsv.com/XRF5,2023-03-07T14:02:46.597,1,0.14,0.29,3.99,0.25,,Normal,R,OP01-068,[Your Turn] This Character gains [Double Attack] if you have 5 or more cards in your hand. <em>(This card deals 2 damage.)</em>,Blue,Character,,5000,The Seven Warlords of the Sea;Thriller Bark Pirates,Special,4,1000
+454597,Caesar Clown,Caesar Clown,https://tcgplayer-cdn.tcgplayer.com/product/454597_200w.jpg,68,3188,https://cpt.tcgcsv.com/ZRF5,2023-01-04T22:17:00.757,1,0.1,0.29,20.0,0.28,,Foil,R,OP01-069,"[On K.O.] Play up to 1 [Smiley] from your deck, then shuffle your deck.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-47"">This card has been officially errata'd.</a>",Blue,Character,,5000,Punk Hazard;Scientist,Special,4,1000
+454598,Dracule Mihawk,Dracule Mihawk,https://tcgplayer-cdn.tcgplayer.com/product/454598_200w.jpg,68,3188,https://cpt.tcgcsv.com/-RF5,2023-01-04T22:17:43.27,1,0.96,2.15,28.0,1.19,,Foil,SR,OP01-070,"[On Play] Place up to 1 Character with a cost of 7 or less at the bottom of the owner's deck.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-48"">This card has been officially errata'd.</a>",Blue,Character,,9000,The Seven Warlords of the Sea,Slash,9,
+454599,Dracule Mihawk (Parallel),Dracule Mihawk Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454599_200w.jpg,68,3188,https://cpt.tcgcsv.com/_RF5,2023-01-04T22:18:21.297,1,51.0,70.98,1000.0,55.2,,Foil,SR,OP01-070,"[On Play] Place up to 1 Character with a cost of 7 or less at the bottom of the owner's deck.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-49"">This card has been officially errata'd.</a>",Blue,Character,,9000,The Seven Warlords of the Sea,Slash,9,
+454600,Jinbe (071),Jinbe 071,https://tcgplayer-cdn.tcgplayer.com/product/454600_200w.jpg,68,3188,https://cpt.tcgcsv.com/0SF5,2023-01-04T22:18:59.81,1,0.1,0.25,5.0,0.23,,Foil,R,OP01-071,"[On Play] Place up to 1 Character with a cost of 3 or less at the bottom of the owner's deck.
+<br>
+[Trigger] Play this card.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-50"">This card has been officially errata'd.</a>",Blue,Character,,2000,Fish-Man;Straw Hat Crew,Strike,4,
+454601,Smiley,Smiley,https://tcgplayer-cdn.tcgplayer.com/product/454601_200w.jpg,68,3188,https://cpt.tcgcsv.com/2SF5,2022-12-02T05:03:12.237,1,0.02,0.15,3.0,0.07,,Normal,C,OP01-072,[DON!! x1] [Your Turn] This Character gains +1000 power for every card in your hand.,Blue,Character,,1000,Biological Weapon;Punk Hazard,Special,3,1000
+454602,Donquixote Doflamingo (073),Donquixote Doflamingo 073,https://tcgplayer-cdn.tcgplayer.com/product/454602_200w.jpg,68,3188,https://cpt.tcgcsv.com/3SF5,2022-12-02T05:03:12.237,1,0.02,0.55,7.5,0.42,,Foil,R,OP01-073,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",Blue,Character,,4000,Donquixote Pirates;The Seven Warlords of the Sea,Special,3,1000
+454603,Donquixote Doflamingo (073) (Parallel),Donquixote Doflamingo 073 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454603_200w.jpg,68,3188,https://cpt.tcgcsv.com/5SF5,2022-12-02T05:03:12.237,1,25.24,29.88,99.99,26.26,,Foil,R,OP01-073,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.",Blue,Character,,4000,Donquixote Pirates;The Seven Warlords of the Sea,Special,3,1000
+454604,Bartholomew Kuma,Bartholomew Kuma,https://tcgplayer-cdn.tcgplayer.com/product/454604_200w.jpg,68,3188,https://cpt.tcgcsv.com/6SF5,2023-01-04T22:19:29.577,1,0.1,0.26,5.0,0.23,,Foil,R,OP01-074,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On K.O.] Play up to 1 [Pacifista] with a cost of 4 or less from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-51"">This card has been officially errata'd.</a>",Blue,Character,,5000,Revolutionary Army;The Seven Warlords of the Sea,Strike,4,1000
+454605,Pacifista,Pacifista,https://tcgplayer-cdn.tcgplayer.com/product/454605_200w.jpg,68,3188,https://cpt.tcgcsv.com/7SF5,2022-12-02T05:03:12.237,1,0.05,0.23,3.0,0.21,,Normal,C,OP01-075,"Under the rules of this game, you may have any number of this card in your deck.
+<br>
+[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>",Blue,Character,,5000,Biological Weapon;Navy,Special,4,
+454606,Bellamy,Bellamy,https://tcgplayer-cdn.tcgplayer.com/product/454606_200w.jpg,68,3188,https://cpt.tcgcsv.com/8SF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.06,,Normal,C,OP01-076,,Blue,Character,,4000,Dressrosa,Strike,2,1000
+454607,Perona,Perona,https://tcgplayer-cdn.tcgplayer.com/product/454607_200w.jpg,68,3188,https://cpt.tcgcsv.com/9SF5,2022-12-02T05:03:12.237,1,0.66,1.13,9.99,0.95,,Normal,UC,OP01-077,[On Play] Look at 5 cards from the top of your deck and place them at the top or bottom of the deck in any order.,Blue,Character,,2000,Thriller Bark Pirates,Special,1,1000
+454608,Boa Hancock,Boa Hancock,https://tcgplayer-cdn.tcgplayer.com/product/454608_200w.jpg,68,3188,https://cpt.tcgcsv.com/bSF5,2022-12-02T05:03:12.237,1,1.0,2.5,21.29,1.94,,Foil,SR,OP01-078,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[DON!! x1] [When Attacking]/[On Block] Draw 1 card if you have 5 or less cards in your hand.",Blue,Character,,5000,Kuja Pirates;The Seven Warlords of the Sea,Special,4,1000
+454609,Boa Hancock (Parallel),Boa Hancock Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454609_200w.jpg,68,3188,https://cpt.tcgcsv.com/cSF5,2022-12-02T05:03:12.237,1,149.99,182.5,3000.0,166.47,,Foil,SR,OP01-078,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[DON!! x1] [When Attacking]/[On Block] Draw 1 card if you have 5 or less cards in your hand.",Blue,Character,,5000,Kuja Pirates;The Seven Warlords of the Sea,Special,4,1000
+454610,Ms. All Sunday,Ms All Sunday,https://tcgplayer-cdn.tcgplayer.com/product/454610_200w.jpg,68,3188,https://cpt.tcgcsv.com/dSF5,2023-01-04T22:20:17.807,1,0.47,1.56,10.0,1.41,,Foil,R,OP01-079,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On K.O.] If your Leader has the ""Baroque Works"" type, add up to 1 Event from your trash to your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-52"">This card has been officially errata'd.</a>",Blue,Character,,1000,Baroque Works,Strike,3,1000
+454611,Miss Doublefinger(Zala),Miss DoublefingerZala,https://tcgplayer-cdn.tcgplayer.com/product/454611_200w.jpg,68,3188,https://cpt.tcgcsv.com/fSF5,2024-04-29T16:11:29.3,1,0.02,0.15,3.0,0.09,,Normal,C,OP01-080,[On K.O.] Draw a card.,Blue,Character,,4000,Baroque Works,Slash,3,1000
+454612,Mocha,Mocha,https://tcgplayer-cdn.tcgplayer.com/product/454612_200w.jpg,68,3188,https://cpt.tcgcsv.com/gSF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.06,,Normal,C,OP01-081,,Blue,Character,,5000,Punk Hazard,Strike,3,1000
+454613,Monet,Monet,https://tcgplayer-cdn.tcgplayer.com/product/454613_200w.jpg,68,3188,https://cpt.tcgcsv.com/hSF5,2022-12-02T05:03:12.237,1,0.02,0.17,3.0,0.11,,Normal,C,OP01-082,[Trigger] Play this card.,Blue,Character,,3000,Donquixote Pirates;Punk Hazard,Special,2,1000
+454614,Mr.1 (Daz.Bonez),Mr1 DazBonez,https://tcgplayer-cdn.tcgplayer.com/product/454614_200w.jpg,68,3188,https://cpt.tcgcsv.com/jSF5,2024-01-08T12:55:39.81,1,0.01,0.2,3.0,0.1,,Normal,UC,OP01-083,"[DON!! x1] [Your Turn] If your Leader has the ""Baroque Works"" type, this Character gains +1000 power for every 2 Events in your trash.",Blue,Character,,3000,Baroque Works,Slash,2,1000
+454615,Mr.2.Bon.Kurei (Bentham),Mr2BonKurei Bentham,https://tcgplayer-cdn.tcgplayer.com/product/454615_200w.jpg,68,3188,https://cpt.tcgcsv.com/kSF5,2023-01-04T22:20:43.443,1,0.04,0.21,3.0,0.17,,Normal,UC,OP01-084,"[DON!! x1] [When Attacking] Look at 5 cards from the top of your deck; reveal up to 1 ""Baroque Works"" type Event card and add it to your hand. Then, place the rest at the bottom of your deck in any order.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-53"">This card has been officially errata'd.</a>",Blue,Character,,4000,Baroque Works,Strike,3,2000
+454616,Mr.3 (Galdino),Mr3 Galdino,https://tcgplayer-cdn.tcgplayer.com/product/454616_200w.jpg,68,3188,https://cpt.tcgcsv.com/lSF5,2023-01-04T22:21:23.943,1,0.05,0.2,3.0,0.09,,Normal,UC,OP01-085,"[On Play] If your Leader has the ""Baroque Works"" type, select up to 1 of your opponent's Characters with a cost of 4 or less. The selected Character cannot attack until the end of your opponent's next turn.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-54"">This card has been officially errata'd.</a>",Blue,Character,,3000,Baroque Works,Special,2,1000
+454617,Overheat,Overheat,https://tcgplayer-cdn.tcgplayer.com/product/454617_200w.jpg,68,3188,https://cpt.tcgcsv.com/mSF5,2024-10-25T19:09:09.457,1,0.04,0.25,5.0,0.19,,Normal,R,OP01-086,"[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, return up to 1 active Character with a cost of 3 or less to the owner's hand.
+<br>
+[Trigger] Return up to 1 card with a cost of 4 or less to the owner's hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-55"">This card has been officially errata'd.</a>",Blue,Event,,,Donquixote Pirates;The Seven Warlords of the Sea,,2,
+454617,Overheat,Overheat,https://tcgplayer-cdn.tcgplayer.com/product/454617_200w.jpg,68,3188,https://cpt.tcgcsv.com/mSF5,2024-10-25T19:09:09.457,1,0.08,0.3,5.0,0.23,,Foil,R,OP01-086,"[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, return up to 1 active Character with a cost of 3 or less to the owner's hand.
+<br>
+[Trigger] Return up to 1 card with a cost of 4 or less to the owner's hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-55"">This card has been officially errata'd.</a>",Blue,Event,,,Donquixote Pirates;The Seven Warlords of the Sea,,2,
+454618,Officer Agents,Officer Agents,https://tcgplayer-cdn.tcgplayer.com/product/454618_200w.jpg,68,3188,https://cpt.tcgcsv.com/nSF5,2023-01-04T22:24:20.247,1,0.01,0.17,3.0,0.11,,Normal,C,OP01-087,"[Counter] Play up to 1 ""Baroque Works"" type card with a cost of 3 or less from your hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-56"">This card has been officially errata'd.</a>",Blue,Event,,,Baroque Works,,2,
+454619,Desert Spada,Desert Spada,https://tcgplayer-cdn.tcgplayer.com/product/454619_200w.jpg,68,3188,https://cpt.tcgcsv.com/pSF5,2023-01-04T22:25:37.89,1,0.2,0.5,3.99,0.36,,Normal,UC,OP01-088,"[Counter] Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, look at 3 cards from the top of your deck and place them at the top or bottom of the deck in any order.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-57"">This card has been officially errata'd.</a>",Blue,Event,,,Baroque Works;The Seven Warlords of the Sea,,1,
+454620,Crescent Cutlass,Crescent Cutlass,https://tcgplayer-cdn.tcgplayer.com/product/454620_200w.jpg,68,3188,https://cpt.tcgcsv.com/qSF5,2023-01-04T22:26:12.637,1,0.02,0.15,3.0,0.08,,Normal,C,OP01-089,"[Counter] If your Leader has the ""The Seven Warlords of the Sea"" type, return up to 1 Character with a cost of 5 or less to the owner's hand.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-58"">This card has been officially errata'd.</a>",Blue,Event,,,Baroque Works;The Seven Warlords of the Sea,,3,
+454621,Baroque Works,Baroque Works,https://tcgplayer-cdn.tcgplayer.com/product/454621_200w.jpg,68,3188,https://cpt.tcgcsv.com/rSF5,2023-01-04T22:26:36.813,1,0.05,0.25,3.0,0.15,,Normal,UC,OP01-090,"[Main] Look at 5 cards from the top of your deck; reveal up to 1 ""Baroque Works"" type card other than [Baroque Works] and add it to your hand. Then, place the rest at the bottom of your deck in any order.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-59"">This card has been officially errata'd.</a>",Blue,Event,,,Baroque Works,,1,
+454622,King (091),King 091,https://tcgplayer-cdn.tcgplayer.com/product/454622_200w.jpg,68,3188,https://cpt.tcgcsv.com/sSF5,2022-12-02T05:03:12.237,1,0.1,0.33,4.99,0.32,,Normal,L,OP01-091,"[Your Turn] If you have 10 DON!! cards on your field, give all of your opponent's Characters -1000 power.",Purple,Leader,5,5000,Animal Kingdom Pirates,Special,,
+454623,King (091) (Parallel),King 091 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454623_200w.jpg,68,3188,https://cpt.tcgcsv.com/tSF5,2022-12-02T05:03:12.237,1,81.65,95.95,399.99,90.69,,Foil,L,OP01-091,"[Your Turn] If you have 10 DON!! cards on your field, give all of your opponent's Characters -1000 power.",Purple,Leader,5,5000,Animal Kingdom Pirates,Special,,
+454624,Urashima,Urashima,https://tcgplayer-cdn.tcgplayer.com/product/454624_200w.jpg,68,3188,https://cpt.tcgcsv.com/vSF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.07,,Normal,C,OP01-092,,Purple,Character,,9000,Land of Wano,Strike,7,1000
+454625,Ulti,Ulti,https://tcgplayer-cdn.tcgplayer.com/product/454625_200w.jpg,68,3188,https://cpt.tcgcsv.com/wSF5,2023-01-04T22:26:58.627,1,0.16,0.31,5.0,0.29,,Foil,R,OP01-093,"[On Play] (1) <em>(You may rest the specified number of DON!! cards in your cost area.)</em>: Add up to 1 DON!! card from your DON!! deck and rest it.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-60"">This card has been officially errata'd.</a>",Purple,Character,,3000,Animal Kingdom Pirates,Strike,2,
+454626,Ulti (Parallel),Ulti Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454626_200w.jpg,68,3188,https://cpt.tcgcsv.com/xSF5,2023-01-04T22:27:23,1,14.6,27.0,99.99,15.6,,Foil,R,OP01-093,"[On Play] (1) <em>(You may rest the specified number of DON!! cards in your cost area.)</em>: Add up to 1 DON!! card from your DON!! deck and rest it.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-61"">This card has been officially errata'd.</a>",Purple,Character,,3000,Animal Kingdom Pirates,Strike,2,
+454627,Kaido (094) (Parallel),Kaido 094 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454627_200w.jpg,68,3188,https://cpt.tcgcsv.com/zSF5,2022-12-02T05:03:12.237,1,18.82,61.99,160.0,23.18,,Foil,SR,OP01-094,"[On Play] DON!! -6 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: If your Leader has the ""Animal Kingdom Pirates"" type, K.O. all Characters other than this Character.",Purple,Character,,12000,Animal Kingdom Pirates;The Four Emperors,Strike,10,
+454628,Kyoshirou,Kyoshirou,https://tcgplayer-cdn.tcgplayer.com/product/454628_200w.jpg,68,3188,https://cpt.tcgcsv.com/BSF5,2022-12-02T05:03:12.237,1,0.05,0.2,3.0,0.12,,Normal,UC,OP01-095,[On Play] Draw 1 card if you have 8 or more DON!! cards on your field.,Purple,Character,,6000,Land of Wano,Slash,5,1000
+454629,King (096),King 096,https://tcgplayer-cdn.tcgplayer.com/product/454629_200w.jpg,68,3188,https://cpt.tcgcsv.com/CSF5,2023-01-04T22:27:49.34,1,0.2,0.99,14.99,0.77,,Foil,SR,OP01-096,"[On Play] DON!! -2 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: K.O. up to 1 of your opponent's Characters with a cost of 3 or less and up to 1 of your opponent's Characters with a cost of 2 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-62"">This card has been officially errata'd.</a>",Purple,Character,,7000,Animal Kingdom Pirates,Special,7,
+454630,King (096) (Parallel),King 096 Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454630_200w.jpg,68,3188,https://cpt.tcgcsv.com/DSF5,2023-01-04T22:28:04.577,1,8.99,14.6,99.99,13.19,,Foil,SR,OP01-096,"[On Play] DON!! -2 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: K.O. up to 1 of your opponent's Characters with a cost of 3 or less and up to 1 of your opponent's Characters with a cost of 2 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-63"">This card has been officially errata'd.</a>",Purple,Character,,7000,Animal Kingdom Pirates,Special,7,
+454631,Queen,Queen,https://tcgplayer-cdn.tcgplayer.com/product/454631_200w.jpg,68,3188,https://cpt.tcgcsv.com/FSF5,2023-01-04T22:28:25.76,1,0.1,0.25,5.0,0.22,,Foil,R,OP01-097,"[On Play] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: This Character gains [Rush] during this turn. Then, give up to 1 of your opponent's Characters -2000 power during this turn. <em>(This card can attack on the turn in which it is played.)</em>
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-64"">This card has been officially errata'd.</a>",Purple,Character,,5000,Animal Kingdom Pirates,Strike,6,1000
+454632,Queen (Parallel),Queen Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454632_200w.jpg,68,3188,https://cpt.tcgcsv.com/GSF5,2023-01-04T22:28:41.903,1,5.81,9.99,75.0,5.82,,Foil,R,OP01-097,"[On Play] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: This Character gains [Rush] during this turn. Then, give up to 1 of your opponent's Characters -2000 power during this turn. <em>(This card can attack on the turn in which it is played.)</em>
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-65"">This card has been officially errata'd.</a>",Purple,Character,,5000,Animal Kingdom Pirates,Strike,6,1000
+454633,Kurozumi Orochi,Kurozumi Orochi,https://tcgplayer-cdn.tcgplayer.com/product/454633_200w.jpg,68,3188,https://cpt.tcgcsv.com/HSF5,2023-01-04T22:29:40.647,1,0.01,0.25,3.0,0.15,,Normal,UC,OP01-098,"[On Play] Reveal up to 1 [Artificial Devil Fruit SMILE] from your deck and add it to your hand. Then, shuffle your deck.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-66"">This card has been officially errata'd.</a>",Purple,Character,,2000,Land of Wano;Kurozumi Clan,Wisdom,1,2000
+454634,Kurozumi Semimaru,Kurozumi Semimaru,https://tcgplayer-cdn.tcgplayer.com/product/454634_200w.jpg,68,3188,https://cpt.tcgcsv.com/JSF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.06,,Normal,C,OP01-099,"""Kurozumi Clan"" type Characters other than your [Kurozumi Semimaru] cannot be K.O.'d in battle.",Purple,Character,,3000,Land of Wano;Kurozumi Clan,Special,2,1000
+454635,Kurozumi Higurashi,Kurozumi Higurashi,https://tcgplayer-cdn.tcgplayer.com/product/454635_200w.jpg,68,3188,https://cpt.tcgcsv.com/KSF5,2022-12-02T05:03:12.237,1,0.01,0.18,3.0,0.09,,Normal,C,OP01-100,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>",Purple,Character,,3000,Land of Wano;Kurozumi Clan,Special,2,1000
+454636,Sasaki,Sasaki,https://tcgplayer-cdn.tcgplayer.com/product/454636_200w.jpg,68,3188,https://cpt.tcgcsv.com/LSF5,2023-01-04T22:30:08.95,1,0.05,0.29,4.0,0.26,,Normal,UC,OP01-101,"[DON!! x1] [When Attacking] <strong>You may trash 1 card from your hand:</strong> Add up to 1 DON!! card from your DON!! deck and rest it.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-67"">This card has been officially errata'd.</a>",Purple,Character,,4000,Animal Kingdom Pirates,Slash,3,2000
+454637,Jack,Jack,https://tcgplayer-cdn.tcgplayer.com/product/454637_200w.jpg,68,3188,https://cpt.tcgcsv.com/MSF5,2022-12-02T05:03:12.237,1,0.08,0.25,5.0,0.2,,Foil,R,OP01-102,[When Attacking] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: Your opponent trashes 1 card from their hand.,Purple,Character,,4000,Animal Kingdom Pirates,Strike,3,1000
+454638,Jack (Parallel),Jack Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454638_200w.jpg,68,3188,https://cpt.tcgcsv.com/NSF5,2022-12-02T05:03:12.237,1,5.0,7.28,48.0,6.17,,Foil,R,OP01-102,[When Attacking] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: Your opponent trashes 1 card from their hand.,Purple,Character,,4000,Animal Kingdom Pirates,Strike,3,1000
+454639,Scratchmen Apoo,Scratchmen Apoo,https://tcgplayer-cdn.tcgplayer.com/product/454639_200w.jpg,68,3188,https://cpt.tcgcsv.com/PSF5,2022-12-02T05:03:12.237,1,0.01,0.18,3.0,0.07,,Normal,C,OP01-103,,Purple,Character,,6000,Animal Kingdom Pirates;On-Air Pirates,Ranged,4,1000
+454640,Speed,Speed,https://tcgplayer-cdn.tcgplayer.com/product/454640_200w.jpg,68,3188,https://cpt.tcgcsv.com/QSF5,2022-12-02T05:03:12.237,1,0.02,0.16,3.0,0.11,,Normal,C,OP01-104,[Trigger] Play this card.,Purple,Character,,3000,Animal Kingdom Pirates;SMILE,Strike,2,1000
+454641,Bao Huang,Bao Huang,https://tcgplayer-cdn.tcgplayer.com/product/454641_200w.jpg,68,3188,https://cpt.tcgcsv.com/RSF5,2022-12-02T05:03:12.237,1,0.01,0.15,3.0,0.11,,Normal,C,OP01-105,[On Play] Choose 2 cards from your opponent's hand; your opponent reveals those cards.,Purple,Character,,3000,Animal Kingdom Pirates;SMILE,Wisdom,2,1000
+454642,Basil Hawkins,Basil Hawkins,https://tcgplayer-cdn.tcgplayer.com/product/454642_200w.jpg,68,3188,https://cpt.tcgcsv.com/SSF5,2023-01-04T22:30:50.987,1,0.1,0.3,5.0,0.24,,Normal,UC,OP01-106,"[On Play] Add up to 1 DON!! card from your DON!! deck and rest it.
+<br>
+[Trigger] Play this card.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-68"">This card has been officially errata'd.</a>",Purple,Character,,2000,Animal Kingdom Pirates;Hawkins Pirates,Slash,4,1000
+454643,Babanuki,Babanuki,https://tcgplayer-cdn.tcgplayer.com/product/454643_200w.jpg,68,3188,https://cpt.tcgcsv.com/TSF5,2022-12-02T05:03:12.237,1,0.01,0.17,3.0,0.07,,Normal,C,OP01-107,,Purple,Character,,7000,Animal Kingdom Pirates;SMILE,Ranged,5,1000
+454644,Who's.Who,WhosWho,https://tcgplayer-cdn.tcgplayer.com/product/454644_200w.jpg,68,3188,https://cpt.tcgcsv.com/VSF5,2022-12-02T05:03:12.237,1,0.03,0.2,3.0,0.14,,Normal,UC,OP01-109,"[DON!! x1] [Your Turn] If you have 8 or more DON!! cards on your field, this Character gains +1000 power.",Purple,Character,,3000,Animal Kingdom Pirates,Slash,2,1000
+454645,Fukurokuju,Fukurokuju,https://tcgplayer-cdn.tcgplayer.com/product/454645_200w.jpg,68,3188,https://cpt.tcgcsv.com/WSF5,2022-12-02T05:03:12.237,1,0.01,0.16,3.0,0.09,,Normal,C,OP01-110,,Purple,Character,,8000,Animal Kingdom Pirates;Land of Wano,Special,6,1000
+454646,Black Maria,Black Maria,https://tcgplayer-cdn.tcgplayer.com/product/454646_200w.jpg,68,3188,https://cpt.tcgcsv.com/XSF5,2022-12-02T05:03:12.237,1,0.08,0.25,6.67,0.25,,Foil,R,OP01-111,"[Blocker] <em>(After your opponent declares an attack, you may rest this card to make it the new target of the attack.)</em>
+<br>
+[On Block] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: This Character gains +1000 power during this turn.",Purple,Character,,5000,Animal Kingdom Pirates,Special,4,1000
+454648,Page One,Page One,https://tcgplayer-cdn.tcgplayer.com/product/454648_200w.jpg,68,3188,https://cpt.tcgcsv.com/-SF5,2022-12-02T05:03:12.237,1,0.08,0.25,5.0,0.25,,Foil,R,OP01-112,[Activate:Main] [Once Per Turn] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: This Character can also attack your opponent's active Characters during this turn.,Purple,Character,,5000,Animal Kingdom Pirates,Strike,4,1000
+454651,Holedem,Holedem,https://tcgplayer-cdn.tcgplayer.com/product/454651_200w.jpg,68,3188,https://cpt.tcgcsv.com/2TF5,2023-01-04T22:31:51.673,1,0.01,0.15,4.52,0.09,,Normal,C,OP01-113,"[On K.O.] Add up to 1 DON!! card from your DON!! deck and rest it.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-70"">This card has been officially errata'd.</a>",Purple,Character,,4000,Animal Kingdom Pirates;SMILE,Special,3,1000
+454652,X.Drake (114),XDrake 114,https://tcgplayer-cdn.tcgplayer.com/product/454652_200w.jpg,68,3188,https://cpt.tcgcsv.com/3TF5,2022-12-02T05:03:12.237,1,0.15,0.36,6.5,0.28,,Foil,R,OP01-114,[On Play] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: Your opponent trashes 1 card from their hand.,Purple,Character,,5000,Animal Kingdom Pirates;Drake Pirates;Navy,Slash,5,2000
+454659,Elephant's Marchoo,Elephants Marchoo,https://tcgplayer-cdn.tcgplayer.com/product/454659_200w.jpg,68,3188,https://cpt.tcgcsv.com/cTF5,2023-01-04T22:32:11.57,1,0.02,0.15,3.99,0.08,,Normal,C,OP01-115,"[Main] K.O. up to 1 of your opponent's Characters with a cost of 2 or less, then add up to 1 DON!! card from your DON!! deck and set it as active.
+<br>
+[Trigger] Activate this card's [Main] effect.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-71"">This card has been officially errata'd.</a>",Purple,Event,,,Animal Kingdom Pirates;SMILE,,4,
+454660,Artificial Devil Fruit SMILE,Artificial Devil Fruit SMILE,https://tcgplayer-cdn.tcgplayer.com/product/454660_200w.jpg,68,3188,https://cpt.tcgcsv.com/dTF5,2023-01-04T22:32:31.79,1,0.05,0.2,4.0,0.11,,Normal,UC,OP01-116,"[Main] Look at 5 cards from the top of your deck; play up to 1 ""SMILE"" type Character card with a cost of 3 or less. Then, place the rest at the bottom of your deck in any order.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-72"">This card has been officially errata'd.</a>",Purple,Event,,,Animal Kingdom Pirates;SMILE,,2,
+454661,Sheep's Horn,Sheeps Horn,https://tcgplayer-cdn.tcgplayer.com/product/454661_200w.jpg,68,3188,https://cpt.tcgcsv.com/fTF5,2023-01-04T22:32:56.453,1,0.02,0.17,3.99,0.09,,Normal,C,OP01-117,"[Main] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: Rest up to 1 of your opponent's Characters with a cost of 6 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-73"">This card has been officially errata'd.</a>",Purple,Event,,,Animal Kingdom Pirates;SMILE,,2,
+454662,Ulti-Mortar,Ulti Mortar,https://tcgplayer-cdn.tcgplayer.com/product/454662_200w.jpg,68,3188,https://cpt.tcgcsv.com/gTF5,2023-01-04T22:33:26.19,1,0.01,0.25,3.0,0.15,,Normal,UC,OP01-118,"[Counter] DON!! -2 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck.)</em>: Up to 1 of your Leader or Character cards gains +2000 power during this battle. Then, draw 1 card.
+<br>
+[Trigger] Add up to 1 DON!! card from your DON!! deck and set it as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-74"">This card has been officially errata'd.</a>",Purple,Event,,,Animal Kingdom Pirates,,1,
+454663,Thunder Bagua,Thunder Bagua,https://tcgplayer-cdn.tcgplayer.com/product/454663_200w.jpg,68,3188,https://cpt.tcgcsv.com/hTF5,2023-01-04T22:33:48.8,1,0.15,1.61,12.24,0.56,,Foil,R,OP01-119,"[Counter] Up to 1 of your Leader or Character cards gains +4000 power during this battle. Then, if you have 2 or less Life cards, add up to 1 DON!! card from your DON!! deck and rest it.
+<br>
+[Trigger] Add up to 1 DON!! card from your DON!! deck and set it as active.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-75"">This card has been officially errata'd.</a>",Purple,Event,,,Animal Kingdom Pirates;The Four Emperors,,2,
+454664,Shanks,Shanks,https://tcgplayer-cdn.tcgplayer.com/product/454664_200w.jpg,68,3188,https://cpt.tcgcsv.com/jTF5,2023-05-12T13:37:47.03,1,7.25,10.99,130.0,9.89,,Foil,SEC,OP01-120,"[Rush] <em>(This card can attack on the turn in which it is played.)</em>
+<br>
+[When Attacking] Your opponent cannot activate a [Blocker] Character that has 2000 or less power during this battle.",Red,Character,,10000,The Four Emperors;Red-Haired Pirates,Slash,9,
+454665,Shanks (Parallel),Shanks Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454665_200w.jpg,68,3188,https://cpt.tcgcsv.com/kTF5,2023-05-12T13:38:28.3,1,73.78,110.88,500.0,110.88,,Foil,SEC,OP01-120,"[Rush] <em>(This card can attack on the turn in which it is played.)</em>
+<br>
+[When Attacking] Your opponent cannot activate a [Blocker] Character that has 2000 or less power during this battle.",Red,Character,,10000,The Four Emperors;Red-Haired Pirates,Slash,9,
+454666,Shanks (Parallel) (Manga) (Alternate Art),Shanks Parallel Manga Alternate Art,https://tcgplayer-cdn.tcgplayer.com/product/454666_200w.jpg,68,3188,https://cpt.tcgcsv.com/lTF5,2024-07-19T12:38:57.547,1,3990.0,3998.0,7499.99,3999.47,,Foil,SEC,OP01-120,"[Rush] <em>(This card can attack on the turn in which it is played.)</em>
+<br>
+[When Attacking] Your opponent cannot activate a [Blocker] Character that has 2000 or less power during this battle.",Red,Character,,10000,The Four Emperors;Red-Haired Pirates,Slash,9,
+454667,Yamato,Yamato,https://tcgplayer-cdn.tcgplayer.com/product/454667_200w.jpg,68,3188,https://cpt.tcgcsv.com/mTF5,2023-05-12T13:39:43.473,1,6.47,10.0,150.0,8.27,,Foil,SEC,OP01-121,"Also treat this card's name as [Kouzuki Oden] according to the rules.
+<br>
+[Double Attack] <em>(This card deals 2 damage.)</em>
+<br>
+[Banish] <em>(When this card deals damage, the target card is trashed without activating its Trigger.)</em>",Green,Character,,5000,Land of Wano,Strike,5,1000
+454669,Yamato (Parallel),Yamato Parallel,https://tcgplayer-cdn.tcgplayer.com/product/454669_200w.jpg,68,3188,https://cpt.tcgcsv.com/pTF5,2023-05-12T13:39:47.647,1,164.99,195.0,699.99,120.4,,Foil,SEC,OP01-121,"Also treat this card's name as [Kouzuki Oden] according to the rules.
+<br>
+[Double Attack] <em>(This card deals 2 damage.)</em>
+<br>
+[Banish] <em>(When this card deals damage, the target card is trashed without activating its Trigger.)</em>",Green,Character,,5000,Land of Wano,Strike,5,1000
+455808,Hitokiri Kamazo,Hitokiri Kamazo,https://tcgplayer-cdn.tcgplayer.com/product/455808_200w.jpg,68,3188,https://cpt.tcgcsv.com/blG5,2025-11-07T14:51:21.303,1,0.08,0.2,4.0,0.15,,Normal,UC,OP01-108,"[On K.O.] DON!! -1 <em>(You may return the specified number of DON!! cards from your field to your DON!! deck)</em>: K.O. up to 1 of your opponent's Characters with a cost of 5 or less.
+<br><br>
+<a href=""https://en.onepiece-cardgame.com/rules/errata_card/#group_20221111-69"">This card has been officially errata'd.</a>",Purple,Character,,5000,Kid Pirates;Supernovas;SMILE,Slash,4,1000
+456059,DON!! Card (Manga) (Alternate Art),DON Card Manga Alternate Art,https://tcgplayer-cdn.tcgplayer.com/product/456059_200w.jpg,68,3188,https://cpt.tcgcsv.com/crG5,2024-07-19T12:37:44.277,1,10.0,18.01,75.0,17.15,,Foil,DON!!,,Your Turn +1000,,DON!!,,,,,,
+456320,DON!! Card // One Piece Film RED Promo,DON Card One Piece Film RED Promo,https://tcgplayer-cdn.tcgplayer.com/product/456320_200w.jpg,68,3188,https://cpt.tcgcsv.com/qxG5,2024-05-01T17:29:06.753,2,0.02,0.21,2.0,0.17,,Normal,DON!!,,Your Turn +1000,,DON!!,,,,,,
+531774,Romance Dawn - Sleeved Booster Pack,Romance Dawn Sleeved Booster Pack,https://tcgplayer-cdn.tcgplayer.com/product/531774_200w.jpg,68,3188,https://cpt.tcgcsv.com/vKg6,2023-12-27T13:35:50.79,1,140.0,198.98,1100.0,156.93,,Normal,,,,,,,,,,,
+532645,Box Promotion Pack,Box Promotion Pack,https://tcgplayer-cdn.tcgplayer.com/product/532645_200w.jpg,68,3188,https://cpt.tcgcsv.com/W3h6,2024-01-11T15:00:10.593,1,33.33,42.99,1000.0,43.92,,Normal,,,,,,,,,,,
+557280,Romance Dawn - Booster Box (Wave 2 - White),Romance Dawn Booster Box Wave 2 White,https://tcgplayer-cdn.tcgplayer.com/product/557280_200w.jpg,68,3188,https://cpt.tcgcsv.com/DWs6,2024-06-28T20:32:46.32,1,1353.99,1877.5,9999.99,1569.68,,Normal,,,,,,,,,,,
+650853,Romance Dawn - Booster Box Case (Wave 1 - Blue),Romance Dawn Booster Box Case Wave 1 Blue,https://tcgplayer-cdn.tcgplayer.com/product/650853_200w.jpg,68,3188,https://cpt.tcgcsv.com/5md7,2025-08-26T12:18:33.887,1,75000.0,135500.0,195999.99,,,Normal,,,,,,,,,,,

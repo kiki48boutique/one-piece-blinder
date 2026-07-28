@@ -1,0 +1,44 @@
+[
+  {
+    "card_number": "OP01-001",
+    "name": "Roronoa Zoro (Leader)",
+    "rarity": "Leader",
+    "quantite": 0,
+    "serie": "OP01"
+  },
+  {
+    "card_number": "OP01-016",
+    "name": "Nami",
+    "rarity": "Rare",
+    "quantite": 0,
+    "serie": "OP01"
+  },
+  {
+    "card_number": "OP01-025",
+    "name": "Roronoa Zoro (Character)",
+    "rarity": "Super Rare",
+    "quantite": 0,
+    "serie": "OP01"
+  },
+  {
+    "card_number": "OP01-047",
+    "name": "Trafalgar Law",
+    "rarity": "Super Rare",
+    "quantite": 0,
+    "serie": "OP01"
+  },
+  {
+    "card_number": "OP01-070",
+    "name": "Dracule Mihawk",
+    "rarity": "Super Rare",
+    "quantite": 0,
+    "serie": "OP01"
+  },
+  {
+    "card_number": "OP02-001",
+    "name": "Portgas.D.Ace (Leader)",
+    "rarity": "Leader",
+    "quantite": 0,
+    "serie": "OP02"
+  }
+]
