@@ -5,7 +5,7 @@
                 "card_number": "OP01-005",
                 "image_url": "/static/OP01-005.jpg",
                 "name": "Uta",
-                "quantite_deck": 1
+                "quantite_deck": 2
             },
             {
                 "card_number": "OP01-006",
@@ -76,7 +76,7 @@
                 "card_number": "OP01-048",
                 "name": "Nekomamushi",
                 "image_url": "/static/OP01-048_p1.jpg",
-                "quantite_deck": 2
+                "quantite_deck": 4
             },
             {
                 "card_number": "EB04-012",
