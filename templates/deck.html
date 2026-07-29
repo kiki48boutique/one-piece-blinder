@@ -175,17 +175,39 @@
             white-space: nowrap;
             overflow: hidden;
         }
-        .btn-remove {
+
+        /* ACTIONS DU DECK (+ ET RETIRER) */
+        .deck-item-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 6px;
+        }
+        .btn-deck-add {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            flex: 1;
+            transition: background 0.2s;
+        }
+        .btn-deck-add:hover { background: #43a047; }
+
+        .btn-deck-remove {
             background: #f44336;
             color: white;
             border: none;
-            padding: 3px 8px;
+            padding: 4px 6px;
             font-size: 0.75rem;
             border-radius: 3px;
             cursor: pointer;
-            margin-top: 5px;
-            width: 100%;
+            flex: 2;
+            transition: background 0.2s;
         }
+        .btn-deck-remove:hover { background: #e53935; }
 
         .modal {
             display: none;
@@ -204,24 +226,45 @@
             box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
         }
     </style>
-<!-- Configuration PWA -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#121212">
 
-<!-- Compatibilité iOS / Safari -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="OP Binder">
-<link rel="apple-touch-icon" href="/static/icon-192.png">
+    <!-- Configuration PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#121212">
 
-<!-- Enregistrement du Service Worker -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
-</script>
+    <!-- Compatibilité iOS / Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OP Binder">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
+
+    <!-- Enregistrement du Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js');
+        });
+      }
+    </script>
+
+    <!-- 📱 DÉTECTION ET ENVOI DE L'ID APPAREIL -->
+    <script>
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('op_device_id');
+            if (!deviceId) {
+                deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+                localStorage.setItem('op_device_id', deviceId);
+            }
+            return deviceId;
+        }
+
+        // Intercepte automatiquement tous les fetchs pour ajouter l'ID
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options.headers = options.headers || {};
+            options.headers['X-Device-ID'] = getDeviceId();
+            return originalFetch(url, options);
+        };
+    </script>
 </head>
 <body>
 
@@ -273,7 +316,7 @@
 
     <script>
         let structureDonneesDeckLocale = { leader: null, cards: [] };
-        let prixTotalDuServeur = 0.0; // Variable locale pour le prix
+        let prixTotalDuServeur = 0.0;
 
         document.addEventListener("DOMContentLoaded", () => {
             rafraichirListeDecksEtContenu();
@@ -284,7 +327,7 @@
                 .then(res => res.json())
                 .then(data => {
                     structureDonneesDeckLocale = data.deck;
-                    prixTotalDuServeur = data.prix_total_deck || 0.0; // Extraction du prix
+                    prixTotalDuServeur = data.prix_total_deck || 0.0;
                      
                     if (data.nom_deck) {
                         document.getElementById('current-deck-title').innerText = "Deck en cours : " + data.nom_deck;
@@ -329,7 +372,7 @@
                     <div>
                         <img src="${imgUrl}" alt="${structureDonneesDeckLocale.leader.name}" onclick="ouvrirZoomDeck('${imgUrl}')">
                         <div style="margin-top:5px; font-weight:bold; font-size:0.9rem;">${structureDonneesDeckLocale.leader.name}</div>
-                        <button class="btn-remove" onclick="retirerDuDeck('${structureDonneesDeckLocale.leader.card_number}', true)">Retirer</button>
+                        <button class="btn-deck-remove" style="width:100%; margin-top:5px;" onclick="retirerDuDeck('${structureDonneesDeckLocale.leader.card_number}', true)">Retirer</button>
                     </div>
                 `;
             } else {
@@ -339,12 +382,18 @@
             structureDonneesDeckLocale.cards.forEach(card => {
                 totalCartes += card.quantite_deck;
                 const cardImgUrl = card.image_url || '/static/images/placeholder.png';
+                const safeName = (card.name || '').replace(/'/g, "\\'");
+
                 grid.innerHTML += `
                     <div class="deck-item">
                         <div class="deck-item-qty">x${card.quantite_deck}</div>
                         <img src="${cardImgUrl}" alt="${card.name}" onclick="ouvrirZoomDeck('${cardImgUrl}')">
                         <div class="deck-item-name">${card.name}</div>
-                        <button class="btn-remove" onclick="retirerDuDeck('${card.card_number}', false)">Retirer</button>
+
+                        <div class="deck-item-actions">
+                            <button class="btn-deck-add" onclick="ajouterAuDeckDepuisAtelier('${card.card_number}', '${safeName}', false, ${card.is_alternative || false})">+</button>
+                            <button class="btn-deck-remove" onclick="retirerDuDeck('${card.card_number}', false)">Retirer</button>
+                        </div>
                     </div>
                 `;
             });
@@ -352,7 +401,6 @@
             counter.innerText = `Total : ${totalCartes} / 50`;
             counter.className = (totalCartes === 50) ? "counter" : "counter invalid";
             
-            // Mise à jour de l'affichage du prix
             if (priceCounter) {
                 priceCounter.innerText = `Prix : ${parseFloat(prixTotalDuServeur).toFixed(2)} €`;
             }
@@ -414,6 +462,28 @@
                     }).then(() => rafraichirListeDecksEtContenu());
                 });
             }
+        }
+
+        function ajouterAuDeckDepuisAtelier(cardNumber, cardName, isLeader, isAlt) {
+            fetch('/api/add_to_deck', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    card_number: cardNumber,
+                    name: cardName,
+                    is_leader: isLeader,
+                    is_alternative: isAlt
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success') {
+                    rafraichirListeDecksEtContenu();
+                } else {
+                    alert("Attention : " + data.message);
+                }
+            })
+            .catch(err => console.error("Erreur lors de l'ajout :", err));
         }
 
         function retirerDuDeck(cardNumber, isLeader) {
