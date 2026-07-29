@@ -4,6 +4,23 @@ from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
 
+def get_device_json_path(prefixe_fichier):
+    device_id = request.headers.get('X-Device-ID', 'defaut')
+    os.makedirs('donnees_utilisateurs', exist_ok=True)
+    return f"donnees_utilisateurs/{prefixe_fichier}_{device_id}.json"
+
+def lire_json_appareil(prefixe_fichier, valeur_par_defaut):
+    fichier = get_device_json_path(prefixe_fichier)
+    if os.path.exists(fichier):
+        with open(fichier, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    return valeur_par_defaut
+
+def sauvegarder_json_appareil(prefixe_fichier, donnees):
+    fichier = get_device_json_path(prefixe_fichier)
+    with open(fichier, 'w', encoding='utf-8') as f:
+        json.dump(donnees, f, ensure_ascii=False, indent=4)
+
 # 🎯 VARIABLES GLOBALES CENTRALISÉES (Sans doublons dans le reste du code)
 DECK_ACTUEL_NOM = None  # Nom du deck actif globalement
 DECK_ACTUEL_MEMOIRE = {
