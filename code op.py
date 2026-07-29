@@ -449,5 +449,14 @@ def mettre_a_jour_sp():
     except Exception as e:
         return f"Une erreur est survenue lors de la mise à jour : {e}"
 
+
+@app.route('/manifest.json')
+def manifest():
+    return app.send_static_file('manifest.json')
+
+@app.route('/sw.js')
+def service_worker():
+    return app.send_static_file('sw.js')
+
 if __name__ == "__main__":
     app.run(debug=False, port=5000)
