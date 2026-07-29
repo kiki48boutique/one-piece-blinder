@@ -22,10 +22,10 @@
             margin: 0 auto;
         }
 
-        /* STYLE DES BANNIÈRES LATÉRALES (Elles défilent normalement avec la page) */
+        /* STYLE DES BANNIÈRES LATÉRALES */
         .banner-side {
-            width: 200px;           /* Largeur maîtrisée pour ne jamais déborder sur les boutons */
-            height: auto;           /* L'image garde ses proportions et s'affiche entièrement en hauteur */
+            width: 200px;
+            height: auto;
             object-fit: contain;
             flex-shrink: 0;
         }
@@ -128,31 +128,63 @@
             border-color: #ffcc00;
         }
 
-        /* Masque les bannières si la fenêtre est trop petite (tablettes / téléphones) pour garder un affichage propre */
         @media (max-width: 1200px) {
             .banner-side {
                 display: none;
             }
         }
     </style>
+
     <!-- Configuration PWA -->
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#121212">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#121212">
 
-<!-- Compatibilité iOS / Safari -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="OP Binder">
-<link rel="apple-touch-icon" href="/static/icon-192.png">
+    <!-- Compatibilité iOS / Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="OP Binder">
+    <link rel="apple-touch-icon" href="/static/icon-192.png">
 
-<!-- Enregistrement du Service Worker -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js');
-    });
-  }
-</script>
+    <!-- Enregistrement du Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js');
+            });
+        }
+    </script>
+
+    <!-- 📱 DÉTECTION ET ENVOI DE L'ID APPAREIL -->
+    <script>
+        function getDeviceId() {
+            let deviceId = localStorage.getItem('op_device_id');
+            if (!deviceId) {
+                deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+                localStorage.setItem('op_device_id', deviceId);
+            }
+            return deviceId;
+        }
+
+        // Intercepte tous les fetchs pour ajouter automatiquement l'ID d'appareil
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options.headers = options.headers || {};
+            options.headers['X-Device-ID'] = getDeviceId();
+            return originalFetch(url, options);
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const indicator = document.getElementById('deck-status-indicator');
+            if (indicator) {
+                fetch('/api/get_deck_status')
+                    .then(r => r.json())
+                    .then(status => {
+                        // Traitement du statut si nécessaire
+                    })
+                    .catch(err => console.error("Erreur d'état du deck:", err));
+            }
+        });
+    </script>
 </head>
 <body>
 
@@ -249,18 +281,16 @@
                         <a href="/serie/ST28" class="btn-serie">ST28</a>
                         <a href="/serie/ST29" class="btn-serie">ST29</a>
                         <a href="/serie/ST30" class="btn-serie">ST30</a>
-                    
 
-			<div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
+                        <div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
                             <hr style="border: 0; border-top: 1px solid #3a3a3a;">
                         </div>
 
-			<a href="/serie/P" class="btn-serie">Promo</a>
-			<a href="/serie/D" class="btn-serie">Demo Deck</a>
-			<a href="/serie/LD" class="btn-serie">Learn Deck</a>
+                        <a href="/serie/P" class="btn-serie">Promo</a>
+                        <a href="/serie/D" class="btn-serie">Demo Deck</a>
+                        <a href="/serie/LD" class="btn-serie">Learn Deck</a>
 
-		   </div>
-
+                    </div>
                 </div>
 
                 <!-- 4. VUE GLOBALE -->
