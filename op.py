@@ -5,14 +5,9 @@ from flask import Flask, jsonify, render_template, request
 app = Flask(__name__)
 
 def get_device_json_path(prefixe_fichier):
-    # 1. Lit en priorité le cookie généré par le navigateur
     device_id = request.cookies.get('op_device_id')
-
-    # 2. Sinon, lit l'en-tête HTTP (requêtes fetch/JS)
     if not device_id:
         device_id = request.headers.get('X-Device-ID')
-
-    # 3. Valeur par défaut si rien n'est trouvé
     if not device_id:
         device_id = 'defaut'
 
@@ -41,23 +36,29 @@ def charger_donnees():
         return chemin_json, json.load(f)
 
 def charger_decks():
-    # Decks sauvegardés sur CET appareil
     return get_device_json_path('decks'), lire_json_appareil('decks', {})
 
 def charger_collection():
-    # Renvoie un tuple (chemin, dictionnaire) pour rester cohérent
     return get_device_json_path('collection'), lire_json_appareil('collection', {})
 
+def charger_wishlist():
+    return get_device_json_path('wishlist'), lire_json_appareil('wishlist', [])
+
+def sauvegarder_wishlist(liste_wishlist):
+    sauvegarder_json_appareil('wishlist', liste_wishlist)
+
+def appliquer_wishlist(donnees_json):
+    _, liste_wishlist = charger_wishlist()
+    for carte in donnees_json:
+        carte["in_wishlist"] = carte.get("card_number") in liste_wishlist
+
 def charger_deck_actif_appareil():
-    # Lit le deck actuellement en cours d'édition pour CET appareil
     return lire_json_appareil('deck_actif', {"nom": None, "deck": {"leader": None, "cards": []}})
 
 def sauvegarder_deck_actif_appareil(nom, deck):
-    # Enregistre l'état de l'atelier pour CET appareil
     sauvegarder_json_appareil('deck_actif', {"nom": nom, "deck": deck})
 
 def appliquer_quantites_collection(donnees_json):
-    """Injecte à la volée les quantités possédées depuis la collection de l'appareil"""
     _, dict_collection = charger_collection()
     for carte in donnees_json:
         id_carte = carte.get("card_number", "")
@@ -67,35 +68,22 @@ def appliquer_quantites_collection(donnees_json):
 
 def trier_cartes(liste_cartes):
     def cle_de_tri(carte):
-        # 1. Détection de la rareté SP ou TR
         rarete = str(carte.get("rarity", "")).strip().upper()
         est_special = 1 if rarete in ["SP", "TR", "SPECIAL", "TREASURE RARE"] else 0
-
-        # 2. Nettoyage du numéro de carte (ex: "OP04-119" -> prefixe="OP04", suffixe="119")
         num_complet = str(carte.get("card_number", "")).strip().upper()
 
-        # On extrait la partie numérique après le tiret pour trier les SP par leur vrai numéro
         chiffres = 999
         if "-" in num_complet:
             try:
-                suffixe = num_complet.split("-")[1] # Ex: "004_P2"
-
-                # CORRECTION : On ne garde que ce qui est avant le "_" (on isole "004")
+                suffixe = num_complet.split("-")[1]
                 suffixe_propre = suffixe.split("_")[0]
-
-                # On extrait les chiffres uniquement sur cette partie propre
                 chiffres_extraits = "".join([c for c in suffixe_propre if c.isdigit()])
                 if chiffres_extraits:
                     chiffres = int(chiffres_extraits)
             except:
                 pass
 
-        # 3. Version alternative
         est_alt = bool(carte.get("is_alternative", False))
-
-        # Le tri se fait d'abord par : Est-ce une SP/TR ? (0=Non, 1=Oui)
-        # Ensuite par son numéro chiffré nettoyé (4 au lieu de 42 !)
-        # Enfin par sa version (classique avant alternative)
         return (est_special, chiffres, est_alt)
 
     liste_cartes.sort(key=cle_de_tri)
@@ -107,18 +95,13 @@ def formater_carte_image(carte):
     except: carte["prix"] = 0.0
 
     card_number = carte.get("card_number", "")
-
-    # Vérifie si le numéro contient déjà explicitement un suffixe alternatif (_p1, _p2, ..., _p6)
-    a_un_suffixe_alt = any(f"_p{i}" in card_number for i in range(1, 8))
+    a_un_suffixe_alt = any(f"_p{i}" in card_number for i in range(1, 10))
 
     if a_un_suffixe_alt:
-        # Si le numéro contient déjà _p1, _p2, etc., on l'utilise tel quel pour l'image
         carte["image_url"] = f"/static/{card_number}.jpg"
     elif carte.get("is_alternative"):
-        # Si la carte est marquée comme alternative mais n'a pas de suffixe dans son numéro, on met _p1 par défaut
         carte["image_url"] = f"/static/{card_number}_p1.jpg"
     else:
-        # Carte classique
         carte["image_url"] = f"/static/{card_number}.jpg"
 
     couleur_brute = carte.get("color", "unknown")
@@ -131,7 +114,6 @@ def formater_carte_image(carte):
     return carte
 
 def calculer_prix_deck_actuel(deck_memoire=None):
-    """Calcul en direct basé sur les prix de cartes.json pour l'appareil en cours"""
     try:
         if deck_memoire is None:
             etat = charger_deck_actif_appareil()
@@ -153,9 +135,36 @@ def calculer_prix_deck_actuel(deck_memoire=None):
     except:
         return 0.0
 
+# 🌟 ROUTE ACCUEIL AVEC CALCUL DYNAMIQUE DE VOS SÉRIES
 @app.route("/")
 def index():
-    return render_template("accueil.html")
+    try:
+        _, donnees_json = charger_donnees()
+        appliquer_quantites_collection(donnees_json)
+
+        series_stats = {}
+
+        for carte in donnees_json:
+            serie_code = str(carte.get("serie", "")).upper().replace("-", "").strip()
+            if not serie_code:
+                num_complet = str(carte.get("card_number", "")).upper()
+                serie_code = num_complet.split("-")[0].replace("-", "") if "-" in num_complet else "AUTRE"
+
+            if serie_code not in series_stats:
+                series_stats[serie_code] = {"total": 0, "possedees": 0, "pourcentage": 0}
+
+            series_stats[serie_code]["total"] += 1
+            if carte.get("quantite", 0) > 0:
+                series_stats[serie_code]["possedees"] += 1
+
+        for code, stats in series_stats.items():
+            tot = stats["total"]
+            pos = stats["possedees"]
+            stats["pourcentage"] = round((pos / tot) * 100) if tot > 0 else 0
+
+        return render_template("accueil.html", series_stats=series_stats)
+    except Exception as e:
+        return f"Erreur lors du chargement de l'accueil : {e}"
 
 @app.route("/atelier_de_deck")
 def atelier_de_deck():
@@ -167,7 +176,7 @@ def voir_les_decks():
         _, donnees_json = charger_donnees()
         _, tous_les_decks = charger_decks()
 
-        appliquer_quantites_collection(donnees_json) # 🌟 Injection des quantités sauvées
+        appliquer_quantites_collection(donnees_json)
 
         for carte in donnees_json:
             formater_carte_image(carte)
@@ -182,7 +191,8 @@ def voir_cartes(mode):
         _, donnees_json = charger_donnees()
         _, tous_les_decks = charger_decks()
 
-        appliquer_quantites_collection(donnees_json) # 🌟 Injection des quantités sauvées
+        appliquer_quantites_collection(donnees_json)
+        appliquer_wishlist(donnees_json)
 
         liste_filtree = []
         for carte in donnees_json:
@@ -191,10 +201,15 @@ def voir_cartes(mode):
                 liste_filtree.append(carte)
             elif mode == "possedees" and carte["quantite"] > 0:
                 liste_filtree.append(carte)
+            elif mode == "wishlist" and carte.get("in_wishlist", False):
+                liste_filtree.append(carte)
 
         liste_filtree = trier_cartes(liste_filtree)
         total_prix = sum(c["quantite"] * c["prix"] for c in liste_filtree)
-        titre = "Toutes les Cartes" if mode == "toutes" else "Ma Collection (Cartes possédées)"
+
+        titre = "Toutes les Cartes"
+        if mode == "possedees": titre = "Ma Collection (Cartes possédées)"
+        elif mode == "wishlist": titre = "Ma Wishlist (Cartes recherchées)"
 
         return render_template("index.html", cartes_python=liste_filtree, total_prix=total_prix, nom_de_la_serie=titre, decks_sauvegardes=tous_les_decks)
     except Exception as e:
@@ -206,7 +221,7 @@ def voir_serie(nom_serie):
         _, donnees_json = charger_donnees()
         _, tous_les_decks = charger_decks()
 
-        appliquer_quantites_collection(donnees_json) # 🌟 Injection des quantités sauvées
+        appliquer_quantites_collection(donnees_json)
 
         liste_cartes_filtrees = []
         target_serie = nom_serie.upper()
@@ -290,7 +305,6 @@ def modifier_quantite():
         titre_contexte = donnees_recues.get("contexte", "")
         is_alt = donnees_recues.get("is_alternative", False)
 
-        # Extraction sécurisée avec le tuple (chemin, dict)
         chemin_collection, dict_collection = charger_collection()
 
         cle_carte = f"{id_carte}_alt" if is_alt else id_carte
@@ -372,8 +386,6 @@ def api_add_to_deck():
         is_leader = donnees.get("is_leader", False)
         is_alt = donnees.get("is_alternative", False)
 
-        # --- CORRECTION DE L'URL DE L'IMAGE POUR LE DECK ---
-        # On passe à range(1, 10) pour inclure _p7, _p8, _p9, etc.
         a_un_suffixe = any(f"_p{i}" in id_carte for i in range(1, 10))
 
         if a_un_suffixe:
@@ -382,7 +394,6 @@ def api_add_to_deck():
             img_url = f"/static/{id_carte}_p1.jpg"
         else:
             img_url = f"/static/{id_carte}.jpg"
-        # ---------------------------------------------------
 
         if is_leader:
             deck_memoire["leader"] = {
@@ -434,38 +445,27 @@ def api_get_all_saved_decks_json():
 @app.route("/maj-sp")
 def mettre_a_jour_sp():
     try:
-        import json
-        import os
-
-        # 1. On définit le chemin vers ton fichier JSON (adapte 'cartes.json' si nécessaire)
         nom_du_fichier_json = 'cartes.json'
-
         if not os.path.exists(nom_du_fichier_json):
-            return f"Erreur : Le fichier '{nom_du_fichier_json}' est introuvable à la racine."
+            return f"Erreur : Le fichier '{nom_du_fichier_json}' est introuvable."
 
-        # 2. Lecture du fichier
         with open(nom_du_fichier_json, 'r', encoding='utf-8') as f:
             donnees = json.load(f)
 
         compteur = 0
-        # 3. Modification de la carte SP cible
         for carte in donnees:
             if carte.get("card_number") == "OP05-093":
                 carte["card_number"] = "OP09-OP05-093"
-                carte["serie"] = "OP09"  # On la force dans OP09 pour la cibler
+                carte["serie"] = "OP09"
                 compteur += 1
 
-        # 4. Sauvegarde s'il y a eu un changement
         if compteur > 0:
             with open(nom_du_fichier_json, 'w', encoding='utf-8') as f:
                 json.dump(donnees, f, indent=4, ensure_ascii=False)
-            return f"Succès ! {compteur} carte(s) SP mise(s) à jour dans le JSON. Tu peux retourner sur ton classeur."
-        else:
-            return "La carte 'OP05-093' n'a pas été trouvée ou a déjà été modifiée."
-
+            return f"Succès ! {compteur} carte(s) mise(s) à jour."
+        return "Carte introuvable."
     except Exception as e:
-        return f"Une erreur est survenue lors de la mise à jour : {e}"
-
+        return f"Erreur : {e}"
 
 @app.route('/manifest.json')
 def manifest():
@@ -474,6 +474,26 @@ def manifest():
 @app.route('/sw.js')
 def service_worker():
     return app.send_static_file('sw.js')
+
+@app.route("/api/toggle_wishlist", methods=["POST"])
+def toggle_wishlist():
+    try:
+        donnees = request.get_json()
+        id_carte = donnees.get("card_number")
+
+        _, liste_wishlist = charger_wishlist()
+
+        if id_carte in liste_wishlist:
+            liste_wishlist.remove(id_carte)
+            statut = "retire"
+        else:
+            liste_wishlist.append(id_carte)
+            statut = "ajoute"
+
+        sauvegarder_wishlist(liste_wishlist)
+        return jsonify({"status": "success", "action": statut})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=False, port=5000)
