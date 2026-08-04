@@ -191,25 +191,37 @@
         }
     </script>
 
-    <!-- 📱 DÉTECTION ET ENVOI DE L'ID APPAREIL -->
-    <script>
-        function getDeviceId() {
-            let deviceId = localStorage.getItem('op_device_id');
-            if (!deviceId) {
-                deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-                localStorage.setItem('op_device_id', deviceId);
+   <!-- 📱 DÉTECTION ET ENVOI AUTOMATIQUE DE L'ID APPAREIL (VIA COOKIES) -->
+<script>
+    function getOrSetDeviceId() {
+        // 1. Cherche si le cookie existe déjà
+        let name = "op_device_id=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i].trim();
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
             }
-            return deviceId;
         }
+        
+        // 2. S'il n'existe pas, on en crée un nouveau (valable 1 an)
+        let newId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+        document.cookie = "op_device_id=" + newId + "; path=/; max-age=31536000; SameSite=Lax";
+        return newId;
+    }
 
-        // Intercepte automatiquement tous les fetchs pour ajouter l'ID
-        const originalFetch = window.fetch;
-        window.fetch = function(url, options = {}) {
-            options.headers = options.headers || {};
-            options.headers['X-Device-ID'] = getDeviceId();
-            return originalFetch(url, options);
-        };
-    </script>
+    // Exécute la création au chargement de la page
+    const currentDeviceId = getOrSetDeviceId();
+
+    // Garde l'intercepteur pour les requêtes Fetch au cas où
+    const originalFetch = window.fetch;
+    window.fetch = function(url, options = {}) {
+        options.headers = options.headers || {};
+        options.headers['X-Device-ID'] = currentDeviceId;
+        return originalFetch(url, options);
+    };
+</script>
 </head>
 <body>
 
