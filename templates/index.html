@@ -81,6 +81,27 @@
             text-align: center;
             border: 1px solid #333;
             transition: transform 0.2s, border-color 0.2s;
+            position: relative; /* 🌟 LIGNE À AJOUTER ICI */
+        }
+        
+        /* 🌟 NOUVEAU BLOC À AJOUTER JUSTE EN DESSOUS */
+        .wishlist-coeur {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.2s;
+        }
+        .wishlist-coeur:hover {
+            transform: scale(1.2);
         }
         .card:hover {
             transform: translateY(-5px);
@@ -225,8 +246,9 @@
 </head>
 <body>
 
-    <div class="nav-back-container">
+    <div class="nav-back-container" style="display: flex; gap: 10px;">
         <a href="/" class="btn-back">⬅️ Retour au Menu</a>
+        <a href="/cartes/wishlist" class="btn-back" style="background-color: #222; border-color: #ff4757; color: white;">❤️ Ma Wishlist</a>
     </div>
 
     <h1>🏴‍☠️ Mon Classeur Card Game — {{ nom_de_la_serie }}</h1>
@@ -290,7 +312,15 @@
              data-type="{{ carte.type|lower if carte.type else 'unknown' }}"
              data-price="{{ carte.prix or 0.0 }}">
             
+<!-- 🌟 NOUVEAU : Le bouton Coeur cliquable -->
+            <div class="wishlist-coeur" onclick="toggleWishlist('{{ carte.card_number }}', this)">
+                <span style="font-size: 18px; padding-top: 2px;">
+                    {% if carte.in_wishlist %}❤️{% else %}🤍{% endif %}
+                </span>
+            </div>
+
             <img src="{{ carte.image_url or '/static/images/placeholder.png' }}" alt="{{ carte.name }}" onclick="ouvrirZoom(this.src)">
+            
             
             <div class="card-title">
                 {{ carte.name }} 
@@ -545,6 +575,29 @@
             }
         })
         .catch(err => console.error("Erreur d'envoi à l'atelier de deck :", err));
+    }
+    // 🌟 NOUVELLE FONCTION POUR LA WISHLIST
+    function toggleWishlist(cardNumber, element) {
+        fetch('/api/toggle_wishlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ card_number: cardNumber })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const span = element.querySelector('span');
+                // Alterne l'icône entre le cœur rouge et le cœur blanc
+                if (data.action === 'ajoute') {
+                    span.textContent = '❤️';
+                } else {
+                    span.textContent = '🤍';
+                }
+            } else {
+                alert('Erreur: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Erreur API Wishlist:', error));
     }
     </script>
 </body>
