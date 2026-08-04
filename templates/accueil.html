@@ -12,7 +12,6 @@
             padding: 40px 10px;
         }
 
-        /* CONTENEUR GLOBAL EN 3 COLONNES */
         .page-container {
             display: flex;
             justify-content: center;
@@ -22,7 +21,6 @@
             margin: 0 auto;
         }
 
-        /* STYLE DES BANNIÈRES LATÉRALES */
         .banner-side {
             width: 200px;
             height: auto;
@@ -30,7 +28,6 @@
             flex-shrink: 0;
         }
 
-        /* CONTENU CENTRAL (Titre + Menu) */
         .central-content {
             flex: 1;
             max-width: 800px;
@@ -86,22 +83,40 @@
             transition: all 0.2s ease;
         }
 
-        .btn-main:hover {
-            background-color: #ffcc00;
-            color: #121212;
-            border-color: #ffcc00;
-            transform: translateY(-2px);
-        }
-
-        .btn-global { border-color: #ffcc00; color: #ffcc00; background: rgba(255, 204, 0, 0.05); }
-        .btn-global:hover { background: #ffcc00; color: #121212; }
-
         .btn-collection { border-color: #4caf50; color: #4caf50; background: rgba(76, 175, 80, 0.05); }
         .btn-collection:hover { background: #4caf50; color: #fff; }
 
         .btn-deck { border-color: #2196f3; color: #2196f3; background: rgba(33, 150, 243, 0.05); }
         .btn-deck:hover { background: #2196f3; color: #fff; }
 
+        .btn-global { border-color: #ffcc00; color: #ffcc00; background: rgba(255, 204, 0, 0.05); }
+        .btn-global:hover { background: #ffcc00; color: #121212; }
+
+        .btn-wishlist-style {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #1e1e1e;
+            color: #ff4757;
+            border: 2px solid #ff4757;
+            padding: 12px 24px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .btn-wishlist-style:hover {
+            background-color: #ff4757;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* GRILLE SÉRIES + BARRES DE PROGRESSION */
         .series-specific-menu {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -114,87 +129,96 @@
             color: #fff;
             text-decoration: none;
             text-align: center;
-            padding: 12px 5px;
+            padding: 10px 6px;
             font-weight: bold;
             font-size: 0.95rem;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #444;
-            transition: background 0.2s, border-color 0.2s;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .btn-serie:hover {
-            background: #ffcc00;
-            color: #121212;
+            background: #333;
             border-color: #ffcc00;
+            transform: translateY(-2px);
+        }
+
+        .progress-container {
+            margin-top: 6px;
+            width: 100%;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #444;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffcc00, #4caf50);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        .progress-percent {
+            color: #ffcc00;
         }
 
         @media (max-width: 1200px) {
-            .banner-side {
-                display: none;
-            }
+            .banner-side { display: none; }
         }
     </style>
 
-    <!-- Configuration PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#121212">
-
-    <!-- Compatibilité iOS / Safari -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OP Binder">
     <link rel="apple-touch-icon" href="/static/icon-192.png">
 
-    <!-- Enregistrement du Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js');
             });
         }
-    </script>
 
-   <!-- 📱 DÉTECTION ET ENVOI AUTOMATIQUE DE L'ID APPAREIL (VIA COOKIES) -->
-<script>
-    function getOrSetDeviceId() {
-        // 1. Cherche si le cookie existe déjà
-        let name = "op_device_id=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for(let i = 0; i < ca.length; i++) {
-            let c = ca[i].trim();
-            if (c.indexOf(name) === 0) {
-                return c.substring(name.length, c.length);
+        function getOrSetDeviceId() {
+            let name = "op_device_id=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i].trim();
+                if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
             }
+            let newId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+            document.cookie = "op_device_id=" + newId + "; path=/; max-age=31536000; SameSite=Lax";
+            return newId;
         }
-        
-        // 2. S'il n'existe pas, on en crée un nouveau (valable 1 an)
-        let newId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-        document.cookie = "op_device_id=" + newId + "; path=/; max-age=31536000; SameSite=Lax";
-        return newId;
-    }
 
-    // Exécute la création dès l'ouverture de la page
-    const currentDeviceId = getOrSetDeviceId();
-
-    // Conserve l'intercepteur fetch pour la compatibilité
-    const originalFetch = window.fetch;
-    window.fetch = function(url, options = {}) {
-        options.headers = options.headers || {};
-        options.headers['X-Device-ID'] = currentDeviceId;
-        return originalFetch(url, options);
-    };
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const indicator = document.getElementById('deck-status-indicator');
-        if (indicator) {
-            fetch('/api/get_deck_status')
-                .then(r => r.json())
-                .then(status => {})
-                .catch(err => console.error("Erreur d'état du deck:", err));
-        }
-    });
-</script>
+        const currentDeviceId = getOrSetDeviceId();
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options.headers = options.headers || {};
+            options.headers['X-Device-ID'] = currentDeviceId;
+            return originalFetch(url, options);
+        };
+    </script>
 </head>
 <body>
 
@@ -213,6 +237,7 @@
                 <div class="menu-section">
                     <h2>🃏 Ma Collection</h2>
                     <a href="/cartes/possedees" class="btn-main btn-collection">⭐ Voir Uniquement Mes Cartes Possédées</a>
+                    <a href="/cartes/wishlist" class="btn-wishlist-style">💕 Ma Wishlist</a>
                 </div>
 
                 <!-- 2. ATELIER DES DECKS -->
@@ -224,82 +249,99 @@
                 <!-- 3. PARCOURIR PAR SÉRIE -->
                 <div class="menu-section">
                     <h2>📦 Parcourir par Série</h2>
+                    
+                    <!-- MACRO JINJA POUR RECRÉER LA BARRE DE PROGRESSION SUR CHAQUE BOUTON -->
+                    {% macro serie_btn(code, label) %}
+                        {% set s = series_stats.get(code, {'possedees': 0, 'total': 0, 'pourcentage': 0}) if series_stats else {'possedees': 0, 'total': 0, 'pourcentage': 0} %}
+                        <a href="/serie/{{ code }}" class="btn-serie">
+                            <span>{{ label }}</span>
+                            <div class="progress-container">
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: {{ s.pourcentage }}%;"></div>
+                                </div>
+                                <div class="progress-info">
+                                    <span>{{ s.possedees }}/{{ s.total }}</span>
+                                    <span class="progress-percent">{{ s.pourcentage }}%</span>
+                                </div>
+                            </div>
+                        </a>
+                    {% endmacro %}
+
                     <div class="series-specific-menu">
-                        <a href="/serie/OP01" class="btn-serie">OP-01</a>
-                        <a href="/serie/OP02" class="btn-serie">OP-02</a>
-                        <a href="/serie/OP03" class="btn-serie">OP-03</a>
-                        <a href="/serie/OP04" class="btn-serie">OP-04</a>
-                        <a href="/serie/OP05" class="btn-serie">OP-05</a>
-                        <a href="/serie/OP06" class="btn-serie">OP-06</a>
-                        <a href="/serie/OP07" class="btn-serie">OP-07</a>
-                        <a href="/serie/OP08" class="btn-serie">OP-08</a>
-                        <a href="/serie/OP09" class="btn-serie">OP-09</a>
-                        <a href="/serie/OP10" class="btn-serie">OP-10</a>
-                        <a href="/serie/OP11" class="btn-serie">OP-11</a>
-                        <a href="/serie/OP12" class="btn-serie">OP-12</a>
-                        <a href="/serie/OP13" class="btn-serie">OP-13</a>
-                        <a href="/serie/OP14" class="btn-serie">OP-14</a>
-                        <a href="/serie/OP15" class="btn-serie">OP-15</a>
-                        <a href="/serie/OP16" class="btn-serie">OP-16</a>
+                        {{ serie_btn('OP01', 'OP-01') }}
+                        {{ serie_btn('OP02', 'OP-02') }}
+                        {{ serie_btn('OP03', 'OP-03') }}
+                        {{ serie_btn('OP04', 'OP-04') }}
+                        {{ serie_btn('OP05', 'OP-05') }}
+                        {{ serie_btn('OP06', 'OP-06') }}
+                        {{ serie_btn('OP07', 'OP-07') }}
+                        {{ serie_btn('OP08', 'OP-08') }}
+                        {{ serie_btn('OP09', 'OP-09') }}
+                        {{ serie_btn('OP10', 'OP-10') }}
+                        {{ serie_btn('OP11', 'OP-11') }}
+                        {{ serie_btn('OP12', 'OP-12') }}
+                        {{ serie_btn('OP13', 'OP-13') }}
+                        {{ serie_btn('OP14', 'OP-14') }}
+                        {{ serie_btn('OP15', 'OP-15') }}
+                        {{ serie_btn('OP16', 'OP-16') }}
 
                         <div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
                             <hr style="border: 0; border-top: 1px solid #3a3a3a;">
                         </div>
 
-                        <a href="/serie/EB01" class="btn-serie">EB-01</a>
-                        <a href="/serie/EB02" class="btn-serie">EB-02</a>
-                        <a href="/serie/EB03" class="btn-serie">EB-03</a>
+                        {{ serie_btn('EB01', 'EB-01') }}
+                        {{ serie_btn('EB02', 'EB-02') }}
+                        {{ serie_btn('EB03', 'EB-03') }}
 
                         <div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
                             <hr style="border: 0; border-top: 1px solid #3a3a3a;">
                         </div>
 
-                        <a href="/serie/PRB01" class="btn-serie">PRB01</a>
-                        <a href="/serie/PRB02" class="btn-serie">PRB02</a>
+                        {{ serie_btn('PRB01', 'PRB01') }}
+                        {{ serie_btn('PRB02', 'PRB02') }}
 
                         <div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
                             <hr style="border: 0; border-top: 1px solid #3a3a3a;">
                         </div>
 
-                        <a href="/serie/ST01" class="btn-serie">ST01</a>
-                        <a href="/serie/ST02" class="btn-serie">ST02</a>
-                        <a href="/serie/ST03" class="btn-serie">ST03</a>
-                        <a href="/serie/ST04" class="btn-serie">ST04</a>
-                        <a href="/serie/ST05" class="btn-serie">ST05</a>
-                        <a href="/serie/ST06" class="btn-serie">ST06</a>
-                        <a href="/serie/ST07" class="btn-serie">ST07</a>
-                        <a href="/serie/ST08" class="btn-serie">ST08</a>
-                        <a href="/serie/ST09" class="btn-serie">ST09</a>
-                        <a href="/serie/ST10" class="btn-serie">ST10</a>
-                        <a href="/serie/ST11" class="btn-serie">ST11</a>
-                        <a href="/serie/ST12" class="btn-serie">ST12</a>
-                        <a href="/serie/ST13" class="btn-serie">ST13</a>
-                        <a href="/serie/ST14" class="btn-serie">ST14</a>
-                        <a href="/serie/ST15" class="btn-serie">ST15</a>
-                        <a href="/serie/ST16" class="btn-serie">ST16</a>
-                        <a href="/serie/ST17" class="btn-serie">ST17</a>
-                        <a href="/serie/ST18" class="btn-serie">ST18</a>
-                        <a href="/serie/ST19" class="btn-serie">ST19</a>
-                        <a href="/serie/ST20" class="btn-serie">ST20</a>
-                        <a href="/serie/ST21" class="btn-serie">ST21</a>
-                        <a href="/serie/ST22" class="btn-serie">ST22</a>
-                        <a href="/serie/ST23" class="btn-serie">ST23</a>
-                        <a href="/serie/ST24" class="btn-serie">ST24</a>
-                        <a href="/serie/ST25" class="btn-serie">ST25</a>
-                        <a href="/serie/ST26" class="btn-serie">ST26</a>
-                        <a href="/serie/ST27" class="btn-serie">ST27</a>
-                        <a href="/serie/ST28" class="btn-serie">ST28</a>
-                        <a href="/serie/ST29" class="btn-serie">ST29</a>
-                        <a href="/serie/ST30" class="btn-serie">ST30</a>
+                        {{ serie_btn('ST01', 'ST01') }}
+                        {{ serie_btn('ST02', 'ST02') }}
+                        {{ serie_btn('ST03', 'ST03') }}
+                        {{ serie_btn('ST04', 'ST04') }}
+                        {{ serie_btn('ST05', 'ST05') }}
+                        {{ serie_btn('ST06', 'ST06') }}
+                        {{ serie_btn('ST07', 'ST07') }}
+                        {{ serie_btn('ST08', 'ST08') }}
+                        {{ serie_btn('ST09', 'ST09') }}
+                        {{ serie_btn('ST10', 'ST10') }}
+                        {{ serie_btn('ST11', 'ST11') }}
+                        {{ serie_btn('ST12', 'ST12') }}
+                        {{ serie_btn('ST13', 'ST13') }}
+                        {{ serie_btn('ST14', 'ST14') }}
+                        {{ serie_btn('ST15', 'ST15') }}
+                        {{ serie_btn('ST16', 'ST16') }}
+                        {{ serie_btn('ST17', 'ST17') }}
+                        {{ serie_btn('ST18', 'ST18') }}
+                        {{ serie_btn('ST19', 'ST19') }}
+                        {{ serie_btn('ST20', 'ST20') }}
+                        {{ serie_btn('ST21', 'ST21') }}
+                        {{ serie_btn('ST22', 'ST22') }}
+                        {{ serie_btn('ST23', 'ST23') }}
+                        {{ serie_btn('ST24', 'ST24') }}
+                        {{ serie_btn('ST25', 'ST25') }}
+                        {{ serie_btn('ST26', 'ST26') }}
+                        {{ serie_btn('ST27', 'ST27') }}
+                        {{ serie_btn('ST28', 'ST28') }}
+                        {{ serie_btn('ST29', 'ST29') }}
+                        {{ serie_btn('ST30', 'ST30') }}
 
                         <div style="width: 100%; grid-column: 1 / -1; margin: 10px 0;">
                             <hr style="border: 0; border-top: 1px solid #3a3a3a;">
                         </div>
 
-                        <a href="/serie/P" class="btn-serie">Promo</a>
-                        <a href="/serie/D" class="btn-serie">Demo Deck</a>
-                        <a href="/serie/LD" class="btn-serie">Learn Deck</a>
-
+                        {{ serie_btn('P', 'Promo') }}
+                        {{ serie_btn('D', 'Demo Deck') }}
+                        {{ serie_btn('LD', 'Learn Deck') }}
                     </div>
                 </div>
 
