@@ -1,0 +1,11 @@
+{
+    "nom": null,
+    "deck": {
+        "leader": {
+            "card_number": "OP13-002_p7",
+            "name": "Portgas.D.Ace",
+            "image_url": "/static/OP13-002_p7.jpg"
+        },
+        "cards": []
+    }
+}
