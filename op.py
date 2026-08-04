@@ -23,20 +23,16 @@ def lire_json_appareil(prefixe_fichier, valeur_par_defaut):
     fichier = get_device_json_path(prefixe_fichier)
     if os.path.exists(fichier):
         with open(fichier, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            try:
+                return json.load(f)
+            except:
+                return valeur_par_defaut
     return valeur_par_defaut
 
 def sauvegarder_json_appareil(prefixe_fichier, donnees):
     fichier = get_device_json_path(prefixe_fichier)
     with open(fichier, 'w', encoding='utf-8') as f:
         json.dump(donnees, f, ensure_ascii=False, indent=4)
-
-# 🎯 VARIABLES GLOBALES CENTRALISÉES (Sans doublons dans le reste du code)
-DECK_ACTUEL_NOM = None  # Nom du deck actif globalement
-DECK_ACTUEL_MEMOIRE = {
-    "leader": None,
-    "cards": []
-}
 
 def charger_donnees():
     dossier_actuel = os.path.dirname(os.path.abspath(__file__))
@@ -45,17 +41,20 @@ def charger_donnees():
         return chemin_json, json.load(f)
 
 def charger_decks():
-    dossier_actuel = os.path.dirname(os.path.abspath(__file__))
-    chemin_decks = os.path.join(dossier_actuel, "decks.json")
-    if os.path.exists(chemin_decks):
-        with open(chemin_decks, "r", encoding="utf-8") as f:
-            try: return chemin_decks, json.load(f)
-            except: return chemin_decks, {}
-    return chemin_decks, {}
+    # Decks sauvegardés sur CET appareil
+    return get_device_json_path('decks'), lire_json_appareil('decks', {})
 
 def charger_collection():
-    # Renvoie un tuple (chemin, dictionnaire) pour rester cohérent avec les autres fonctions
+    # Renvoie un tuple (chemin, dictionnaire) pour rester cohérent
     return get_device_json_path('collection'), lire_json_appareil('collection', {})
+
+def charger_deck_actif_appareil():
+    # Lit le deck actuellement en cours d'édition pour CET appareil
+    return lire_json_appareil('deck_actif', {"nom": None, "deck": {"leader": None, "cards": []}})
+
+def sauvegarder_deck_actif_appareil(nom, deck):
+    # Enregistre l'état de l'atelier pour CET appareil
+    sauvegarder_json_appareil('deck_actif', {"nom": nom, "deck": deck})
 
 def appliquer_quantites_collection(donnees_json):
     """Injecte à la volée les quantités possédées depuis la collection de l'appareil"""
@@ -131,18 +130,22 @@ def formater_carte_image(carte):
     carte["couleur_propre"] = couleur_propre
     return carte
 
-def calculer_prix_deck_actuel():
-    """Calcul en direct basé sur les prix de cartes.json pour éviter les désynchronisations"""
+def calculer_prix_deck_actuel(deck_memoire=None):
+    """Calcul en direct basé sur les prix de cartes.json pour l'appareil en cours"""
     try:
+        if deck_memoire is None:
+            etat = charger_deck_actif_appareil()
+            deck_memoire = etat["deck"]
+
         _, donnees_json = charger_donnees()
         dict_prix = {c["card_number"]: float(c.get("prix", 0.0)) for c in donnees_json}
 
         prix_total = 0.0
-        if DECK_ACTUEL_MEMOIRE.get("leader"):
-            id_leader = DECK_ACTUEL_MEMOIRE["leader"]["card_number"]
+        if deck_memoire.get("leader"):
+            id_leader = deck_memoire["leader"]["card_number"]
             prix_total += dict_prix.get(id_leader, 0.0)
 
-        for c in DECK_ACTUEL_MEMOIRE.get("cards", []):
+        for c in deck_memoire.get("cards", []):
             prix_unitaire = dict_prix.get(c["card_number"], 0.0)
             prix_total += prix_unitaire * c["quantite_deck"]
 
@@ -225,33 +228,39 @@ def voir_serie(nom_serie):
 
 @app.route("/api/get_deck", methods=["GET"])
 def api_get_deck():
-    return jsonify(DECK_ACTUEL_MEMOIRE)
+    etat = charger_deck_actif_appareil()
+    return jsonify(etat["deck"])
 
 @app.route("/api/remove_from_deck", methods=["POST"])
 def api_remove_from_deck():
     try:
+        etat = charger_deck_actif_appareil()
+        deck_memoire = etat["deck"]
+        deck_nom = etat["nom"]
+
         donnees = request.get_json()
         id_carte = donnees.get("card_number")
         is_leader = donnees.get("is_leader", False)
 
         if is_leader:
-            DECK_ACTUEL_MEMOIRE["leader"] = None
+            deck_memoire["leader"] = None
         else:
-            for card in DECK_ACTUEL_MEMOIRE["cards"]:
+            for card in deck_memoire["cards"]:
                 if card["card_number"] == id_carte:
                     if card["quantite_deck"] > 1:
                         card["quantite_deck"] -= 1
                     else:
-                        DECK_ACTUEL_MEMOIRE["cards"].remove(card)
+                        deck_memoire["cards"].remove(card)
                     break
 
-        if DECK_ACTUEL_NOM:
-            chemin_decks, tous_les_decks = charger_decks()
-            tous_les_decks[DECK_ACTUEL_NOM] = DECK_ACTUEL_MEMOIRE
-            with open(chemin_decks, "w", encoding="utf-8") as f:
-                json.dump(tous_les_decks, f, indent=4, ensure_ascii=False)
+        sauvegarder_deck_actif_appareil(deck_nom, deck_memoire)
 
-        return jsonify({"status": "success", "prix_total_deck": calculer_prix_deck_actuel()})
+        if deck_nom:
+            _, tous_les_decks = charger_decks()
+            tous_les_decks[deck_nom] = deck_memoire
+            sauvegarder_json_appareil('decks', tous_les_decks)
+
+        return jsonify({"status": "success", "prix_total_deck": calculer_prix_deck_actuel(deck_memoire)})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
@@ -261,10 +270,13 @@ def sauvegarder_deck():
         donnees = request.get_json()
         nom_deck = donnees.get("nom")
         structure_deck = donnees.get("deck")
-        chemin_decks, tous_les_decks = charger_decks()
+
+        _, tous_les_decks = charger_decks()
         tous_les_decks[nom_deck] = structure_deck
-        with open(chemin_decks, "w", encoding="utf-8") as f:
-            json.dump(tous_les_decks, f, indent=4, ensure_ascii=False)
+
+        sauvegarder_json_appareil('decks', tous_les_decks)
+        sauvegarder_deck_actif_appareil(nom_deck, structure_deck)
+
         return jsonify({"status": "success", "message": f"💾 Deck '{nom_deck}' enregistré avec succès !"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -311,12 +323,16 @@ def supprimer_deck():
     try:
         donnees = request.get_json()
         nom_deck_a_supprimer = donnees.get("nom")
-        chemin_decks, tous_les_decks = charger_decks()
+        _, tous_les_decks = charger_decks()
 
         if nom_deck_a_supprimer in tous_les_decks:
             del tous_les_decks[nom_deck_a_supprimer]
-            with open(chemin_decks, "w", encoding="utf-8") as f:
-                json.dump(tous_les_decks, f, indent=4, ensure_ascii=False)
+            sauvegarder_json_appareil('decks', tous_les_decks)
+
+            etat = charger_deck_actif_appareil()
+            if etat["nom"] == nom_deck_a_supprimer:
+                sauvegarder_deck_actif_appareil(None, {"leader": None, "cards": []})
+
             return jsonify({"status": "success", "message": f"🗑️ Le deck '{nom_deck_a_supprimer}' a bien été supprimé !"})
         else:
             return jsonify({"status": "error", "message": "Deck introuvable."}), 404
@@ -326,21 +342,19 @@ def supprimer_deck():
 @app.route("/api/load_specific_deck", methods=["POST"])
 def api_load_specific_deck():
     try:
-        global DECK_ACTUEL_MEMOIRE, DECK_ACTUEL_NOM
         donnees = request.get_json()
         nom_deck = donnees.get("nom")
 
         if not nom_deck:
-            DECK_ACTUEL_NOM = None
-            DECK_ACTUEL_MEMOIRE = {"leader": None, "cards": []}
+            sauvegarder_deck_actif_appareil(None, {"leader": None, "cards": []})
             return jsonify({"status": "success", "nom_deck": None, "prix_total_deck": 0.0})
 
-        chemin_decks, tous_les_decks = charger_decks()
+        _, tous_les_decks = charger_decks()
 
         if nom_deck in tous_les_decks:
-            DECK_ACTUEL_MEMOIRE = tous_les_decks[nom_deck]
-            DECK_ACTUEL_NOM = nom_deck
-            return jsonify({"status": "success", "nom_deck": nom_deck, "prix_total_deck": calculer_prix_deck_actuel()})
+            deck_memoire = tous_les_decks[nom_deck]
+            sauvegarder_deck_actif_appareil(nom_deck, deck_memoire)
+            return jsonify({"status": "success", "nom_deck": nom_deck, "prix_total_deck": calculer_prix_deck_actuel(deck_memoire)})
         return jsonify({"status": "error", "message": "Deck introuvable"}), 404
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -348,7 +362,10 @@ def api_load_specific_deck():
 @app.route("/api/add_to_deck", methods=["POST"])
 def api_add_to_deck():
     try:
-        global DECK_ACTUEL_MEMOIRE, DECK_ACTUEL_NOM
+        etat = charger_deck_actif_appareil()
+        deck_memoire = etat["deck"]
+        deck_nom = etat["nom"]
+
         donnees = request.get_json()
         id_carte = donnees.get("card_number")
         nom_carte = donnees.get("name")
@@ -368,13 +385,13 @@ def api_add_to_deck():
         # ---------------------------------------------------
 
         if is_leader:
-            DECK_ACTUEL_MEMOIRE["leader"] = {
+            deck_memoire["leader"] = {
                 "card_number": id_carte,
                 "name": nom_carte,
                 "image_url": img_url
             }
         else:
-            carte_existante = next((c for c in DECK_ACTUEL_MEMOIRE["cards"] if c["card_number"] == id_carte), None)
+            carte_existante = next((c for c in deck_memoire["cards"] if c["card_number"] == id_carte), None)
 
             if carte_existante:
                 if carte_existante["quantite_deck"] < 4:
@@ -382,37 +399,37 @@ def api_add_to_deck():
                 else:
                     return jsonify({"status": "error", "message": "Limite de 4 exemplaires atteinte !"})
             else:
-                DECK_ACTUEL_MEMOIRE["cards"].append({
+                deck_memoire["cards"].append({
                     "card_number": id_carte,
                     "name": nom_carte,
                     "image_url": img_url,
                     "quantite_deck": 1
                 })
 
-        if DECK_ACTUEL_NOM:
-            chemin_decks, tous_les_decks = charger_decks()
-            tous_les_decks[DECK_ACTUEL_NOM] = DECK_ACTUEL_MEMOIRE
-            with open(chemin_decks, "w", encoding="utf-8") as f:
-                json.dump(tous_les_decks, f, indent=4, ensure_ascii=False)
+        sauvegarder_deck_actif_appareil(deck_nom, deck_memoire)
 
-        return jsonify({"status": "success", "deck_actif": DECK_ACTUEL_NOM, "prix_total_deck": calculer_prix_deck_actuel()})
+        if deck_nom:
+            _, tous_les_decks = charger_decks()
+            tous_les_decks[deck_nom] = deck_memoire
+            sauvegarder_json_appareil('decks', tous_les_decks)
+
+        return jsonify({"status": "success", "deck_actif": deck_nom, "prix_total_deck": calculer_prix_deck_actuel(deck_memoire)})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/api/get_deck_status", methods=["GET"])
 def api_get_deck_status():
+    etat = charger_deck_actif_appareil()
     return jsonify({
-        "nom_deck": DECK_ACTUEL_NOM,
-        "deck": DECK_ACTUEL_MEMOIRE,
-        "prix_total_deck": calculer_prix_deck_actuel()
+        "nom_deck": etat["nom"],
+        "deck": etat["deck"],
+        "prix_total_deck": calculer_prix_deck_actuel(etat["deck"])
     })
 
 @app.route("/api/get_all_saved_deks_json")
 def api_get_all_saved_decks_json():
     _, tous_les_decks = charger_decks()
     return jsonify(tous_les_decks)
-
-# ... Tout le reste de ton code app.py (tes fonctions, tes routes, etc.) ...
 
 @app.route("/maj-sp")
 def mettre_a_jour_sp():
