@@ -5,7 +5,17 @@ from flask import Flask, jsonify, render_template, request
 app = Flask(__name__)
 
 def get_device_json_path(prefixe_fichier):
-    device_id = request.headers.get('X-Device-ID', 'defaut')
+    # 1. Lit en priorité le cookie généré par le navigateur
+    device_id = request.cookies.get('op_device_id')
+
+    # 2. Sinon, lit l'en-tête HTTP (requêtes fetch/JS)
+    if not device_id:
+        device_id = request.headers.get('X-Device-ID')
+
+    # 3. Valeur par défaut si rien n'est trouvé
+    if not device_id:
+        device_id = 'defaut'
+
     os.makedirs('donnees_utilisateurs', exist_ok=True)
     return f"donnees_utilisateurs/{prefixe_fichier}_{device_id}.json"
 
@@ -44,30 +54,8 @@ def charger_decks():
     return chemin_decks, {}
 
 def charger_collection():
-    dossier_actuel = os.path.dirname(os.path.abspath(__file__))
-    chemin_collection = os.path.join(dossier_actuel, "collection.json")
-    if os.path.exists(chemin_collection):
-        with open(chemin_collection, "r", encoding="utf-8") as f:
-            try: return chemin_collection, json.load(f)
-            except: return chemin_collection, {}
-
-    # 💡 MIGRATION AUTOMATIQUE : Si le fichier n'existe pas encore, on récupère
-    # tes quantités actuelles depuis cartes.json pour que tu ne perdes rien !
-    dict_migration = {}
-    try:
-        chemin_json = os.path.join(dossier_actuel, "cartes.json")
-        if os.path.exists(chemin_json):
-            with open(chemin_json, "r", encoding="utf-8") as f:
-                for c in json.load(f):
-                    q = c.get("quantite", 0)
-                    if q > 0:
-                        cle = f"{c['card_number']}_alt" if c.get("is_alternative") else c['card_number']
-                        dict_migration[cle] = q
-        with open(chemin_collection, "w", encoding="utf-8") as f:
-            json.dump(dict_migration, f, indent=4, ensure_ascii=False)
-    except:
-        pass
-    return chemin_collection, dict_migration
+    # Charge automatiquement le fichier collection_<device_id>.json propre à l'appareil
+    return lire_json_appareil('collection', {})
 
 def appliquer_quantites_collection(donnees_json):
     """Injecte à la volée les quantités possédées depuis collection.json"""
@@ -290,13 +278,13 @@ def modifier_quantite():
         titre_contexte = donnees_recues.get("contexte", "")
         is_alt = donnees_recues.get("is_alternative", False)
 
-        # 1. On charge le fichier de collection indépendant
-        chemin_collection, dict_collection = charger_collection()
+        # 1. On charge la collection de cet appareil
+        dict_collection = charger_collection()
 
         cle_carte = f"{id_carte}_alt" if is_alt else id_carte
         quantite_actuelle = dict_collection.get(cle_carte, 0)
 
-        # 2. Application du changement de quantité
+        # 2. Application du changement
         if action == "plus":
             quantite_actuelle += 1
         elif action == "moins" and quantite_actuelle > 0:
@@ -304,20 +292,19 @@ def modifier_quantite():
 
         dict_collection[cle_carte] = quantite_actuelle
 
-        # 3. Sauvegarde immédiate dans collection.json
-        with open(chemin_collection, "w", encoding="utf-8") as f:
-            json.dump(dict_collection, f, indent=4, ensure_ascii=False)
+        # 3. Sauvegarde dans le fichier propre à l'appareil
+        sauvegarder_json_appareil('collection', dict_collection)
 
-        # 4. Recalcul des totaux pour l'affichage de l'interface
+        # 4. Recalcul du total
         _, donnees_json = charger_donnees()
         appliquer_quantites_collection(donnees_json)
 
-        valeur_totale = 0.0
-        for carte in donnees_json:
-            if titre_contexte in ["Toutes les Cartes", "Ma Collection (Cartes possédées)"]:
-                valeur_totale += carte["quantite"] * carte.get("prix", 0.0)
-            elif carte.get("serie", "").upper() == titre_contexte.upper():
-                valeur_totale += carte["quantite"] * carte.get("prix", 0.0)
+        valeur_totale = sum(
+            carte["quantite"] * carte.get("prix", 0.0)
+            for carte in donnees_json
+            if titre_contexte in ["Toutes les Cartes", "Ma Collection (Cartes possédées)"]
+            or carte.get("serie", "").upper() == titre_contexte.upper()
+        )
 
         return jsonify({"status": "success", "nouvelle_quantite": quantite_actuelle, "nouveau_total_prix": round(valeur_totale, 2)})
     except Exception as e:
