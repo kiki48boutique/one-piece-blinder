@@ -154,37 +154,47 @@
         }
     </script>
 
-    <!-- 📱 DÉTECTION ET ENVOI DE L'ID APPAREIL -->
-    <script>
-        function getDeviceId() {
-            let deviceId = localStorage.getItem('op_device_id');
-            if (!deviceId) {
-                deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-                localStorage.setItem('op_device_id', deviceId);
+   <!-- 📱 DÉTECTION ET ENVOI AUTOMATIQUE DE L'ID APPAREIL (VIA COOKIES) -->
+<script>
+    function getOrSetDeviceId() {
+        // 1. Cherche si le cookie existe déjà
+        let name = "op_device_id=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i].trim();
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
             }
-            return deviceId;
         }
+        
+        // 2. S'il n'existe pas, on en crée un nouveau (valable 1 an)
+        let newId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+        document.cookie = "op_device_id=" + newId + "; path=/; max-age=31536000; SameSite=Lax";
+        return newId;
+    }
 
-        // Intercepte tous les fetchs pour ajouter automatiquement l'ID d'appareil
-        const originalFetch = window.fetch;
-        window.fetch = function(url, options = {}) {
-            options.headers = options.headers || {};
-            options.headers['X-Device-ID'] = getDeviceId();
-            return originalFetch(url, options);
-        };
+    // Exécute la création dès l'ouverture de la page
+    const currentDeviceId = getOrSetDeviceId();
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const indicator = document.getElementById('deck-status-indicator');
-            if (indicator) {
-                fetch('/api/get_deck_status')
-                    .then(r => r.json())
-                    .then(status => {
-                        // Traitement du statut si nécessaire
-                    })
-                    .catch(err => console.error("Erreur d'état du deck:", err));
-            }
-        });
-    </script>
+    // Conserve l'intercepteur fetch pour la compatibilité
+    const originalFetch = window.fetch;
+    window.fetch = function(url, options = {}) {
+        options.headers = options.headers || {};
+        options.headers['X-Device-ID'] = currentDeviceId;
+        return originalFetch(url, options);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const indicator = document.getElementById('deck-status-indicator');
+        if (indicator) {
+            fetch('/api/get_deck_status')
+                .then(r => r.json())
+                .then(status => {})
+                .catch(err => console.error("Erreur d'état du deck:", err));
+        }
+    });
+</script>
 </head>
 <body>
 
