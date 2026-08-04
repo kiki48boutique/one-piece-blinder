@@ -54,11 +54,11 @@ def charger_decks():
     return chemin_decks, {}
 
 def charger_collection():
-    # Charge automatiquement le fichier collection_<device_id>.json propre à l'appareil
-    return lire_json_appareil('collection', {})
+    # Renvoie un tuple (chemin, dictionnaire) pour rester cohérent avec les autres fonctions
+    return get_device_json_path('collection'), lire_json_appareil('collection', {})
 
 def appliquer_quantites_collection(donnees_json):
-    """Injecte à la volée les quantités possédées depuis collection.json"""
+    """Injecte à la volée les quantités possédées depuis la collection de l'appareil"""
     _, dict_collection = charger_collection()
     for carte in donnees_json:
         id_carte = carte.get("card_number", "")
@@ -278,24 +278,20 @@ def modifier_quantite():
         titre_contexte = donnees_recues.get("contexte", "")
         is_alt = donnees_recues.get("is_alternative", False)
 
-        # 1. On charge la collection de cet appareil
-        dict_collection = charger_collection()
+        # Extraction sécurisée avec le tuple (chemin, dict)
+        chemin_collection, dict_collection = charger_collection()
 
         cle_carte = f"{id_carte}_alt" if is_alt else id_carte
         quantite_actuelle = dict_collection.get(cle_carte, 0)
 
-        # 2. Application du changement
         if action == "plus":
             quantite_actuelle += 1
         elif action == "moins" and quantite_actuelle > 0:
             quantite_actuelle -= 1
 
         dict_collection[cle_carte] = quantite_actuelle
-
-        # 3. Sauvegarde dans le fichier propre à l'appareil
         sauvegarder_json_appareil('collection', dict_collection)
 
-        # 4. Recalcul du total
         _, donnees_json = charger_donnees()
         appliquer_quantites_collection(donnees_json)
 
