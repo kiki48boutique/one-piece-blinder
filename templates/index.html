@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Mon Classeur One Piece Card Game</title>
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,6 +13,7 @@
             padding: 20px;
             padding-top: 80px;
         }
+
         h1 {
             text-align: center;
             color: #ffcc00;
@@ -25,6 +27,7 @@
             left: 20px;
             z-index: 999;
         }
+
         .btn-back {
             background-color: #333;
             color: #ffcc00;
@@ -40,6 +43,7 @@
             text-decoration: none;
             transition: background 0.2s, transform 0.1s;
         }
+
         .btn-back:hover {
             background-color: #ffcc00;
             color: #121212;
@@ -57,7 +61,9 @@
             border-radius: 8px;
             border: 1px solid #333;
         }
-        .filter-container input, .filter-container select {
+
+        .filter-container input, 
+        .filter-container select {
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #444;
@@ -65,8 +71,11 @@
             color: #fff;
             font-size: 1rem;
         }
-        .filter-container input { width: 250px; }
-        
+
+        .filter-container input { 
+            width: 250px; 
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -74,6 +83,7 @@
             max-width: 1400px;
             margin: 0 auto;
         }
+
         .card {
             background: #1e1e1e;
             border-radius: 10px;
@@ -81,10 +91,14 @@
             text-align: center;
             border: 1px solid #333;
             transition: transform 0.2s, border-color 0.2s;
-            position: relative; /* 🌟 LIGNE À AJOUTER ICI */
+            position: relative;
         }
-        
-        /* 🌟 NOUVEAU BLOC À AJOUTER JUSTE EN DESSOUS */
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #ffcc00;
+        }
+
         .wishlist-coeur {
             position: absolute;
             top: 15px;
@@ -100,13 +114,11 @@
             z-index: 10;
             transition: transform 0.2s;
         }
+
         .wishlist-coeur:hover {
             transform: scale(1.2);
         }
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: #ffcc00;
-        }
+
         .card img {
             width: 100%;
             border-radius: 5px;
@@ -115,6 +127,7 @@
             object-fit: cover;
             background-color: #2a2a2a;
         }
+
         .card-title {
             font-weight: bold;
             font-size: 1.05rem;
@@ -125,21 +138,40 @@
             align-items: center;
             justify-content: center;
         }
+
         .card-id {
             color: #aaa;
             font-size: 0.85rem;
             margin-top: 2px;
         }
+
         .card-price {
             font-weight: bold;
-            margin: 5px 0;
+            margin: 8px 0;
+            font-size: 1.1rem;
         }
-        .prix-dispo {
-            color: #4caf50; /* Vert si en stock */
+
+        /* COULEURS DES PRIX */
+        .prix-neutre { color: #ffffff !important; }  /* Stable -> Blanc neutre */
+        .prix-hausse { color: #2ecc71 !important; }  /* Hausse -> Vert */
+        .prix-baisse { color: #ff4757 !important; }  /* Baisse -> Rouge */
+        .prix-indispo { color: #888888 !important; } /* Non dispo -> Gris */
+
+        /* BADGES VARIATION */
+        .badge-variation {
+            font-size: 0.8rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 6px;
+            display: inline-block;
+            vertical-align: middle;
         }
-        .prix-indispo {
-            color: #9e9e9e; /* Gris si estimé/hors stock */
-        }
+
+        .badge-hausse { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.4); }
+        .badge-baisse { background: rgba(255, 71, 87, 0.2); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.4); }
+        .badge-neutre { background: rgba(255, 255, 255, 0.1); color: #aaaaaa; border: 1px solid rgba(255, 255, 255, 0.2); }
+
         .controls {
             display: flex;
             justify-content: center;
@@ -147,6 +179,7 @@
             gap: 15px;
             margin-top: 10px;
         }
+
         .btn {
             background-color: #ffcc00;
             color: #000;
@@ -157,13 +190,16 @@
             cursor: pointer;
             font-size: 1.1rem;
         }
+
         .btn:hover { background-color: #e6b800; }
+
         .qty {
             font-size: 1.2rem;
             font-weight: bold;
             min-width: 25px;
             display: inline-block;
         }
+
         .btn-deck {
             background-color: #2196f3;
             color: white;
@@ -175,6 +211,7 @@
             width: 100%;
             font-weight: bold;
         }
+
         .btn-deck:hover { background-color: #0b7dda; }
 
         .modal {
@@ -186,6 +223,7 @@
             align-items: center;
             z-index: 1000;
         }
+
         .modal img {
             max-width: 90%;
             max-height: 85vh;
@@ -212,37 +250,33 @@
         }
     </script>
 
-   <!-- 📱 DÉTECTION ET ENVOI AUTOMATIQUE DE L'ID APPAREIL (VIA COOKIES) -->
-<script>
-    function getOrSetDeviceId() {
-        // 1. Cherche si le cookie existe déjà
-        let name = "op_device_id=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for(let i = 0; i < ca.length; i++) {
-            let c = ca[i].trim();
-            if (c.indexOf(name) === 0) {
-                return c.substring(name.length, c.length);
+    <!-- DÉTECTION ET ENVOI AUTOMATIQUE DE L'ID APPAREIL (VIA COOKIES) -->
+    <script>
+        function getOrSetDeviceId() {
+            let name = "op_device_id=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i].trim();
+                if (c.indexOf(name) === 0) {
+                    return c.substring(name.length, c.length);
+                }
             }
+            
+            let newId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+            document.cookie = "op_device_id=" + newId + "; path=/; max-age=31536000; SameSite=Lax";
+            return newId;
         }
-        
-        // 2. S'il n'existe pas, on en crée un nouveau (valable 1 an)
-        let newId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-        document.cookie = "op_device_id=" + newId + "; path=/; max-age=31536000; SameSite=Lax";
-        return newId;
-    }
 
-    // Exécute la création au chargement de la page
-    const currentDeviceId = getOrSetDeviceId();
+        const currentDeviceId = getOrSetDeviceId();
 
-    // Garde l'intercepteur pour les requêtes Fetch au cas où
-    const originalFetch = window.fetch;
-    window.fetch = function(url, options = {}) {
-        options.headers = options.headers || {};
-        options.headers['X-Device-ID'] = currentDeviceId;
-        return originalFetch(url, options);
-    };
-</script>
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options.headers = options.headers || {};
+            options.headers['X-Device-ID'] = currentDeviceId;
+            return originalFetch(url, options);
+        };
+    </script>
 </head>
 <body>
 
@@ -304,15 +338,21 @@
 
     <div class="grid" id="main-grid">
         {% for carte in cartes_python %}
+        
+        {# VÉRIFICATION DISPONIBILITÉ ET PRIX #}
+        {% set est_dispo = carte.disponible if carte.disponible is defined else true %}
+        {% set pct = carte.pourcentage_prix if carte.pourcentage_prix is defined else (carte.variation if carte.variation is defined else 0.0) %}
+        {% set tend = carte.tendance_prix if carte.tendance_prix is defined else ('hausse' if pct > 0 else ('baisse' if pct < 0 else 'stable')) %}
+        {% set couleur_carte = carte.color if carte.color is defined else (carte.couleur_propre if carte.couleur_propre is defined else '') %}
+
         <div class="card" 
              data-id="{{ carte.card_number }}"
              data-name="{{ carte.name }}" 
-             data-color="{{ carte.couleur_propre }}"
+             data-color="{{ couleur_carte }}"
              data-rarity="{{ carte.rarity|lower if carte.rarity else 'unknown' }}"
              data-type="{{ carte.type|lower if carte.type else 'unknown' }}"
              data-price="{{ carte.prix or 0.0 }}">
             
-<!-- 🌟 NOUVEAU : Le bouton Coeur cliquable -->
             <div class="wishlist-coeur" onclick="toggleWishlist('{{ carte.card_number }}', this)">
                 <span style="font-size: 18px; padding-top: 2px;">
                     {% if carte.in_wishlist %}❤️{% else %}🤍{% endif %}
@@ -320,7 +360,6 @@
             </div>
 
             <img src="{{ carte.image_url or '/static/images/placeholder.png' }}" alt="{{ carte.name }}" onclick="ouvrirZoom(this.src)">
-            
             
             <div class="card-title">
                 {{ carte.name }} 
@@ -330,8 +369,23 @@
             </div>
 
             <div class="card-id">Réf : {{ carte.card_number }}</div>
-            <div class="card-price {% if carte.disponible %}prix-dispo{% else %}prix-indispo{% endif %}">
-                {{ "%.2f"|format(carte.prix or 0.0) }} €
+
+            <!-- SI DISPONIBLE == FALSE, APPLIQUE LE STATUT INDISPO & BADGE "-" -->
+            <div class="card-price {% if not est_dispo or carte.prix is none or carte.prix == 0 %}prix-indispo{% elif tend == 'hausse' or pct > 0 %}prix-hausse{% elif tend == 'baisse' or pct < 0 %}prix-baisse{% else %}prix-neutre{% endif %}">
+                {% if not est_dispo or carte.prix is none or carte.prix == 0 %}
+                    Prix indispo
+                    <span class="badge-variation badge-neutre">-</span>
+                {% else %}
+                    {{ "%.2f"|format(carte.prix) }} €
+                    
+                    {% if tend == 'hausse' or pct > 0 %}
+                        <span class="badge-variation badge-hausse">+{{ "%.1f"|format(pct) }}%</span>
+                    {% elif tend == 'baisse' or pct < 0 %}
+                        <span class="badge-variation badge-baisse">{{ "%.1f"|format(pct) }}%</span>
+                    {% else %}
+                        <span class="badge-variation badge-neutre">0.0%</span>
+                    {% endif %}
+                {% endif %}
             </div>
             
             <div class="controls">
@@ -340,265 +394,257 @@
                 <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', '{{ carte.name }}', 'plus', {{ carte.is_alternative|lower }})">+</button>
             </div>
             
-            <button class="btn-deck" onclick="ajouterAuDeckActif('{{ carte.card_number }}', '{{ carte.name|escape }}', {{ 'true' if carte.type|lower == 'leader' else 'false' }}, {{ 'true' if carte.is_alternative else 'false' }},event)">➕ Ajouter au Deck</button>
+            <button class="btn-deck" onclick="ajouterAuDeckActif('{{ carte.card_number }}', '{{ carte.name|escape }}', {{ 'true' if carte.type|lower == 'leader' else 'false' }}, {{ 'true' if carte.is_alternative else 'false' }}, event)">➕ Ajouter au Deck</button>
         </div>
         {% endfor %}
     </div>
 
     <div id="modal-zoom-generique" class="modal" onclick="fermerZoom()">
-        <img id="image-zoomee-cible" src="">
+        <img id="image-zoomee-cible" src="" alt="Zoom carte">
     </div>
 
     <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // 1. Récupération du statut du deck
-        fetch('/api/get_deck_status')
-            .then(r => r.json())
-            .then(status => {
-                const indicator = document.getElementById('deck-status-indicator');
-                if(status.nom_deck) {
-                    indicator.innerText = `🎯 Deck Actif : "${status.nom_deck}" (Les cartes s'ajouteront dedans automatiquement !)`;
-                    indicator.style.color = "#4caf50";
-                } else {
-                    indicator.innerText = "📢 Aucun deck sélectionné dans l'Atelier (Modifications temporaires)";
-                    indicator.style.color = "#2196f3";
-                }
-            }).catch(err => console.log("Créateur de deck en veille"));
+        document.addEventListener("DOMContentLoaded", () => {
+            fetch('/api/get_deck_status')
+                .then(r => r.json())
+                .then(status => {
+                    const indicator = document.getElementById('deck-status-indicator');
+                    if(status.nom_deck) {
+                        indicator.innerText = `🎯 Deck Actif : "${status.nom_deck}" (Les cartes s'ajouteront dedans automatiquement !)`;
+                        indicator.style.color = "#4caf50";
+                    } else {
+                        indicator.innerText = "📢 Aucun deck sélectionné dans l'Atelier (Modifications temporaires)";
+                        indicator.style.color = "#2196f3";
+                    }
+                }).catch(err => console.log("Créateur de deck en veille"));
 
-        // 2. FORCE LE TRI PAR DÉFAUT (Série + Numéro) dès l'ouverture de la page
-        trierLaGrille();
-    });
+            trierLaGrille();
+        });
 
-    function filtrerLesCartes() {
-        const recherche = document.getElementById('search-bar').value.toLowerCase().trim();
-        const colFiltre = document.getElementById('filter-color').value.toLowerCase().trim();
-        const rarFiltre = document.getElementById('filter-rarity').value;
-        const typFiltre = document.getElementById('filter-type').value;
+        function filtrerLesCartes() {
+            const recherche = document.getElementById('search-bar').value.toLowerCase().trim();
+            const colFiltre = document.getElementById('filter-color').value.toLowerCase().trim();
+            const rarFiltre = document.getElementById('filter-rarity').value;
+            const typFiltre = document.getElementById('filter-type').value;
 
-        const cards = document.querySelectorAll('#main-grid .card');
+            const cards = document.querySelectorAll('#main-grid .card');
 
-        cards.forEach(card => {
-            const id = card.getAttribute('data-id').toLowerCase();
-            const nom = card.getAttribute('data-name').toLowerCase();
-            const colorAttr = (card.getAttribute('data-color') || '').toLowerCase();
-            const rarity = (card.getAttribute('data-rarity') || '').toLowerCase();
-            const type = card.getAttribute('data-type');
+            cards.forEach(card => {
+                const id = card.getAttribute('data-id').toLowerCase();
+                const nom = card.getAttribute('data-name').toLowerCase();
+                const colorAttr = (card.getAttribute('data-color') || '').toLowerCase();
+                const rarity = (card.getAttribute('data-rarity') || '').toLowerCase();
+                const type = card.getAttribute('data-type');
 
-            const matchRecherche = id.includes(recherche) || nom.includes(recherche);
-            
-            let matchColor = false;
-            if (colFiltre === 'tous') {
-                matchColor = true;
-            } else {
-                const traductions = {
-                    'rouge': 'red', 'vert': 'green', 'bleu': 'blue',
-                    'violet': 'purple', 'jaune': 'yellow', 'noir': 'black'
-                };
-                const colFiltreAnglais = traductions[colFiltre] || colFiltre;
-                if (colorAttr.includes(colFiltre) || colorAttr.includes(colFiltreAnglais)) {
+                const matchRecherche = id.includes(recherche) || nom.includes(recherche);
+                
+                let matchColor = false;
+                if (colFiltre === 'tous') {
                     matchColor = true;
-                }
-            }
-            
-            let matchRarity = false;
-            const estUneSpOuTr = rarity === 'sp' || rarity === 'tr' || rarity.includes('special') || rarity.includes('treasure');
-            const aSuffixeAlt = [1, 2, 3, 4, 5, 6, 7].some(i => id.includes(`_p${i}`));
-
-            if (rarFiltre === 'tous') {
-                matchRarity = true;
-            } else if (rarFiltre === 'only_alts') {
-                if (aSuffixeAlt || estUneSpOuTr) {
-                    matchRarity = true;
-                }
-            } else {
-                if (rarity === rarFiltre && !aSuffixeAlt && !estUneSpOuTr) {
-                    matchRarity = true;
-                }
-            }
-
-            const matchType = (typFiltre === 'tous') || (type === typFiltre);
-
-            if (matchRecherche && matchColor && matchRarity && matchType) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    function trierLaGrille() {
-        const grille = document.getElementById('main-grid');
-        const cartes = Array.from(grille.querySelectorAll('.card'));
-        const critere = document.getElementById('sort-order').value;
-
-        cartes.sort((a, b) => {
-            const idA = a.getAttribute('data-id').toLowerCase();
-            const idB = b.getAttribute('data-id').toLowerCase();
-            
-            // 1. TRI PAR NUMÉRO (DÉFAUT)
-            if (critere === 'num') {
-                return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
-            } 
-            
-            // 2. TRI PAR PRIX
-            else if (critere === 'prix_desc' || critere === 'prix_asc') {
-                const prixA = parseFloat(a.getAttribute('data-price') || 0);
-                const prixB = parseFloat(b.getAttribute('data-price') || 0);
-                
-                if (prixA !== prixB) {
-                    return critere === 'prix_desc' ? prixB - prixA : prixA - prixB;
-                }
-                return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
-            }
-            
-            // 3. TRI PAR RARETÉ
-            else {
-                const rareteA = a.getAttribute('data-rarity').toLowerCase();
-                const rareteB = b.getAttribute('data-rarity').toLowerCase();
-                const typeA = a.getAttribute('data-type').toLowerCase();
-                const typeB = b.getAttribute('data-type').toLowerCase();
-
-                const isAltP2_A = idA.includes("_p2");
-                const isAltP2_B = idB.includes("_p2");
-                
-                const isAltP1_A = idA.includes("_p1");
-                const isAltP1_B = idB.includes("_p1");
-                
-                const isLeaderA = (typeA === 'leader' || rareteA === 'l');
-                const isLeaderB = (typeB === 'leader' || rareteB === 'l');
-
-                function determinerPoidsStrict(isAltP2, isAltP1, isLeader, rarete) {
-                    if (isAltP2) return 1; // Manga
-                    if (rarete === 'sp' || rarete === 'tr' || rarete.includes('special') || rarete.includes('treasure')) return 2; // SP / TR
-                    if (isAltP1 && isLeader) return 3; // Leader Alt
-                    if (isAltP1 && !isLeader) return 4; // Character Alt / SEC Alt
-                    if (rarete === 'sec') return 5; // SEC classique
-                    if (rarete === 'sr') return 6; // SR
-                    if (rarete === 'r') return 7; // R
-                    if (rarete === 'uc') return 8; // UC
-                    if (rarete === 'c') return 9; // C
-                    if (isLeader && !isAltP1) return 10; // Leader classique
-                    return 11;
-                }
-
-                const poidsA = determinerPoidsStrict(isAltP2_A, isAltP1_A, isLeaderA, rareteA);
-                const poidsB = determinerPoidsStrict(isAltP2_B, isAltP1_B, isLeaderB, rareteB);
-
-                if (critere === 'rarete_croissante') {
-                    if (poidsA !== poidsB) return poidsB - poidsA;
-                } else if (critere === 'rarete_decroissante') {
-                    if (poidsA !== poidsB) return poidsA - poidsB;
-                }
-
-                return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' }); 
-            }
-        });
-
-        cartes.forEach(carte => grille.appendChild(carte));
-    }
-
-    function ouvrirZoom(urlImage) {
-        document.getElementById('modal-zoom-generique').style.display = 'flex';
-        document.getElementById('image-zoomee-cible').src = urlImage;
-    }
-    
-    function fermerZoom() {
-        document.getElementById('modal-zoom-generique').style.display = 'none';
-    }
-
-    function modifierQty(btn, id, nom, action, isAlt) {
-        const label = btn.parentElement.querySelector('.qty');
-        fetch('/modifier_quantite', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                card_number: id, 
-                name: nom, 
-                action: action, 
-                contexte: "{{ nom_de_la_serie }}", 
-                is_alternative: isAlt 
-            })
-        })
-        .then(r => r.json())
-        .then(d => { 
-            if(d.status === 'success') { 
-                label.innerText = d.nouvelle_quantite; 
-                if(document.getElementById('global-total-price')) {
-                    document.getElementById('global-total-price').innerText = d.nouveau_total_prix.toFixed(2);
-                }
-            } 
-        }).catch(err => alert("Erreur serveur collection"));
-    }
-
-    function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
-        fetch('/api/add_to_deck', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                card_number: cardId,
-                name: cardName,
-                is_leader: isLeader,
-                is_alternative: isAlt
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                if (event) {
-                    const bouton = event.currentTarget || event.target;
-                    const texteOrigine = bouton.innerHTML;
-                    
-                    bouton.innerHTML = "✓ Ajouté !";
-                    bouton.style.backgroundColor = "#2ecc71";
-                    bouton.style.pointerEvents = "none";
-                    
-                    setTimeout(() => {
-                        bouton.innerHTML = texteOrigine;
-                        bouton.style.backgroundColor = "";
-                        bouton.style.pointerEvents = "auto";
-                    }, 500);
-                }
-                
-                const indicator = document.getElementById('deck-status-indicator');
-                if (indicator) {
-                    const originalText = indicator.innerText;
-                    indicator.innerText = `✅ "${cardName}" ajouté au deck !`;
-                    setTimeout(() => { indicator.innerText = originalText; }, 500);
-                }
-
-                const priceSpan = document.getElementById('classeur-deck-price');
-                if (priceSpan && data.prix_total_deck !== undefined) {
-                    priceSpan.innerText = parseFloat(data.prix_total_deck).toFixed(2);
-                }
-            } else {
-                alert("Avertissement Atelier : " + data.message);
-            }
-        })
-        .catch(err => console.error("Erreur d'envoi à l'atelier de deck :", err));
-    }
-    // 🌟 NOUVELLE FONCTION POUR LA WISHLIST
-    function toggleWishlist(cardNumber, element) {
-        fetch('/api/toggle_wishlist', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ card_number: cardNumber })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                const span = element.querySelector('span');
-                // Alterne l'icône entre le cœur rouge et le cœur blanc
-                if (data.action === 'ajoute') {
-                    span.textContent = '❤️';
                 } else {
-                    span.textContent = '🤍';
+                    const traductions = {
+                        'rouge': 'red', 'vert': 'green', 'bleu': 'blue',
+                        'violet': 'purple', 'jaune': 'yellow', 'noir': 'black'
+                    };
+                    const colFiltreAnglais = traductions[colFiltre] || colFiltre;
+                    if (colorAttr.includes(colFiltre) || colorAttr.includes(colFiltreAnglais)) {
+                        matchColor = true;
+                    }
                 }
-            } else {
-                alert('Erreur: ' + data.message);
-            }
-        })
-        .catch(error => console.error('Erreur API Wishlist:', error));
-    }
+                
+                let matchRarity = false;
+                const estUneSpOuTr = rarity === 'sp' || rarity === 'tr' || rarity.includes('special') || rarity.includes('treasure');
+                const aSuffixeAlt = [1, 2, 3, 4, 5, 6, 7].some(i => id.includes(`_p${i}`));
+
+                if (rarFiltre === 'tous') {
+                    matchRarity = true;
+                } else if (rarFiltre === 'only_alts') {
+                    if (aSuffixeAlt || estUneSpOuTr) {
+                        matchRarity = true;
+                    }
+                } else {
+                    if (rarity === rarFiltre && !aSuffixeAlt && !estUneSpOuTr) {
+                        matchRarity = true;
+                    }
+                }
+
+                const matchType = (typFiltre === 'tous') || (type === typFiltre);
+
+                if (matchRecherche && matchColor && matchRarity && matchType) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function trierLaGrille() {
+            const grille = document.getElementById('main-grid');
+            const cartes = Array.from(grille.querySelectorAll('.card'));
+            const critere = document.getElementById('sort-order').value;
+
+            cartes.sort((a, b) => {
+                const idA = a.getAttribute('data-id').toLowerCase();
+                const idB = b.getAttribute('data-id').toLowerCase();
+                
+                if (critere === 'num') {
+                    return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+                } 
+                else if (critere === 'prix_desc' || critere === 'prix_asc') {
+                    const prixA = parseFloat(a.getAttribute('data-price') || 0);
+                    const prixB = parseFloat(b.getAttribute('data-price') || 0);
+                    
+                    if (prixA !== prixB) {
+                        return critere === 'prix_desc' ? prixB - prixA : prixA - prixB;
+                    }
+                    return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+                }
+                else {
+                    const rareteA = a.getAttribute('data-rarity').toLowerCase();
+                    const rareteB = b.getAttribute('data-rarity').toLowerCase();
+                    const typeA = a.getAttribute('data-type').toLowerCase();
+                    const typeB = b.getAttribute('data-type').toLowerCase();
+
+                    const isAltP2_A = idA.includes("_p2");
+                    const isAltP2_B = idB.includes("_p2");
+                    
+                    const isAltP1_A = idA.includes("_p1");
+                    const isAltP1_B = idB.includes("_p1");
+                    
+                    const isLeaderA = (typeA === 'leader' || rareteA === 'l');
+                    const isLeaderB = (typeB === 'leader' || rareteB === 'l');
+
+                    function determinerPoidsStrict(isAltP2, isAltP1, isLeader, rarete) {
+                        if (isAltP2) return 1;
+                        if (rarete === 'sp' || rarete === 'tr' || rarete.includes('special') || rarete.includes('treasure')) return 2;
+                        if (isAltP1 && isLeader) return 3;
+                        if (isAltP1 && !isLeader) return 4;
+                        if (rarete === 'sec') return 5;
+                        if (rarete === 'sr') return 6;
+                        if (rarete === 'r') return 7;
+                        if (rarete === 'uc') return 8;
+                        if (rarete === 'c') return 9;
+                        if (isLeader && !isAltP1) return 10;
+                        return 11;
+                    }
+
+                    const poidsA = determinerPoidsStrict(isAltP2_A, isAltP1_A, isLeaderA, rareteA);
+                    const poidsB = determinerPoidsStrict(isAltP2_B, isAltP1_B, isLeaderB, rareteB);
+
+                    if (critere === 'rarete_croissante') {
+                        if (poidsA !== poidsB) return poidsB - poidsA;
+                    } else if (critere === 'rarete_decroissante') {
+                        if (poidsA !== poidsB) return poidsA - poidsB;
+                    }
+
+                    return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' }); 
+                }
+            });
+
+            cartes.forEach(carte => grille.appendChild(carte));
+        }
+
+        function ouvrirZoom(urlImage) {
+            document.getElementById('modal-zoom-generique').style.display = 'flex';
+            document.getElementById('image-zoomee-cible').src = urlImage;
+        }
+        
+        function fermerZoom() {
+            document.getElementById('modal-zoom-generique').style.display = 'none';
+        }
+
+        function modifierQty(btn, id, nom, action, isAlt) {
+            const label = btn.parentElement.querySelector('.qty');
+            fetch('/modifier_quantite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    card_number: id, 
+                    name: nom, 
+                    action: action, 
+                    contexte: "{{ nom_de_la_serie }}", 
+                    is_alternative: isAlt 
+                })
+            })
+            .then(r => r.json())
+            .then(d => { 
+                if(d.status === 'success') { 
+                    label.innerText = d.nouvelle_quantite; 
+                    if(document.getElementById('global-total-price')) {
+                        document.getElementById('global-total-price').innerText = d.nouveau_total_prix.toFixed(2);
+                    }
+                } 
+            }).catch(err => alert("Erreur serveur collection"));
+        }
+
+        function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
+            fetch('/api/add_to_deck', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    card_number: cardId,
+                    name: cardName,
+                    is_leader: isLeader,
+                    is_alternative: isAlt
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    if (event) {
+                        const bouton = event.currentTarget || event.target;
+                        const texteOrigine = bouton.innerHTML;
+                        
+                        bouton.innerHTML = "✓ Ajouté !";
+                        bouton.style.backgroundColor = "#2ecc71";
+                        bouton.style.pointerEvents = "none";
+                        
+                        setTimeout(() => {
+                            bouton.innerHTML = texteOrigine;
+                            bouton.style.backgroundColor = "";
+                            bouton.style.pointerEvents = "auto";
+                        }, 500);
+                    }
+                    
+                    const indicator = document.getElementById('deck-status-indicator');
+                    if (indicator) {
+                        const originalText = indicator.innerText;
+                        indicator.innerText = `✅ "${cardName}" ajouté au deck !`;
+                        setTimeout(() => { indicator.innerText = originalText; }, 500);
+                    }
+
+                    const priceSpan = document.getElementById('classeur-deck-price');
+                    if (priceSpan && data.prix_total_deck !== undefined) {
+                        priceSpan.innerText = parseFloat(data.prix_total_deck).toFixed(2);
+                    }
+                } else {
+                    alert("Avertissement Atelier : " + data.message);
+                }
+            })
+            .catch(err => console.error("Erreur d'envoi à l'atelier de deck :", err));
+        }
+
+        function toggleWishlist(cardNumber, element) {
+            fetch('/api/toggle_wishlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ card_number: cardNumber })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const span = element.querySelector('span');
+                    if (data.action === 'ajoute') {
+                        span.textContent = '❤️';
+                    } else {
+                        span.textContent = '🤍';
+                    }
+                } else {
+                    alert('Erreur: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Erreur API Wishlist:', error));
+        }
     </script>
 </body>
 </html>
