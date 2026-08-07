@@ -1,0 +1,23 @@
+{
+    "test": {
+        "cards": [
+            {
+                "card_number": "OP13-017",
+                "name": "Monkey.D.Dragon",
+                "image_url": "/static/OP13-017.jpg",
+                "quantite_deck": 3
+            },
+            {
+                "card_number": "OP13-118_p1",
+                "name": "Monkey.D.Luffy",
+                "image_url": "/static/OP13-118_p1.jpg",
+                "quantite_deck": 1
+            }
+        ],
+        "leader": {
+            "card_number": "OP13-002_p7",
+            "image_url": "/static/OP13-002_p7.jpg",
+            "name": "Portgas.D.Ace"
+        }
+    }
+}
