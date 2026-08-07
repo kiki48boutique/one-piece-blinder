@@ -1,4 +1,4 @@
-import csv
+import csv  # <-- AJOUTÉ ICI
 import json
 import os
 import re
@@ -43,8 +43,7 @@ def synchroniser_toutes_les_series():
     dossier_actuel = os.path.dirname(os.path.abspath(__file__))
     chemin_json = os.path.join(dossier_actuel, "cartes.json")
 
-    # --- NOUVEAU : SAUVEGARDE DES ANCIENS PRIX ---
-    # On lit le fichier cartes.json actuel AVANT de tout écraser
+    # --- SAUVEGARDE DES ANCIENNES DONNÉES (PRIX ET VARIATION) ---
     anciennes_cartes = {}
     if os.path.exists(chemin_json):
         try:
@@ -52,10 +51,13 @@ def synchroniser_toutes_les_series():
                 donnees_anciennes = json.load(f_ancien)
                 for c in donnees_anciennes:
                     cle = (c["card_number"], c.get("is_alternative", False))
-                    anciennes_cartes[cle] = c.get("prix", 0) # On mémorise l'ancien prix
+                    anciennes_cartes[cle] = {
+                        "prix": c.get("prix", 0.0),
+                        "pourcentage": c.get("pourcentage_prix", 0.0),
+                        "tendance": c.get("tendance_prix", "stable")
+                    }
         except Exception as e:
             print(f"⚠️ Impossible de lire l'ancien fichier cartes.json : {e}")
-    # ---------------------------------------------
 
     # Liste des séries
     CONFIG_SERIES = [
@@ -142,21 +144,10 @@ def synchroniser_toutes_les_series():
 
     EXCLUSIONS_PAR_SERIE = {
         "D": [
-            "OP01-001",
-            "OP01-005",
-            "OP01-011",
-            "OP01-016",
-            "OP01-021",
-            "OP02-015",
-            "P-001",
-            "P-022",
-            "P-080",
-            "ST01-005",
-            "ST01-006",
-            "ST01-011",
-            "ST01-014",
-            "ST01-015",
-            "ST01-017"]
+            "D-OP01-001", "D-OP01-005", "D-OP01-011", "D-OP01-016", "D-OP01-021", "D-OP02-015",
+            "D-P-001", "D-P-022", "D-P-080", "D-ST01-005", "D-ST01-006", "D-ST01-011",
+            "D-ST01-014", "D-ST01-015", "D-ST01-017"
+        ]
     }
 
     toutes_les_cartes_extraites = {}
@@ -178,7 +169,6 @@ def synchroniser_toutes_les_series():
                 num_brut = ligne.get("extNumber")
                 nom_produit = ligne.get("name", "").strip()
 
-                # Recherche automatique par Regex si extNumber est vide dans la série Promo
                 if not num_brut and code_serie == "P":
                     match = re.search(r'(?:P|OP|ST|EB|PRB)\d*-\d+', nom_produit, re.IGNORECASE)
                     if match:
@@ -205,8 +195,9 @@ def synchroniser_toutes_les_series():
                     num_normalise = f"P-{num_normalise}"
                 elif serie_exacte == "LD" and not num_normalise.startswith("LD-"):
                     num_normalise = f"LD-{num_normalise}"
+                elif serie_exacte == "D" and not num_normalise.startswith("D-"):
+                    num_normalise = f"D-{num_normalise}"
 
-                # EXCLUSIONS DÉPLACÉES ICI COMME VU PRÉCÉDEMMENT
                 if code_serie in EXCLUSIONS_PAR_SERIE and num_normalise in EXCLUSIONS_PAR_SERIE[code_serie]:
                     continue
 
@@ -250,7 +241,7 @@ def synchroniser_toutes_les_series():
                         cle_temp = f"{cle_carte}_p{compteur}"
                     cle_carte = cle_temp
 
-                # --- NOUVEAU : GESTION DES PRIX ET DE LA DISPONIBILITÉ ---
+# --- CALCUL PRIX, TENDANCE ET POURCENTAGE ---
                 try:
                     m_price = float(ligne.get("marketPrice")) if ligne.get("marketPrice") else None
                     mid_price = float(ligne.get("MidPrice")) if ligne.get("MidPrice") else None
@@ -260,14 +251,35 @@ def synchroniser_toutes_les_series():
 
                 prix_brut = m_price if (m_price and m_price > 0) else mid_price
 
+                # Récupération de l'historique de la carte s'il existe
+                donnees_anc = anciennes_cartes.get((cle_carte, est_alt), {})
+                ancien_prix = donnees_anc.get("prix", 0.0)
+                # ancien_pourcentage = donnees_anc.get("pourcentage", 0.0)
+                # ancienne_tendance = donnees_anc.get("tendance", "stable")
+
                 if prix_brut and prix_brut > 0:
                     prix_final = round(prix_brut * 0.88, 2)
-                    disponible = True # Le prix a été trouvé dans le CSV actuel !
+                    disponible = True
+
+                    if ancien_prix > 0:
+                        if prix_final > ancien_prix:
+                            pourcentage = round(((prix_final - ancien_prix) / ancien_prix) * 100, 1)
+                            tendance = "hausse"
+                        elif prix_final < ancien_prix:
+                            pourcentage = round(((prix_final - ancien_prix) / ancien_prix) * 100, 1)
+                            tendance = "baisse"
+                        else:
+                            pourcentage = 0
+                            tendance = "stable"
+                    else:
+                        pourcentage = 0.0
+                        tendance = "stable"
                 else:
-                    # Le prix CSV est 0 ou vide, on va chercher l'ancien prix
-                    prix_final = anciennes_cartes.get((cle_carte, est_alt), 0)
-                    disponible = False # On indique que c'est un prix de secours
-                # ---------------------------------------------------------
+                    # 🔴 MODIFICATION ICI : si la carte n'est pas dispo
+                    prix_final = ancien_prix
+                    disponible = False
+                    pourcentage = "-"
+                    tendance = "pas dispo"
 
                 toutes_les_cartes_extraites[(cle_carte, est_alt)] = {
                     "card_number": cle_carte,
@@ -279,7 +291,9 @@ def synchroniser_toutes_les_series():
                     "is_alternative": est_alt,
                     "quantite": 0,
                     "prix": prix_final,
-                    "disponible": disponible # Ajout dans le JSON final
+                    "disponible": disponible,
+                    "tendance_prix": tendance,
+                    "pourcentage_prix": pourcentage
                 }
 
     chemin_ajouts = os.path.join(dossier_actuel, "ajouts_manuels.json")
@@ -289,9 +303,9 @@ def synchroniser_toutes_les_series():
                 cartes_manuelles = json.load(f_ajouts)
                 for carte in cartes_manuelles:
                     cle = (carte["card_number"], carte.get("is_alternative", False))
-                    # Si "disponible" n'est pas précisé dans ajouts_manuels, on le met à True par défaut
-                    if "disponible" not in carte:
-                        carte["disponible"] = True
+                    if "disponible" not in carte: carte["disponible"] = True
+                    if "tendance_prix" not in carte: carte["tendance_prix"] = "stable"
+                    if "pourcentage_prix" not in carte: carte["pourcentage_prix"] = 0.0
                     toutes_les_cartes_extraites[cle] = carte
             print(f"\n✍️  {len(cartes_manuelles)} cartes ajoutées/mises à jour manuellement depuis ajouts_manuels.json")
         except Exception as e:
