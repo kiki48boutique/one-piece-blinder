@@ -102,7 +102,10 @@ def appliquer_wishlist(donnees_json):
         cards_in_wishlist = set()
 
     for carte in donnees_json:
-        carte["in_wishlist"] = carte.get("card_number") in cards_in_wishlist
+        # Assure-toi que la clé utilisée ici correspond au nom dans ton JSON final
+        # (souvent "card_number" ou "cle_carte")
+        id_carte = carte.get("card_number", "")
+        carte["in_wishlist"] = id_carte in cards_in_wishlist
 
 
 def charger_decks():
@@ -309,10 +312,12 @@ def modifier_quantite():
     try:
         data = request.get_json()
         device_id = get_device_id()
+
+        # On utilise directement l'identifiant unique (qui contient déjà _p1, _p2...)
         card_number = data.get('card_number')
         action = data.get('action')
 
-        # 1. Vérifier si la carte est déjà enregistrée pour cet appareil
+        # Vérifier si cette carte exacte (ex: OP01-001_p2) est déjà enregistrée
         reponse = supabase.table('user_collections') \
             .select('id, quantite') \
             .eq('device_id', device_id) \
@@ -320,7 +325,6 @@ def modifier_quantite():
             .execute()
 
         if reponse.data:
-            # La carte existe déjà -> Mise à jour
             row_id = reponse.data[0]['id']
             qty_actuelle = reponse.data[0].get('quantite', 0)
             nouvelle_qty = max(0, qty_actuelle + 1 if action == 'plus' else qty_actuelle - 1)
@@ -329,7 +333,6 @@ def modifier_quantite():
                 'quantite': nouvelle_qty
             }).eq('id', row_id).execute()
         else:
-            # Première fois qu'on ajoute la carte
             nouvelle_qty = 1 if action == 'plus' else 0
             if nouvelle_qty > 0:
                 supabase.table('user_collections').insert({
@@ -347,32 +350,33 @@ def modifier_quantite():
 def toggle_wishlist():
     try:
         donnees = request.get_json()
-        id_carte = donnees.get("card_number")
         device_id = get_device_id()
+
+        # On utilise directement l'identifiant unique
+        card_number = donnees.get("card_number")
 
         check = supabase.table('user_wishlists') \
             .select('id') \
             .eq('device_id', device_id) \
-            .eq('card_number', id_carte) \
+            .eq('card_number', card_number) \
             .execute()
 
         if check.data:
             supabase.table('user_wishlists') \
                 .delete() \
                 .eq('device_id', device_id) \
-                .eq('card_number', id_carte) \
+                .eq('card_number', card_number) \
                 .execute()
             statut = "retire"
         else:
             supabase.table('user_wishlists') \
-                .insert({'device_id': device_id, 'card_number': id_carte}) \
+                .insert({'device_id': device_id, 'card_number': card_number}) \
                 .execute()
             statut = "ajoute"
 
         return jsonify({"status": "success", "action": statut})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 # --- ROUTES DECKS (SUPABASE) ---
 @app.route("/api/get_deck", methods=["GET"])
