@@ -20,7 +20,6 @@
             margin-top: 10px;
         }
 
-        /* BOUTON RETOUR NAVIGATION */
         .nav-back-container {
             position: fixed;
             top: 15px;
@@ -151,13 +150,11 @@
             font-size: 1.1rem;
         }
 
-        /* COULEURS DES PRIX */
         .prix-neutre { color: #ffffff !important; }  
         .prix-hausse { color: #2ecc71 !important; }  
         .prix-baisse { color: #ff4757 !important; }  
         .prix-indispo { color: #888888 !important; } 
 
-        /* BADGES VARIATION */
         .badge-variation {
             font-size: 0.8rem;
             padding: 2px 6px;
@@ -232,11 +229,11 @@
     </style>
 
     <meta name="theme-color" content="#121212">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OP Binder">
 
-    <!-- DÉTECTION ET ENVOI AUTOMATIQUE DE L'ID APPAREIL (VIA COOKIES) -->
     <script>
         function getOrSetDeviceId() {
             let name = "op_device_id=";
@@ -373,12 +370,13 @@
             </div>
             
             <div class="controls">
-                <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', {{ carte.name|tojson }}, 'moins', {{ 'true' if carte.is_alternative else 'false' }})">-</button>
+                <!-- Utilisation de guillemets simples autour de onclick pour éviter les conflits de tojson -->
+                <button class="btn" onclick='modifierQty(this, "{{ carte.card_number }}", {{ carte.name|tojson }}, "moins", {{ "true" if carte.is_alternative else "false" }})'>-</button>
                 <span class="qty">{{ carte.quantite }}</span>
-                <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', {{ carte.name|tojson }}, 'plus', {{ 'true' if carte.is_alternative else 'false' }})">+</button>
+                <button class="btn" onclick='modifierQty(this, "{{ carte.card_number }}", {{ carte.name|tojson }}, "plus", {{ "true" if carte.is_alternative else "false" }})'>+</button>
             </div>
             
-            <button class="btn-deck" onclick="ajouterAuDeckActif('{{ carte.card_number }}', {{ carte.name|tojson }}, {{ 'true' if carte.type|lower == 'leader' else 'false' }}, {{ 'true' if carte.is_alternative else 'false' }}, event)">➕ Ajouter au Deck</button>
+            <button class="btn-deck" onclick='ajouterAuDeckActif("{{ carte.card_number }}", {{ carte.name|tojson }}, {{ "true" if carte.type|lower == "leader" else "false" }}, {{ "true" if carte.is_alternative else "false" }}, event)'>➕ Ajouter au Deck</button>
         </div>
         {% endfor %}
     </div>
