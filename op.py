@@ -422,25 +422,38 @@ def api_remove_from_deck():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-@app.route("/sauvegarder_deck", methods=["POST"])
+@app.route('/ta_route_de_sauvegarde_de_deck', methods=['POST']) # Garde le nom de TA route actuelle
 def sauvegarder_deck():
     try:
-        donnees = request.get_json()
-        nom_deck = donnees.get("nom")
-        structure_deck = donnees.get("deck")
+        data = request.get_json()
         device_id = get_device_id()
+        nom_deck = data.get('nom_deck')
+        structure = data.get('structure_deck') # ou le nom de ta variable qui contient les cartes
 
-        supabase.table('user_decks').upsert({
-            'device_id': device_id,
-            'nom_deck': nom_deck,
-            'structure_deck': structure_deck
-        }).execute()
+        # 1. On vérifie si le deck existe déjà pour cet utilisateur
+        check = supabase.table('user_decks') \
+            .select('id') \
+            .eq('device_id', device_id) \
+            .eq('nom_deck', nom_deck) \
+            .execute()
 
-        sauvegarder_deck_actif_appareil(nom_deck, structure_deck)
+        if check.data:
+            # 2. Le deck existe -> on le MET À JOUR (Update)
+            row_id = check.data[0]['id']
+            supabase.table('user_decks').update({
+                'structure_deck': structure
+            }).eq('id', row_id).execute()
+        else:
+            # 3. Le deck n'existe pas -> on le CRÉE (Insert)
+            supabase.table('user_decks').insert({
+                'device_id': device_id,
+                'nom_deck': nom_deck,
+                'structure_deck': structure
+            }).execute()
 
-        return jsonify({"status": "success", "message": f"💾 Deck '{nom_deck}' enregistré avec succès !"})
+        return jsonify({'status': 'success'})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
 @app.route("/supprimer_deck", methods=["POST"])
