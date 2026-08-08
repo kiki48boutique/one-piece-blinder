@@ -152,10 +152,10 @@
         }
 
         /* COULEURS DES PRIX */
-        .prix-neutre { color: #ffffff !important; }  /* Stable -> Blanc neutre */
-        .prix-hausse { color: #2ecc71 !important; }  /* Hausse -> Vert */
-        .prix-baisse { color: #ff4757 !important; }  /* Baisse -> Rouge */
-        .prix-indispo { color: #888888 !important; } /* Non dispo -> Gris */
+        .prix-neutre { color: #ffffff !important; }  
+        .prix-hausse { color: #2ecc71 !important; }  
+        .prix-baisse { color: #ff4757 !important; }  
+        .prix-indispo { color: #888888 !important; } 
 
         /* BADGES VARIATION */
         .badge-variation {
@@ -231,24 +231,10 @@
         }
     </style>
 
-    <!-- Configuration PWA -->
-    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#121212">
-
-    <!-- Compatibilité iOS / Safari -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OP Binder">
-    <link rel="apple-touch-icon" href="/static/icon-192.png">
-
-    <!-- Enregistrement du Service Worker -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js');
-            });
-        }
-    </script>
 
     <!-- DÉTECTION ET ENVOI AUTOMATIQUE DE L'ID APPAREIL (VIA COOKIES) -->
     <script>
@@ -339,7 +325,6 @@
     <div class="grid" id="main-grid">
         {% for carte in cartes_python %}
         
-        {# VÉRIFICATION DISPONIBILITÉ ET PRIX #}
         {% set est_dispo = carte.disponible if carte.disponible is defined else true %}
         {% set pct = carte.pourcentage_prix if carte.pourcentage_prix is defined else (carte.variation if carte.variation is defined else 0.0) %}
         {% set tend = carte.tendance_prix if carte.tendance_prix is defined else ('hausse' if pct > 0 else ('baisse' if pct < 0 else 'stable')) %}
@@ -370,7 +355,6 @@
 
             <div class="card-id">Réf : {{ carte.card_number }}</div>
 
-            <!-- SI DISPONIBLE == FALSE, APPLIQUE LE STATUT INDISPO & BADGE "-" -->
             <div class="card-price {% if not est_dispo or carte.prix is none or carte.prix == 0 %}prix-indispo{% elif tend == 'hausse' or pct > 0 %}prix-hausse{% elif tend == 'baisse' or pct < 0 %}prix-baisse{% else %}prix-neutre{% endif %}">
                 {% if not est_dispo or carte.prix is none or carte.prix == 0 %}
                     Prix indispo
@@ -389,9 +373,9 @@
             </div>
             
             <div class="controls">
-                <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', {{ carte.name|tojson }}, 'moins', {{ carte.is_alternative|lower }})">-</button>
+                <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', {{ carte.name|tojson }}, 'moins', {{ 'true' if carte.is_alternative else 'false' }})">-</button>
                 <span class="qty">{{ carte.quantite }}</span>
-                <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', {{ carte.name|tojson }}, 'plus', {{ carte.is_alternative|lower }})">+</button>
+                <button class="btn" onclick="modifierQty(this, '{{ carte.card_number }}', {{ carte.name|tojson }}, 'plus', {{ 'true' if carte.is_alternative else 'false' }})">+</button>
             </div>
             
             <button class="btn-deck" onclick="ajouterAuDeckActif('{{ carte.card_number }}', {{ carte.name|tojson }}, {{ 'true' if carte.type|lower == 'leader' else 'false' }}, {{ 'true' if carte.is_alternative else 'false' }}, event)">➕ Ajouter au Deck</button>
