@@ -1,8 +1,16 @@
 import json
 import os
 from flask import Flask, jsonify, render_template, request
+from supabase import create_client
+
+# Valeurs de secours pour ton PC local si les variables d'environnement n'existent pas
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kbjdxxrryvvnahcnsjys.supabase.co")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "COLLER_TA_CLE_ANON_PUBLIC_ICI")
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
+
 
 def get_device_json_path(prefixe_fichier):
     device_id = request.cookies.get('op_device_id')
@@ -296,41 +304,31 @@ def sauvegarder_deck():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-@app.route("/modifier_quantite", methods=["POST"])
+@app.route('/modifier_quantite', methods=['POST'])
 def modifier_quantite():
-    try:
-        donnees_recues = request.get_json()
-        id_carte = donnees_recues.get("card_number")
-        action = donnees_recues.get("action")
-        titre_contexte = donnees_recues.get("contexte", "")
-        is_alt = donnees_recues.get("is_alternative", False)
+    data = request.get_json()
+    device_id = request.headers.get('X-Device-ID', 'default_device')
+    card_number = data.get('card_number')
+    action = data.get('action') # 'plus' ou 'moins'
 
-        chemin_collection, dict_collection = charger_collection()
+    # 1. Récupérer la quantité actuelle pour CET appareil
+    reponse = supabase.table('user_collections') \
+        .select('quantite') \
+        .eq('device_id', device_id) \
+        .eq('card_number', card_number) \
+        .execute()
 
-        cle_carte = f"{id_carte}_alt" if is_alt else id_carte
-        quantite_actuelle = dict_collection.get(cle_carte, 0)
+    qty_actuelle = reponse.data[0]['quantite'] if reponse.data else 0
+    nouvelle_qty = max(0, qty_actuelle + 1 if action == 'plus' else qty_actuelle - 1)
 
-        if action == "plus":
-            quantite_actuelle += 1
-        elif action == "moins" and quantite_actuelle > 0:
-            quantite_actuelle -= 1
+    # 2. Sauvegarder dans Supabase
+    supabase.table('user_collections').upsert({
+        'device_id': device_id,
+        'card_number': card_number,
+        'quantite': nouvelle_qty
+    }).execute()
 
-        dict_collection[cle_carte] = quantite_actuelle
-        sauvegarder_json_appareil('collection', dict_collection)
-
-        _, donnees_json = charger_donnees()
-        appliquer_quantites_collection(donnees_json)
-
-        valeur_totale = sum(
-            carte["quantite"] * carte.get("prix", 0.0)
-            for carte in donnees_json
-            if titre_contexte in ["Toutes les Cartes", "Ma Collection (Cartes possédées)"]
-            or carte.get("serie", "").upper() == titre_contexte.upper()
-        )
-
-        return jsonify({"status": "success", "nouvelle_quantite": quantite_actuelle, "nouveau_total_prix": round(valeur_totale, 2)})
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
+    return jsonify({'status': 'success', 'nouvelle_quantite': nouvelle_qty})
 
 @app.route("/supprimer_deck", methods=["POST"])
 def supprimer_deck():
