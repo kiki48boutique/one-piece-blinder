@@ -304,7 +304,6 @@ def voir_serie(nom_serie):
         return f"Erreur : {e}"
 
 
-# --- ROUTES INTERACTIVES (SUPABASE) ---
 @app.route('/modifier_quantite', methods=['POST'])
 def modifier_quantite():
     try:
@@ -313,20 +312,31 @@ def modifier_quantite():
         card_number = data.get('card_number')
         action = data.get('action')
 
+        # 1. Vérifier si la carte est déjà enregistrée pour cet appareil
         reponse = supabase.table('user_collections') \
-            .select('quantite') \
+            .select('id, quantite') \
             .eq('device_id', device_id) \
             .eq('card_number', card_number) \
             .execute()
 
-        qty_actuelle = reponse.data[0]['quantite'] if reponse.data else 0
-        nouvelle_qty = max(0, qty_actuelle + 1 if action == 'plus' else qty_actuelle - 1)
+        if reponse.data:
+            # La carte existe déjà -> Mise à jour
+            row_id = reponse.data[0]['id']
+            qty_actuelle = reponse.data[0].get('quantite', 0)
+            nouvelle_qty = max(0, qty_actuelle + 1 if action == 'plus' else qty_actuelle - 1)
 
-        supabase.table('user_collections').upsert({
-            'device_id': device_id,
-            'card_number': card_number,
-            'quantite': nouvelle_qty
-        }).execute()
+            supabase.table('user_collections').update({
+                'quantite': nouvelle_qty
+            }).eq('id', row_id).execute()
+        else:
+            # Première fois qu'on ajoute la carte
+            nouvelle_qty = 1 if action == 'plus' else 0
+            if nouvelle_qty > 0:
+                supabase.table('user_collections').insert({
+                    'device_id': device_id,
+                    'card_number': card_number,
+                    'quantite': nouvelle_qty
+                }).execute()
 
         return jsonify({'status': 'success', 'nouvelle_quantite': nouvelle_qty})
     except Exception as e:
