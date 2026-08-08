@@ -536,28 +536,32 @@
         }
 
         function modifierQty(btn, id, nom, action, isAlt) {
-            const label = btn.parentElement.querySelector('.qty');
-            fetch('/modifier_quantite', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    card_number: id, 
-                    name: nom, 
-                    action: action, 
-                    contexte: "{{ nom_de_la_serie }}", 
-                    is_alternative: isAlt 
-                })
-            })
-            .then(r => r.json())
-            .then(d => { 
-                if(d.status === 'success') { 
-                    label.innerText = d.nouvelle_quantite; 
-                    if(document.getElementById('global-total-price')) {
-                        document.getElementById('global-total-price').innerText = d.nouveau_total_prix.toFixed(2);
-                    }
-                } 
-            }).catch(err => alert("Erreur serveur collection"));
-        }
+    const label = btn.parentElement.querySelector('.qty');
+    fetch('/modifier_quantite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            card_number: id, 
+            name: nom, 
+            action: action, 
+            contexte: "{{ nom_de_la_serie }}", 
+            is_alternative: isAlt 
+        })
+    })
+    .then(r => r.json())
+    .then(d => { 
+        if(d.status === 'success') { 
+            label.innerText = d.nouvelle_quantite; 
+            if(document.getElementById('global-total-price')) {
+                document.getElementById('global-total-price').innerText = d.nouveau_total_prix.toFixed(2);
+            }
+        } 
+    })
+    .catch(err => {
+        // L'alerte gênante a été supprimée, l'erreur est simplement notifiée en arrière-plan dans la console
+        console.log("Erreur silencieuse collection :", err);
+    });
+}
 
         function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
             fetch('/api/add_to_deck', {
