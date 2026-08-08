@@ -546,6 +546,7 @@ def api_add_to_deck():
 
         if deck_nom:
             device_id = get_device_id()
+            # L'upsert Supabase gère tout seul les doublons grâce à la clé unique de la table
             supabase.table('user_decks').upsert({
                 'device_id': device_id,
                 'nom_deck': deck_nom,
@@ -555,7 +556,6 @@ def api_add_to_deck():
         return jsonify({"status": "success", "deck_actif": deck_nom, "prix_total_deck": calculer_prix_deck_actuel(deck_memoire)})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 @app.route("/api/get_deck_status", methods=["GET"])
 def api_get_deck_status():
