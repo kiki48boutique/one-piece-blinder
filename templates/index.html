@@ -563,7 +563,7 @@
     });
 }
 
-        function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
+function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
             fetch('/api/add_to_deck', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -604,7 +604,8 @@
                         priceSpan.innerText = parseFloat(data.prix_total_deck).toFixed(2);
                     }
                 } else {
-                    alert("Avertissement Atelier : " + data.message);
+                    // L'alerte gênante a été neutralisée et remplacée par un log discret dans la console
+                    console.log("Avertissement Atelier (ignoré) :", data.message);
                 }
             })
             .catch(err => console.error("Erreur d'envoi à l'atelier de deck :", err));
