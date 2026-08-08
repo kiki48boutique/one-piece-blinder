@@ -3,24 +3,31 @@ import os
 from flask import Flask, jsonify, render_template, request
 from supabase import create_client
 
-# Valeurs de secours pour ton PC local si les variables d'environnement n'existent pas
+# --- CONFIGURATION SUPABASE ---
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kbjdxxrryvvnahcnsjys.supabase.co")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "COLLER_TA_CLE_ANON_PUBLIC_ICI")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "Remplacer_Par_Ta_Cle_Anon_Public")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
 
 
-def get_device_json_path(prefixe_fichier):
+# --- UTILITAIRES APPAREIL & SUPABASE ---
+def get_device_id():
+    """Récupère l'identifiant unique du joueur (cookie ou header)."""
     device_id = request.cookies.get('op_device_id')
     if not device_id:
         device_id = request.headers.get('X-Device-ID')
     if not device_id:
-        device_id = 'defaut'
+        device_id = 'default_device'
+    return device_id
 
+
+def get_device_json_path(prefixe_fichier):
+    device_id = get_device_id()
     os.makedirs('donnees_utilisateurs', exist_ok=True)
     return f"donnees_utilisateurs/{prefixe_fichier}_{device_id}.json"
+
 
 def lire_json_appareil(prefixe_fichier, valeur_par_defaut):
     fichier = get_device_json_path(prefixe_fichier)
@@ -32,48 +39,77 @@ def lire_json_appareil(prefixe_fichier, valeur_par_defaut):
                 return valeur_par_defaut
     return valeur_par_defaut
 
+
 def sauvegarder_json_appareil(prefixe_fichier, donnees):
     fichier = get_device_json_path(prefixe_fichier)
     with open(fichier, 'w', encoding='utf-8') as f:
         json.dump(donnees, f, ensure_ascii=False, indent=4)
 
+
+# --- FONCTIONS NATIVES (JSON SÉRIES / DECKS) ---
 def charger_donnees():
     dossier_actuel = os.path.dirname(os.path.abspath(__file__))
     chemin_json = os.path.join(dossier_actuel, "cartes.json")
     with open(chemin_json, "r", encoding="utf-8") as f:
         return chemin_json, json.load(f)
 
+
 def charger_decks():
     return get_device_json_path('decks'), lire_json_appareil('decks', {})
 
-def charger_collection():
-    return get_device_json_path('collection'), lire_json_appareil('collection', {})
-
-def charger_wishlist():
-    return get_device_json_path('wishlist'), lire_json_appareil('wishlist', [])
-
-def sauvegarder_wishlist(liste_wishlist):
-    sauvegarder_json_appareil('wishlist', liste_wishlist)
-
-def appliquer_wishlist(donnees_json):
-    _, liste_wishlist = charger_wishlist()
-    for carte in donnees_json:
-        carte["in_wishlist"] = carte.get("card_number") in liste_wishlist
 
 def charger_deck_actif_appareil():
     return lire_json_appareil('deck_actif', {"nom": None, "deck": {"leader": None, "cards": []}})
 
+
 def sauvegarder_deck_actif_appareil(nom, deck):
     sauvegarder_json_appareil('deck_actif', {"nom": nom, "deck": deck})
 
+
+# --- FONCTIONS SUPABASE (COLLECTION & WISHLIST) ---
+def charger_collection_supabase(device_id):
+    """Charge la collection d'un utilisateur depuis Supabase."""
+    try:
+        reponse = supabase.table('user_collections') \
+            .select('card_number, quantite') \
+            .eq('device_id', device_id) \
+            .execute()
+        return {row['card_number']: row['quantite'] for row in reponse.data} if reponse.data else {}
+    except Exception as e:
+        print(f"Erreur Supabase Collection: {e}")
+        return {}
+
+
 def appliquer_quantites_collection(donnees_json):
-    _, dict_collection = charger_collection()
+    """Injecte les quantités possédées depuis Supabase dans les objets cartes."""
+    device_id = get_device_id()
+    dict_collection = charger_collection_supabase(device_id)
+
     for carte in donnees_json:
         id_carte = carte.get("card_number", "")
         is_alt = carte.get("is_alternative", False)
         cle = f"{id_carte}_alt" if is_alt else id_carte
         carte["quantite"] = dict_collection.get(cle, 0)
 
+
+def appliquer_wishlist(donnees_json):
+    """Marque les cartes de la wishlist depuis Supabase."""
+    device_id = get_device_id()
+    try:
+        reponse = supabase.table('user_wishlists') \
+            .select('card_number') \
+            .eq('device_id', device_id) \
+            .execute()
+        cards_in_wishlist = {row['card_number'] for row in reponse.data} if reponse.data else set()
+    except Exception as e:
+        print(f"Erreur Supabase Wishlist: {e}")
+        cards_in_wishlist = set()
+
+    for carte in donnees_json:
+        carte["in_wishlist"] = carte.get("card_number") in cards_in_wishlist
+
+
+# --- FORMATAGE ET TRI DES CARTES ---
 def trier_cartes(liste_cartes):
     def cle_de_tri(carte):
         rarete = str(carte.get("rarity", "")).strip().upper()
@@ -96,6 +132,7 @@ def trier_cartes(liste_cartes):
 
     liste_cartes.sort(key=cle_de_tri)
     return liste_cartes
+
 
 def formater_carte_image(carte):
     if "quantite" not in carte: carte["quantite"] = 0
@@ -121,6 +158,7 @@ def formater_carte_image(carte):
     carte["couleur_propre"] = couleur_propre
     return carte
 
+
 def calculer_prix_deck_actuel(deck_memoire=None):
     try:
         if deck_memoire is None:
@@ -143,7 +181,8 @@ def calculer_prix_deck_actuel(deck_memoire=None):
     except:
         return 0.0
 
-# 🌟 ROUTE ACCUEIL AVEC CALCUL DYNAMIQUE DE VOS SÉRIES
+
+# --- ROUTES PRINCIPALES ---
 @app.route("/")
 def index():
     try:
@@ -174,9 +213,11 @@ def index():
     except Exception as e:
         return f"Erreur lors du chargement de l'accueil : {e}"
 
+
 @app.route("/atelier_de_deck")
 def atelier_de_deck():
     return render_template("deck.html")
+
 
 @app.route("/decks")
 def voir_les_decks():
@@ -192,6 +233,7 @@ def voir_les_decks():
         return render_template("index.html", cartes_python=donnees_json, total_prix=0, nom_de_la_serie="Mon Atelier des Decks", decks_sauvegardes=tous_les_decks)
     except Exception as e:
         return f"Erreur : {e}"
+
 
 @app.route("/cartes/<mode>")
 def voir_cartes(mode):
@@ -223,6 +265,7 @@ def voir_cartes(mode):
     except Exception as e:
         return f"Erreur : {e}"
 
+
 @app.route("/serie/<nom_serie>")
 def voir_serie(nom_serie):
     try:
@@ -249,10 +292,73 @@ def voir_serie(nom_serie):
     except Exception as e:
         return f"Erreur : {e}"
 
+
+# --- ROUTES INTERACTIVES (SUPABASE) ---
+@app.route('/modifier_quantite', methods=['POST'])
+def modifier_quantite():
+    try:
+        data = request.get_json()
+        device_id = get_device_id()
+        card_number = data.get('card_number')
+        action = data.get('action')
+
+        reponse = supabase.table('user_collections') \
+            .select('quantite') \
+            .eq('device_id', device_id) \
+            .eq('card_number', card_number) \
+            .execute()
+
+        qty_actuelle = reponse.data[0]['quantite'] if reponse.data else 0
+        nouvelle_qty = max(0, qty_actuelle + 1 if action == 'plus' else qty_actuelle - 1)
+
+        supabase.table('user_collections').upsert({
+            'device_id': device_id,
+            'card_number': card_number,
+            'quantite': nouvelle_qty
+        }).execute()
+
+        return jsonify({'status': 'success', 'nouvelle_quantite': nouvelle_qty})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+@app.route("/api/toggle_wishlist", methods=["POST"])
+def toggle_wishlist():
+    try:
+        donnees = request.get_json()
+        id_carte = donnees.get("card_number")
+        device_id = get_device_id()
+
+        check = supabase.table('user_wishlists') \
+            .select('id') \
+            .eq('device_id', device_id) \
+            .eq('card_number', id_carte) \
+            .execute()
+
+        if check.data:
+            supabase.table('user_wishlists') \
+                .delete() \
+                .eq('device_id', device_id) \
+                .eq('card_number', id_carte) \
+                .execute()
+            statut = "retire"
+        else:
+            supabase.table('user_wishlists') \
+                .insert({'device_id': device_id, 'card_number': id_carte}) \
+                .execute()
+            statut = "ajoute"
+
+        return jsonify({"status": "success", "action": statut})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# --- ROUTES DECKS ---
 @app.route("/api/get_deck", methods=["GET"])
 def api_get_deck():
     etat = charger_deck_actif_appareil()
     return jsonify(etat["deck"])
+
 
 @app.route("/api/remove_from_deck", methods=["POST"])
 def api_remove_from_deck():
@@ -287,6 +393,7 @@ def api_remove_from_deck():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
 @app.route("/sauvegarder_deck", methods=["POST"])
 def sauvegarder_deck():
     try:
@@ -304,31 +411,6 @@ def sauvegarder_deck():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-@app.route('/modifier_quantite', methods=['POST'])
-def modifier_quantite():
-    data = request.get_json()
-    device_id = request.headers.get('X-Device-ID', 'default_device')
-    card_number = data.get('card_number')
-    action = data.get('action') # 'plus' ou 'moins'
-
-    # 1. Récupérer la quantité actuelle pour CET appareil
-    reponse = supabase.table('user_collections') \
-        .select('quantite') \
-        .eq('device_id', device_id) \
-        .eq('card_number', card_number) \
-        .execute()
-
-    qty_actuelle = reponse.data[0]['quantite'] if reponse.data else 0
-    nouvelle_qty = max(0, qty_actuelle + 1 if action == 'plus' else qty_actuelle - 1)
-
-    # 2. Sauvegarder dans Supabase
-    supabase.table('user_collections').upsert({
-        'device_id': device_id,
-        'card_number': card_number,
-        'quantite': nouvelle_qty
-    }).execute()
-
-    return jsonify({'status': 'success', 'nouvelle_quantite': nouvelle_qty})
 
 @app.route("/supprimer_deck", methods=["POST"])
 def supprimer_deck():
@@ -351,6 +433,7 @@ def supprimer_deck():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
 @app.route("/api/load_specific_deck", methods=["POST"])
 def api_load_specific_deck():
     try:
@@ -370,6 +453,7 @@ def api_load_specific_deck():
         return jsonify({"status": "error", "message": "Deck introuvable"}), 404
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @app.route("/api/add_to_deck", methods=["POST"])
 def api_add_to_deck():
@@ -426,6 +510,7 @@ def api_add_to_deck():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
 @app.route("/api/get_deck_status", methods=["GET"])
 def api_get_deck_status():
     etat = charger_deck_actif_appareil()
@@ -435,11 +520,14 @@ def api_get_deck_status():
         "prix_total_deck": calculer_prix_deck_actuel(etat["deck"])
     })
 
+
 @app.route("/api/get_all_saved_deks_json")
 def api_get_all_saved_decks_json():
     _, tous_les_decks = charger_decks()
     return jsonify(tous_les_decks)
 
+
+# --- ROUTES DIVERSES ---
 @app.route("/maj-sp")
 def mettre_a_jour_sp():
     try:
@@ -465,33 +553,16 @@ def mettre_a_jour_sp():
     except Exception as e:
         return f"Erreur : {e}"
 
+
 @app.route('/manifest.json')
 def manifest():
     return app.send_static_file('manifest.json')
+
 
 @app.route('/sw.js')
 def service_worker():
     return app.send_static_file('sw.js')
 
-@app.route("/api/toggle_wishlist", methods=["POST"])
-def toggle_wishlist():
-    try:
-        donnees = request.get_json()
-        id_carte = donnees.get("card_number")
-
-        _, liste_wishlist = charger_wishlist()
-
-        if id_carte in liste_wishlist:
-            liste_wishlist.remove(id_carte)
-            statut = "retire"
-        else:
-            liste_wishlist.append(id_carte)
-            statut = "ajoute"
-
-        sauvegarder_wishlist(liste_wishlist)
-        return jsonify({"status": "success", "action": statut})
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=False, port=5000)
