@@ -83,9 +83,8 @@ def appliquer_quantites_collection(donnees_json):
 
     for carte in donnees_json:
         id_carte = carte.get("card_number", "")
-        is_alt = carte.get("is_alternative", False)
-        cle = f"{id_carte}_alt" if is_alt else id_carte
-        carte["quantite"] = dict_collection.get(cle, 0)
+        # CORRECTION : On utilise directement l'identifiant unique (qui contient déjà _p1, _p2...)
+        carte["quantite"] = dict_collection.get(id_carte, 0)
 
 
 def appliquer_wishlist(donnees_json):
@@ -102,8 +101,6 @@ def appliquer_wishlist(donnees_json):
         cards_in_wishlist = set()
 
     for carte in donnees_json:
-        # Assure-toi que la clé utilisée ici correspond au nom dans ton JSON final
-        # (souvent "card_number" ou "cle_carte")
         id_carte = carte.get("card_number", "")
         carte["in_wishlist"] = id_carte in cards_in_wishlist
 
@@ -313,11 +310,9 @@ def modifier_quantite():
         data = request.get_json()
         device_id = get_device_id()
 
-        # On utilise directement l'identifiant unique (qui contient déjà _p1, _p2...)
         card_number = data.get('card_number')
         action = data.get('action')
 
-        # Vérifier si cette carte exacte (ex: OP01-001_p2) est déjà enregistrée
         reponse = supabase.table('user_collections') \
             .select('id, quantite') \
             .eq('device_id', device_id) \
@@ -352,7 +347,6 @@ def toggle_wishlist():
         donnees = request.get_json()
         device_id = get_device_id()
 
-        # On utilise directement l'identifiant unique
         card_number = donnees.get("card_number")
 
         check = supabase.table('user_wishlists') \
@@ -377,6 +371,7 @@ def toggle_wishlist():
         return jsonify({"status": "success", "action": statut})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 # --- ROUTES DECKS (SUPABASE) ---
 @app.route("/api/get_deck", methods=["GET"])
@@ -422,15 +417,22 @@ def api_remove_from_deck():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-@app.route('/ta_route_de_sauvegarde_de_deck', methods=['POST']) # Garde le nom de TA route actuelle
+@app.route('/api/save_deck', methods=['POST'])
+@app.route('/sauvegarder_deck', methods=['POST'])
+@app.route('/ta_route_de_sauvegarde_de_deck', methods=['POST'])
 def sauvegarder_deck():
     try:
         data = request.get_json()
         device_id = get_device_id()
-        nom_deck = data.get('nom_deck')
-        structure = data.get('structure_deck') # ou le nom de ta variable qui contient les cartes
+        nom_deck = data.get('nom_deck') or data.get('nom')
+        structure = data.get('structure_deck') or data.get('deck')
 
-        # 1. On vérifie si le deck existe déjà pour cet utilisateur
+        if not nom_deck:
+            return jsonify({'status': 'error', 'message': 'Nom du deck manquant'}), 400
+
+        # Mettre à jour l'état actif localement pour ne pas perdre les cartes en mémoire
+        sauvegarder_deck_actif_appareil(nom_deck, structure)
+
         check = supabase.table('user_decks') \
             .select('id') \
             .eq('device_id', device_id) \
@@ -438,13 +440,11 @@ def sauvegarder_deck():
             .execute()
 
         if check.data:
-            # 2. Le deck existe -> on le MET À JOUR (Update)
             row_id = check.data[0]['id']
             supabase.table('user_decks').update({
                 'structure_deck': structure
             }).eq('id', row_id).execute()
         else:
-            # 3. Le deck n'existe pas -> on le CRÉE (Insert)
             supabase.table('user_decks').insert({
                 'device_id': device_id,
                 'nom_deck': nom_deck,
