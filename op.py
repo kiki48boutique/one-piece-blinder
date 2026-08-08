@@ -12,7 +12,7 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 app = Flask(__name__)
 
 
-# --- UTILITAIRES APPAREIL & SUPABASE ---
+# --- UTILITAIRES APPAREIL & CACHE LOCAL ---
 def get_device_id():
     """Récupère l'identifiant unique du joueur (cookie ou header)."""
     device_id = request.cookies.get('op_device_id')
@@ -46,16 +46,12 @@ def sauvegarder_json_appareil(prefixe_fichier, donnees):
         json.dump(donnees, f, ensure_ascii=False, indent=4)
 
 
-# --- FONCTIONS NATIVES (JSON SÉRIES / DECKS) ---
+# --- FONCTIONS NATIVES & SESSIONS ---
 def charger_donnees():
     dossier_actuel = os.path.dirname(os.path.abspath(__file__))
     chemin_json = os.path.join(dossier_actuel, "cartes.json")
     with open(chemin_json, "r", encoding="utf-8") as f:
         return chemin_json, json.load(f)
-
-
-def charger_decks():
-    return get_device_json_path('decks'), lire_json_appareil('decks', {})
 
 
 def charger_deck_actif_appareil():
@@ -66,7 +62,7 @@ def sauvegarder_deck_actif_appareil(nom, deck):
     sauvegarder_json_appareil('deck_actif', {"nom": nom, "deck": deck})
 
 
-# --- FONCTIONS SUPABASE (COLLECTION & WISHLIST) ---
+# --- FONCTIONS SUPABASE (COLLECTION, WISHLIST & DECKS) ---
 def charger_collection_supabase(device_id):
     """Charge la collection d'un utilisateur depuis Supabase."""
     try:
@@ -107,6 +103,21 @@ def appliquer_wishlist(donnees_json):
 
     for carte in donnees_json:
         carte["in_wishlist"] = carte.get("card_number") in cards_in_wishlist
+
+
+def charger_decks():
+    """Charge tous les decks sauvegardés de l'utilisateur depuis Supabase."""
+    device_id = get_device_id()
+    try:
+        reponse = supabase.table('user_decks') \
+            .select('nom_deck, structure_deck') \
+            .eq('device_id', device_id) \
+            .execute()
+        tous_les_decks = {row['nom_deck']: row['structure_deck'] for row in reponse.data} if reponse.data else {}
+    except Exception as e:
+        print(f"Erreur Supabase Decks: {e}")
+        tous_les_decks = {}
+    return "", tous_les_decks
 
 
 # --- FORMATAGE ET TRI DES CARTES ---
@@ -353,7 +364,7 @@ def toggle_wishlist():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-# --- ROUTES DECKS ---
+# --- ROUTES DECKS (SUPABASE) ---
 @app.route("/api/get_deck", methods=["GET"])
 def api_get_deck():
     etat = charger_deck_actif_appareil()
@@ -385,9 +396,12 @@ def api_remove_from_deck():
         sauvegarder_deck_actif_appareil(deck_nom, deck_memoire)
 
         if deck_nom:
-            _, tous_les_decks = charger_decks()
-            tous_les_decks[deck_nom] = deck_memoire
-            sauvegarder_json_appareil('decks', tous_les_decks)
+            device_id = get_device_id()
+            supabase.table('user_decks').upsert({
+                'device_id': device_id,
+                'nom_deck': deck_nom,
+                'structure_deck': deck_memoire
+            }).execute()
 
         return jsonify({"status": "success", "prix_total_deck": calculer_prix_deck_actuel(deck_memoire)})
     except Exception as e:
@@ -400,11 +414,14 @@ def sauvegarder_deck():
         donnees = request.get_json()
         nom_deck = donnees.get("nom")
         structure_deck = donnees.get("deck")
+        device_id = get_device_id()
 
-        _, tous_les_decks = charger_decks()
-        tous_les_decks[nom_deck] = structure_deck
+        supabase.table('user_decks').upsert({
+            'device_id': device_id,
+            'nom_deck': nom_deck,
+            'structure_deck': structure_deck
+        }).execute()
 
-        sauvegarder_json_appareil('decks', tous_les_decks)
         sauvegarder_deck_actif_appareil(nom_deck, structure_deck)
 
         return jsonify({"status": "success", "message": f"💾 Deck '{nom_deck}' enregistré avec succès !"})
@@ -417,19 +434,18 @@ def supprimer_deck():
     try:
         donnees = request.get_json()
         nom_deck_a_supprimer = donnees.get("nom")
-        _, tous_les_decks = charger_decks()
+        device_id = get_device_id()
 
-        if nom_deck_a_supprimer in tous_les_decks:
-            del tous_les_decks[nom_deck_a_supprimer]
-            sauvegarder_json_appareil('decks', tous_les_decks)
+        supabase.table('user_decks').delete() \
+            .eq('device_id', device_id) \
+            .eq('nom_deck', nom_deck_a_supprimer) \
+            .execute()
 
-            etat = charger_deck_actif_appareil()
-            if etat["nom"] == nom_deck_a_supprimer:
-                sauvegarder_deck_actif_appareil(None, {"leader": None, "cards": []})
+        etat = charger_deck_actif_appareil()
+        if etat["nom"] == nom_deck_a_supprimer:
+            sauvegarder_deck_actif_appareil(None, {"leader": None, "cards": []})
 
-            return jsonify({"status": "success", "message": f"🗑️ Le deck '{nom_deck_a_supprimer}' a bien été supprimé !"})
-        else:
-            return jsonify({"status": "error", "message": "Deck introuvable."}), 404
+        return jsonify({"status": "success", "message": f"🗑️ Le deck '{nom_deck_a_supprimer}' a bien été supprimé !"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
@@ -502,9 +518,12 @@ def api_add_to_deck():
         sauvegarder_deck_actif_appareil(deck_nom, deck_memoire)
 
         if deck_nom:
-            _, tous_les_decks = charger_decks()
-            tous_les_decks[deck_nom] = deck_memoire
-            sauvegarder_json_appareil('decks', tous_les_decks)
+            device_id = get_device_id()
+            supabase.table('user_decks').upsert({
+                'device_id': device_id,
+                'nom_deck': deck_nom,
+                'structure_deck': deck_memoire
+            }).execute()
 
         return jsonify({"status": "success", "deck_actif": deck_nom, "prix_total_deck": calculer_prix_deck_actuel(deck_memoire)})
     except Exception as e:
