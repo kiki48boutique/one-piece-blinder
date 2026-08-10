@@ -316,6 +316,8 @@
             <option value="rarete_croissante">Trier par : Rareté (Moins Rare au plus Rare)</option>
             <option value="prix_desc">Trier par : Prix (Plus cher au moins cher)</option>
             <option value="prix_asc">Trier par : Prix (Moins cher au plus cher)</option>
+	    <option value="variation_desc">Trier par : Variation (Plus forte hausse)</option>
+   	    <option value="variation_asc">Trier par : Variation (Plus forte baisse)</option>
         </select>
     </div>
 
@@ -333,7 +335,8 @@
              data-color="{{ couleur_carte }}"
              data-rarity="{{ carte.rarity|lower if carte.rarity else 'unknown' }}"
              data-type="{{ carte.type|lower if carte.type else 'unknown' }}"
-             data-price="{{ carte.prix or 0.0 }}">
+             data-price="{{ carte.prix or 0.0 }}"
+	     data-variation="{{ pct }}">
             
             <div class="wishlist-coeur" onclick="toggleWishlist('{{ carte.card_number }}', this)">
                 <span style="font-size: 18px; padding-top: 2px;">
@@ -478,6 +481,16 @@
                     
                     if (prixA !== prixB) {
                         return critere === 'prix_desc' ? prixB - prixA : prixA - prixB;
+                    }
+                    return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
+                }
+                // 👇 AJOUTEZ CE BLOC POUR LA VARIATION 👇
+                else if (critere === 'variation_desc' || critere === 'variation_asc') {
+                    const varA = parseFloat(a.getAttribute('data-variation') || 0);
+                    const varB = parseFloat(b.getAttribute('data-variation') || 0);
+                    
+                    if (varA !== varB) {
+                        return critere === 'variation_desc' ? varB - varA : varA - varB;
                     }
                     return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
                 }
