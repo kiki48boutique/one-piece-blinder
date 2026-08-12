@@ -767,5 +767,95 @@ def manifest():
 def service_worker():
     return app.send_static_file('sw.js')
 
+# --- ROUTE : AJOUTER UN AMI ---
+@app.route('/api/friends/add', methods=['POST'])
+def add_friend():
+    try:
+        identity = get_user_identity()
+        if identity['type'] != 'user_id':
+            return jsonify({'status': 'error', 'message': 'Connecte-toi pour ajouter des amis !'}), 401
+
+        data = request.get_json()
+        friend_pseudo = data.get('pseudo', '').strip()
+
+        if friend_pseudo == identity['id']:
+            return jsonify({'status': 'error', 'message': 'Tu ne peux pas t\'ajouter toi-même.'}), 400
+
+        # Vérifier si l'ami existe
+        check = supabase.table('utilisateurs').select('pseudo').eq('pseudo', friend_pseudo).execute()
+        if not check.data:
+            return jsonify({'status': 'error', 'message': 'Cet utilisateur n\'existe pas.'}), 404
+
+        # Ajouter le lien d'amitié
+        supabase.table('amis').upsert({'user_id': identity['id'], 'friend_id': friend_pseudo}).execute()
+        return jsonify({'status': 'success', 'message': f'{friend_pseudo} ajouté à tes amis !'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+# --- ROUTE : LISTE DES AMIS ET VALEUR COLLECTION ---
+@app.route('/api/friends/list', methods=['GET'])
+def list_friends():
+    try:
+        identity = get_user_identity()
+        if identity['type'] != 'user_id':
+            return jsonify([])
+
+        # Récupérer les amis
+        res = supabase.table('amis').select('friend_id').eq('user_id', identity['id']).execute()
+        friends = [row['friend_id'] for row in res.data] if res.data else []
+
+        _, donnees_json = charger_donnees()
+        dict_prix = {c["card_number"]: float(c.get("prix", 0.0)) for c in donnees_json}
+
+        resultats = []
+        for f_id in friends:
+            # Récupérer la collection de l'ami et calculer sa valeur
+            col_res = supabase.table('user_collections').select('card_number, quantite').eq('user_id', f_id).execute()
+            total_val = sum(dict_prix.get(r['card_number'], 0.0) * r.get('quantite', 0) for r in col_res.data) if col_res.data else 0.0
+
+            resultats.append({
+                'pseudo': f_id,
+                'valeur_collection': round(total_val, 2)
+            })
+
+        return jsonify(resultats)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
+# --- ROUTE : VOIR LA COLLECTION D'UN AMI ---
+@app.route("/ami/<pseudo>/collection")
+def voir_collection_ami(pseudo):
+    try:
+        _, donnees_json = charger_donnees()
+        _, tous_les_decks = charger_decks() # <-- Charger les decks
+
+        reponse = supabase.table('user_collections').select('card_number, quantite').eq('user_id', pseudo).execute()
+        dict_col = {row['card_number']: row['quantite'] for row in reponse.data} if reponse.data else {}
+
+        liste_cartes = []
+        for carte in donnees_json:
+            qte = dict_col.get(carte.get("card_number"), 0)
+            if qte > 0:
+                c_copy = carte.copy()
+                c_copy["quantite"] = qte
+                formater_carte_image(c_copy)
+                liste_cartes.append(c_copy)
+
+        liste_cartes = trier_cartes(liste_cartes)
+        total_prix = sum(c["quantite"] * c.get("prix", 0.0) for c in liste_cartes)
+
+        return render_template(
+            "index.html",
+            cartes_python=liste_cartes,
+            total_prix=total_prix,
+            nom_de_la_serie=f"Collection de {pseudo}",
+            decks_sauvegardes=tous_les_decks, # <-- Transmis au template
+            mode_lecture_seule=True
+        )
+    except Exception as e:
+        return f"Erreur : {e}"
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
