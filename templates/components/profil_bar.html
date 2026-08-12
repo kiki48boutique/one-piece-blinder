@@ -1,0 +1,131 @@
+<div class="account-menu-container" style="position: relative; display: inline-block;">
+    <!-- Bouton principal -->
+    <button onclick="toggleAccountMenu()" style="background-color: #1e1e1e; color: #ffcc00; border: 1px solid #444; padding: 10px 20px; font-weight: bold; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.95rem;">
+        👤 {% if session.get('user_id') %}Compte : {{ session.get('user_id') }}{% else %}Mon Compte{% endif %} ▾
+    </button>
+
+    <!-- Menu déroulant -->
+    <div id="account-dropdown" style="display: none; position: absolute; right: 0; top: 120%; background: #1e1e1e; border: 1px solid #444; border-radius: 8px; padding: 15px; width: 260px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); z-index: 1000;">
+        
+        {% if session.get('user_id') %}
+            <!-- SECTION CONNECTÉ -->
+            <div style="text-align: center;">
+                <p style="margin: 0 0 10px 0; color: #aaa; font-size: 0.9rem;">Connecté :<br><strong style="color: #ffcc00; font-size: 1.1rem;">{{ session.get('user_id') }}</strong></p>
+                <button onclick="seDeconnecter()" style="background-color: #ff4757; color: white; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%;">
+                    🚪 Se déconnecter
+                </button>
+            </div>
+        {% else %}
+            <!-- SECTION DÉCONNECTÉ (Onglets Connexion / Inscription) -->
+            <div>
+                <!-- Boutons d'onglets -->
+                <div style="display: flex; margin-bottom: 12px; border-bottom: 1px solid #444;">
+                    <button onclick="switchAuthTab('login')" id="tab-login" style="flex: 1; background: none; border: none; color: #ffcc00; padding: 6px; font-weight: bold; cursor: pointer; border-bottom: 2px solid #ffcc00; font-size: 0.9rem;">Connexion</button>
+                    <button onclick="switchAuthTab('register')" id="tab-register" style="flex: 1; background: none; border: none; color: #aaa; padding: 6px; font-weight: bold; cursor: pointer; border-bottom: 2px solid transparent; font-size: 0.9rem;">Inscription</button>
+                </div>
+
+                <!-- Formulaire de Connexion -->
+                <div id="form-login">
+                    <input type="text" id="login-pseudo" placeholder="Pseudo" style="width: 100%; padding: 8px; box-sizing: border-box; background: #2a2a2a; color: #fff; border: 1px solid #444; border-radius: 4px; margin-bottom: 8px;">
+                    <input type="password" id="login-password" placeholder="Mot de passe" style="width: 100%; padding: 8px; box-sizing: border-box; background: #2a2a2a; color: #fff; border: 1px solid #444; border-radius: 4px; margin-bottom: 12px;">
+                    <button onclick="seConnecter()" style="background-color: #ffcc00; color: #000; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%;">Se connecter</button>
+                </div>
+
+                <!-- Formulaire d'Inscription -->
+                <div id="form-register" style="display: none;">
+                    <input type="text" id="reg-pseudo" placeholder="Choisissez un pseudo" style="width: 100%; padding: 8px; box-sizing: border-box; background: #2a2a2a; color: #fff; border: 1px solid #444; border-radius: 4px; margin-bottom: 8px;">
+                    <input type="password" id="reg-password" placeholder="Choisissez un mot de passe" style="width: 100%; padding: 8px; box-sizing: border-box; background: #2a2a2a; color: #fff; border: 1px solid #444; border-radius: 4px; margin-bottom: 12px;">
+                    <button onclick="sInscrire()" style="background-color: #4caf50; color: white; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%;">Créer un compte</button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleAccountMenu() {
+    const dropdown = document.getElementById('account-dropdown');
+    dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
+}
+
+// Fermer le menu si clic à l'extérieur
+window.addEventListener('click', function(e) {
+    const container = document.querySelector('.account-menu-container');
+    if (container && !container.contains(e.target)) {
+        const dropdown = document.getElementById('account-dropdown');
+        if(dropdown) dropdown.style.display = 'none';
+    }
+});
+
+function switchAuthTab(tab) {
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const formLogin = document.getElementById('form-login');
+    const formRegister = document.getElementById('form-register');
+
+    if (tab === 'login') {
+        tabLogin.style.color = '#ffcc00';
+        tabLogin.style.borderBottomColor = '#ffcc00';
+        tabRegister.style.color = '#aaa';
+        tabRegister.style.borderBottomColor = 'transparent';
+        formLogin.style.display = 'block';
+        formRegister.style.display = 'none';
+    } else {
+        tabRegister.style.color = '#ffcc00';
+        tabRegister.style.borderBottomColor = '#ffcc00';
+        tabLogin.style.color = '#aaa';
+        tabLogin.style.borderBottomColor = 'transparent';
+        formRegister.style.display = 'block';
+        formLogin.style.display = 'none';
+    }
+}
+
+function seConnecter() {
+    const pseudo = document.getElementById('login-pseudo').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    fetch('/api/login', {  // CORRIGÉ : pointe vers /api/login
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pseudo: pseudo, password: password })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            location.reload();
+        } else {
+            alert(data.message || 'Erreur de connexion');
+        }
+    });
+}
+
+function sInscrire() {
+    const pseudo = document.getElementById('reg-pseudo').value.trim();
+    const password = document.getElementById('reg-password').value;
+
+    if (!pseudo || !password) {
+        alert('Veuillez remplir tous les champs.');
+        return;
+    }
+
+    fetch('/api/register', {  // CORRIGÉ : pointe vers /api/register
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pseudo: pseudo, password: password })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert(data.message || 'Erreur lors de l’inscription');
+        }
+    });
+}
+
+function seDeconnecter() {
+    fetch('/logout', { method: 'POST' })
+    .then(() => location.reload());
+}
+</script>
