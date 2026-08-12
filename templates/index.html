@@ -316,8 +316,8 @@
             <option value="rarete_croissante">Trier par : Rareté (Moins Rare au plus Rare)</option>
             <option value="prix_desc">Trier par : Prix (Plus cher au moins cher)</option>
             <option value="prix_asc">Trier par : Prix (Moins cher au plus cher)</option>
-	    <option value="variation_desc">Trier par : Variation (Plus forte hausse)</option>
-   	    <option value="variation_asc">Trier par : Variation (Plus forte baisse)</option>
+            <option value="variation_desc">Trier par : Variation (Plus forte hausse)</option>
+            <option value="variation_asc">Trier par : Variation (Plus forte baisse)</option>
         </select>
     </div>
 
@@ -336,7 +336,7 @@
              data-rarity="{{ carte.rarity|lower if carte.rarity else 'unknown' }}"
              data-type="{{ carte.type|lower if carte.type else 'unknown' }}"
              data-price="{{ carte.prix or 0.0 }}"
-	     data-variation="{{ pct }}">
+             data-variation="{{ pct }}">
             
             <div class="wishlist-coeur" onclick="toggleWishlist('{{ carte.card_number }}', this)">
                 <span style="font-size: 18px; padding-top: 2px;">
@@ -373,7 +373,6 @@
             </div>
             
             <div class="controls">
-                <!-- Utilisation de guillemets simples autour de onclick pour éviter les conflits de tojson -->
                 <button class="btn" onclick='modifierQty(this, "{{ carte.card_number }}", {{ carte.name|tojson }}, "moins", {{ "true" if carte.is_alternative else "false" }})'>-</button>
                 <span class="qty">{{ carte.quantite }}</span>
                 <button class="btn" onclick='modifierQty(this, "{{ carte.card_number }}", {{ carte.name|tojson }}, "plus", {{ "true" if carte.is_alternative else "false" }})'>+</button>
@@ -415,11 +414,11 @@
             const cards = document.querySelectorAll('#main-grid .card');
 
             cards.forEach(card => {
-                const id = card.getAttribute('data-id').toLowerCase();
-                const nom = card.getAttribute('data-name').toLowerCase();
+                const id = (card.getAttribute('data-id') || '').toLowerCase();
+                const nom = (card.getAttribute('data-name') || '').toLowerCase();
                 const colorAttr = (card.getAttribute('data-color') || '').toLowerCase();
                 const rarity = (card.getAttribute('data-rarity') || '').toLowerCase();
-                const type = card.getAttribute('data-type');
+                const type = (card.getAttribute('data-type') || '').toLowerCase();
 
                 const matchRecherche = id.includes(recherche) || nom.includes(recherche);
                 
@@ -469,8 +468,8 @@
             const critere = document.getElementById('sort-order').value;
 
             cartes.sort((a, b) => {
-                const idA = a.getAttribute('data-id').toLowerCase();
-                const idB = b.getAttribute('data-id').toLowerCase();
+                const idA = (a.getAttribute('data-id') || '').toLowerCase();
+                const idB = (b.getAttribute('data-id') || '').toLowerCase();
                 
                 if (critere === 'num') {
                     return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
@@ -484,7 +483,6 @@
                     }
                     return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
                 }
-                // 👇 AJOUTEZ CE BLOC POUR LA VARIATION 👇
                 else if (critere === 'variation_desc' || critere === 'variation_asc') {
                     const varA = parseFloat(a.getAttribute('data-variation') || 0);
                     const varB = parseFloat(b.getAttribute('data-variation') || 0);
@@ -495,10 +493,10 @@
                     return idA.localeCompare(idB, undefined, { numeric: true, sensitivity: 'base' });
                 }
                 else {
-                    const rareteA = a.getAttribute('data-rarity').toLowerCase();
-                    const rareteB = b.getAttribute('data-rarity').toLowerCase();
-                    const typeA = a.getAttribute('data-type').toLowerCase();
-                    const typeB = b.getAttribute('data-type').toLowerCase();
+                    const rareteA = (a.getAttribute('data-rarity') || '').toLowerCase();
+                    const rareteB = (b.getAttribute('data-rarity') || '').toLowerCase();
+                    const typeA = (a.getAttribute('data-type') || '').toLowerCase();
+                    const typeB = (b.getAttribute('data-type') || '').toLowerCase();
 
                     const isAltP2_A = idA.includes("_p2");
                     const isAltP2_B = idB.includes("_p2");
@@ -549,34 +547,33 @@
         }
 
         function modifierQty(btn, id, nom, action, isAlt) {
-    const label = btn.parentElement.querySelector('.qty');
-    fetch('/modifier_quantite', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            card_number: id, 
-            name: nom, 
-            action: action, 
-            contexte: "{{ nom_de_la_serie }}", 
-            is_alternative: isAlt 
-        })
-    })
-    .then(r => r.json())
-    .then(d => { 
-        if(d.status === 'success') { 
-            label.innerText = d.nouvelle_quantite; 
-            if(document.getElementById('global-total-price')) {
-                document.getElementById('global-total-price').innerText = d.nouveau_total_prix.toFixed(2);
-            }
-        } 
-    })
-    .catch(err => {
-        // L'alerte gênante a été supprimée, l'erreur est simplement notifiée en arrière-plan dans la console
-        console.log("Erreur silencieuse collection :", err);
-    });
-}
+            const label = btn.parentElement.querySelector('.qty');
+            fetch('/modifier_quantite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    card_number: id, 
+                    name: nom, 
+                    action: action, 
+                    contexte: {{ nom_de_la_serie|tojson }}, 
+                    is_alternative: isAlt 
+                })
+            })
+            .then(r => r.json())
+            .then(d => { 
+                if(d.status === 'success') { 
+                    label.innerText = d.nouvelle_quantite; 
+                    if(document.getElementById('global-total-price')) {
+                        document.getElementById('global-total-price').innerText = d.nouveau_total_prix.toFixed(2);
+                    }
+                } 
+            })
+            .catch(err => {
+                console.log("Erreur silencieuse collection :", err);
+            });
+        }
 
-function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
+        function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
             fetch('/api/add_to_deck', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -617,7 +614,6 @@ function ajouterAuDeckActif(cardId, cardName, isLeader, isAlt, event) {
                         priceSpan.innerText = parseFloat(data.prix_total_deck).toFixed(2);
                     }
                 } else {
-                    // L'alerte gênante a été neutralisée et remplacée par un log discret dans la console
                     console.log("Avertissement Atelier (ignoré) :", data.message);
                 }
             })
