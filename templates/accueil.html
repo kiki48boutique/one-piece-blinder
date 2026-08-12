@@ -36,7 +36,7 @@
             align-items: center;
         }
 
-        /* --- NOUVEAU STYLE : BARRE D'AUTHENTIFICATION --- */
+        /* --- BARRE D'AUTHENTIFICATION --- */
         .auth-bar {
             width: 100%;
             background: #1e1e1e;
@@ -302,17 +302,9 @@
         <div class="central-content">
 
             <!-- 0. BARRE DE CONNEXION COMPTE -->
-            <div class="auth-bar">
-                <span>👤 Profil : <strong>{{ session.get('user_id', 'Mode Invité') }}</strong></span>
-                <div class="auth-input-group">
-                    {% if session.get('user_id') %}
-                        <button onclick="seDeconnecter()" style="background: #ff4757; color: #fff;">Déconnexion</button>
-                    {% else %}
-                        <input type="text" id="username-input" placeholder="Entrez un pseudo...">
-                        <button onclick="seConnecter()">Connexion</button>
-                    {% endif %}
-                </div>
-            </div>
+     
+                {% include 'components/profil_bar.html' %}
+            
 
             <h1>🏴‍☠️ One Piece Card Game — Mon Manager</h1>
 
