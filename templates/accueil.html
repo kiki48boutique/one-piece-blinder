@@ -3,11 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Mon Classeur One Piece - Menu Principal</title>
-
-    <!-- Bootstrap 5 CSS & JS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -41,7 +36,7 @@
             align-items: center;
         }
 
-        /* --- BARRE DE NAVIGATION HAUTE --- */
+        /* --- BARRE DE NAVIGATION HAUTE (Compte à gauche, Amis à droite) --- */
         .top-nav-bar {
             width: 100%;
             display: flex;
@@ -194,35 +189,6 @@
             color: #ffcc00;
         }
 
-        /* --- ADAPTATION DES MODALS BOOTSTRAP AU DARK MODE --- */
-        .modal-content {
-            background-color: #1e1e1e;
-            color: #ffffff;
-            border: 1px solid #333;
-        }
-        .modal-header, .modal-footer {
-            border-color: #333;
-        }
-        .modal-header .btn-close {
-            filter: invert(1) grayscale(100%) brightness(200%);
-        }
-        .list-group-item {
-            background-color: #2a2a2a;
-            color: #ffffff;
-            border-color: #444;
-        }
-        .form-control {
-            background-color: #2a2a2a;
-            color: #ffffff;
-            border: 1px solid #444;
-        }
-        .form-control:focus {
-            background-color: #333;
-            color: #ffffff;
-            border-color: #ffcc00;
-            box-shadow: none;
-        }
-
         @media (max-width: 1200px) {
             .banner-side { display: none; }
         }
@@ -276,9 +242,11 @@
 
             <!-- BARRE DE NAVIGATION HAUTE (Compte à gauche / Amis à droite) -->
             <div class="top-nav-bar">
+                <!-- Menu Compte à GAUCHE -->
                 <div class="nav-left">
                     {% include 'components/profil_bar.html' %}
                 </div>
+                <!-- Menu Amis à DROITE -->
                 <div class="nav-right">
                     {% include 'components/friends_bar.html' %}
                 </div>
@@ -413,87 +381,5 @@
 
     </div>
 
-    <!-- MODAL : AJOUTER UN AMI -->
-    <div class="modal fade" id="modalAjoutAmi" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">➕ Ajouter un ami</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-          </div>
-          <div class="modal-body">
-            <input type="text" id="pseudoAmiInput" class="form-control" placeholder="Entrez le pseudo de votre ami">
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-warning" onclick="soumettreAjoutAmi()">Ajouter</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL : LISTE D'AMIS -->
-    <div class="modal fade" id="modalListeAmis" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">👥 Mes Amis</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-          </div>
-          <div class="modal-body">
-            <div id="contenuListeAmis" class="list-group">
-              <!-- Injecté dynamiquement via JavaScript -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script>
-    function ouvrirModalAjoutAmi() {
-        new bootstrap.Modal(document.getElementById('modalAjoutAmi')).show();
-    }
-
-    function soumettreAjoutAmi() {
-        const pseudo = document.getElementById('pseudoAmiInput').value;
-        if (!pseudo) return;
-
-        fetch('/api/friends/add', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ pseudo: pseudo })
-        })
-        .then(r => r.json())
-        .then(res => {
-            alert(res.message);
-            if(res.status === 'success') location.reload();
-        });
-    }
-
-    function chargerEtOuvrirListeAmis() {
-        fetch('/api/friends/list')
-        .then(r => r.json())
-        .then(amis => {
-            const conteneur = document.getElementById('contenuListeAmis');
-            conteneur.innerHTML = '';
-
-            if(!amis || amis.length === 0) {
-                conteneur.innerHTML = '<p class="text-muted text-center my-3">Aucun ami pour le moment.</p>';
-            } else {
-                amis.forEach(ami => {
-                    conteneur.innerHTML += `
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>${ami.pseudo}</strong><br>
-                                <small class="text-success">💎 Valeur collection : ${ami.valeur_collection} €</small>
-                            </div>
-                            <a href="/ami/${ami.pseudo}/collection" class="btn btn-sm btn-outline-warning">Voir sa collection</a>
-                        </div>
-                    `;
-                });
-            }
-            new bootstrap.Modal(document.getElementById('modalListeAmis')).show();
-        });
-    }
-    </script>
 </body>
 </html>
