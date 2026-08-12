@@ -1,6 +1,6 @@
 import json
 import os
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, session  # 1. 'session' ajouté ici
 from supabase import create_client
 
 # --- CONFIGURATION SUPABASE ---
@@ -10,12 +10,34 @@ SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXV
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "votre_cle_secrete_ultra_securisee")  # 2. Clé secrète requise pour la session
 
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    user_id = data.get('user_id')
+
+    if user_id:
+        session['user_id'] = user_id  # Enregistre le pseudo/ID dans le cookie de session
+        return jsonify({'status': 'success', 'message': f'Connecté en tant que {user_id}'})
+
+    return jsonify({'status': 'error', 'message': 'Identifiant requis'}), 400
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('user_id', None)  # Efface la session (repasse automatiquement en device_id)
+    return jsonify({'status': 'success', 'message': 'Déconnecté'})
 
 # --- IDENTIFICATION INTELLIGENTE (USER_ID ou DEVICE_ID) ---
 def get_user_identity():
-    """Vérifie si un token Supabase est présent (utilisateur connecté),
+    """Vérifie la session Flask ou le token Supabase (utilisateur connecté),
     sinon retombe sur le device_id (invité)."""
+
+    # A. Priorité 1 : Utilisateur connecté via la Session Flask (/login)
+    if 'user_id' in session and session['user_id']:
+        return {'type': 'user_id', 'id': session['user_id']}
+
+    # B. Priorité 2 : Token Bearer Supabase (Auth API)
     auth_header = request.headers.get('Authorization')
     if auth_header and auth_header.startswith('Bearer '):
         token = auth_header.split(" ")[1]
@@ -26,7 +48,7 @@ def get_user_identity():
         except:
             pass
 
-    # Fallback sur l'ancien système de cookies/headers
+    # C. Fallback : Invité via Cookie/Header d'appareil
     device_id = request.cookies.get('op_device_id')
     if not device_id:
         device_id = request.headers.get('X-Device-ID')
