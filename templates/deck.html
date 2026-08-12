@@ -22,6 +22,10 @@
             top: 15px;
             left: 20px;
             z-index: 999;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
         }
         .btn-back {
             background-color: #333;
@@ -247,41 +251,48 @@
     </script>
 
     <!-- 📱 DÉTECTION ET ENVOI AUTOMATIQUE DE L'ID APPAREIL (VIA COOKIES) -->
-<script>
-    function getOrSetDeviceId() {
-        // 1. Cherche si le cookie existe déjà
-        let name = "op_device_id=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for(let i = 0; i < ca.length; i++) {
-            let c = ca[i].trim();
-            if (c.indexOf(name) === 0) {
-                return c.substring(name.length, c.length);
+    <script>
+        function getOrSetDeviceId() {
+            let name = "op_device_id=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i].trim();
+                if (c.indexOf(name) === 0) {
+                    return c.substring(name.length, c.length);
+                }
             }
+            
+            let newId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+            document.cookie = "op_device_id=" + newId + "; path=/; max-age=31536000; SameSite=Lax";
+            return newId;
         }
-        
-        // 2. S'il n'existe pas, on en crée un nouveau (valable 1 an)
-        let newId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-        document.cookie = "op_device_id=" + newId + "; path=/; max-age=31536000; SameSite=Lax";
-        return newId;
-    }
 
-    // Exécute la création au chargement de la page
-    const currentDeviceId = getOrSetDeviceId();
+        const currentDeviceId = getOrSetDeviceId();
 
-    // Garde l'intercepteur pour les requêtes Fetch au cas où
-    const originalFetch = window.fetch;
-    window.fetch = function(url, options = {}) {
-        options.headers = options.headers || {};
-        options.headers['X-Device-ID'] = currentDeviceId;
-        return originalFetch(url, options);
-    };
-</script>
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options.headers = options.headers || {};
+            options.headers['X-Device-ID'] = currentDeviceId;
+            return originalFetch(url, options);
+        };
+    </script>
 </head>
 <body>
 
     <div class="nav-back-container">
         <a href="/" class="btn-back">⬅️ Retour aux Menus</a>
+
+        {% if session.get('user_id') %}
+            <!-- Affichage quand l'utilisateur est connecté -->
+            <span style="background: #1e1e1e; border: 1px solid #333; padding: 8px 12px; border-radius: 5px; font-size: 0.9rem;">
+                👤 <strong style="color: #4caf50;">{{ session['user_id'] }}</strong>
+            </span>
+            <a href="/logout" class="btn-action btn-delete" style="text-decoration: none; line-height: 1.5;">Déconnexion</a>
+        {% else %}
+            <!-- Affichage quand l'utilisateur est un invité -->
+            <a href="/" class="btn-action btn-save" style="text-decoration: none; line-height: 1.5;">🔑 Connexion</a>
+        {% endif %}
     </div>
 
     <h1>🛠️ Atelier de Deck</h1>
@@ -340,7 +351,7 @@
                 .then(data => {
                     structureDonneesDeckLocale = data.deck;
                     prixTotalDuServeur = data.prix_total_deck || 0.0;
-                     
+                    
                     if (data.nom_deck) {
                         document.getElementById('current-deck-title').innerText = "Deck en cours : " + data.nom_deck;
                         document.getElementById('new-deck-name').value = data.nom_deck;
@@ -357,11 +368,11 @@
                     const selector = document.getElementById('deck-selector');
                     const valeurActuelle = selector.value;
                     selector.innerHTML = '<option value="">-- Sélectionner un deck sauvegardé --</option>';
-                     
+                    
                     Object.keys(listeDecks).forEach(nomDeck => {
                         selector.innerHTML += `<option value="${nomDeck}">${nomDeck}</option>`;
                     });
-                     
+                    
                     fetch('/api/get_deck_status').then(r => r.json()).then(status => {
                         if(status.nom_deck) selector.value = status.nom_deck;
                         else selector.value = valeurActuelle;
@@ -374,7 +385,7 @@
             const leaderBox = document.getElementById('leader-container');
             const counter = document.getElementById('deck-counter');
             const priceCounter = document.getElementById('deck-price-counter');
-             
+            
             grid.innerHTML = "";
             let totalCartes = 0;
 
