@@ -36,6 +36,51 @@
             align-items: center;
         }
 
+        /* --- NOUVEAU STYLE : BARRE D'AUTHENTIFICATION --- */
+        .auth-bar {
+            width: 100%;
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 12px 20px;
+            margin-bottom: 25px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .auth-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-input-group input {
+            background: #121212;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .auth-input-group button {
+            background: #ffcc00;
+            color: #121212;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .auth-input-group button:hover {
+            background: #e6b800;
+        }
+
         h1 {
             color: #ffcc00;
             text-align: center;
@@ -218,6 +263,32 @@
             options.headers['X-Device-ID'] = currentDeviceId;
             return originalFetch(url, options);
         };
+
+        /* --- FONCTIONS DE CONNEXION / DÉCONNEXION --- */
+        function seConnecter() {
+            const username = document.getElementById('username-input').value;
+            if (!username) return alert("Veuillez entrer un pseudo !");
+
+            fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: username })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            });
+        }
+
+        function seDeconnecter() {
+            fetch('/logout', { method: 'POST' })
+            .then(res => res.json())
+            .then(data => location.reload());
+        }
     </script>
 </head>
 <body>
@@ -229,6 +300,20 @@
 
         <!-- CONTENU CENTRAL -->
         <div class="central-content">
+
+            <!-- 0. BARRE DE CONNEXION COMPTE -->
+            <div class="auth-bar">
+                <span>👤 Profil : <strong>{{ session.get('user_id', 'Mode Invité') }}</strong></span>
+                <div class="auth-input-group">
+                    {% if session.get('user_id') %}
+                        <button onclick="seDeconnecter()" style="background: #ff4757; color: #fff;">Déconnexion</button>
+                    {% else %}
+                        <input type="text" id="username-input" placeholder="Entrez un pseudo...">
+                        <button onclick="seConnecter()">Connexion</button>
+                    {% endif %}
+                </div>
+            </div>
+
             <h1>🏴‍☠️ One Piece Card Game — Mon Manager</h1>
 
             <div class="menu-container">    
@@ -250,7 +335,6 @@
                 <div class="menu-section">
                     <h2>📦 Parcourir par Série</h2>
                     
-                    <!-- MACRO JINJA POUR RECRÉER LA BARRE DE PROGRESSION SUR CHAQUE BOUTON -->
                     {% macro serie_btn(code, label) %}
                         {% set s = series_stats.get(code, {'possedees': 0, 'total': 0, 'pourcentage': 0}) if series_stats else {'possedees': 0, 'total': 0, 'pourcentage': 0} %}
                         <a href="/serie/{{ code }}" class="btn-serie">
