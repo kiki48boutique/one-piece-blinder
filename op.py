@@ -2,6 +2,7 @@ import json
 import os
 from flask import Flask, jsonify, render_template, request, session
 from supabase import create_client
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # --- CONFIGURATION SUPABASE ---
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kbjdxxrryvvnahcnsjys.supabase.co")
@@ -12,21 +13,82 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "votre_cle_secrete_ultra_securisee")
 
+# --- AUTHENTIFICATION (INSCRIPTION & CONNEXION) ---
+@app.route('/api/register', methods=['POST'])
+def register():
+    """Inscription : Crée un compte avec pseudo unique et transfère les données de l'invité."""
+    try:
+        data = request.get_json()
+        pseudo = data.get('pseudo')
+        password = data.get('password')
+
+        if not pseudo or not password:
+            return jsonify({'status': 'error', 'message': 'Le pseudo et le mot de passe sont requis.'}), 400
+
+        # 1. Vérifier si le pseudo existe déjà dans Supabase
+        check = supabase.table('utilisateurs').select('pseudo').eq('pseudo', pseudo).execute()
+        if check.data:
+            return jsonify({'status': 'error', 'message': 'Ce pseudo est déjà pris. Choisis-en un autre !'}), 409
+
+        # 2. Hasher le mot de passe
+        hashed_pw = generate_password_hash(password)
+
+        # 3. Enregistrer l'utilisateur dans Supabase
+        supabase.table('utilisateurs').insert({
+            'pseudo': pseudo,
+            'mot_de_passe': hashed_pw
+        }).execute()
+
+        # 4. Migration des cartes de l'invité vers le nouveau profil
+        dev_id = get_device_id_raw()
+        supabase.table('user_collections').update({'user_id': pseudo}).eq('device_id', dev_id).is_('user_id', 'null').execute()
+        supabase.table('user_wishlists').update({'user_id': pseudo}).eq('device_id', dev_id).is_('user_id', 'null').execute()
+        supabase.table('user_decks').update({'user_id': pseudo}).eq('device_id', dev_id).is_('user_id', 'null').execute()
+
+        # 5. Connecter l'utilisateur
+        session['user_id'] = pseudo
+        return jsonify({'status': 'success', 'message': f'Compte créé avec succès ! Bienvenue {pseudo}.'})
+
+    except Exception as e:
+        print(f"Erreur Register: {e}")
+        return jsonify({'status': 'error', 'message': 'Erreur lors de la création du compte.'}), 500
+
 @app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
-    data = request.get_json()
-    user_id = data.get('user_id')
+    """Connexion avec vérification du mot de passe."""
+    try:
+        data = request.get_json()
+        pseudo = data.get('pseudo') or data.get('user_id')
+        password = data.get('password')
 
-    if user_id:
-        session['user_id'] = user_id
-        return jsonify({'status': 'success', 'message': f'Connecté en tant que {user_id}'})
+        if not pseudo or not password:
+            return jsonify({'status': 'error', 'message': 'Pseudo et mot de passe requis.'}), 400
 
-    return jsonify({'status': 'error', 'message': 'Identifiant requis'}), 400
+        # 1. Récupérer le mot de passe de la base
+        reponse = supabase.table('utilisateurs').select('mot_de_passe').eq('pseudo', pseudo).execute()
+
+        if not reponse.data:
+            return jsonify({'status': 'error', 'message': 'Ce pseudo n\'existe pas.'}), 401
+
+        hash_enregistre = reponse.data[0]['mot_de_passe']
+
+        # 2. Vérifier si le mot de passe entré est valide
+        if check_password_hash(hash_enregistre, password):
+            session['user_id'] = pseudo
+            return jsonify({'status': 'success', 'message': f'Ravi de te revoir, {pseudo} !'})
+        else:
+            return jsonify({'status': 'error', 'message': 'Mot de passe incorrect.'}), 401
+
+    except Exception as e:
+        print(f"Erreur Login: {e}")
+        return jsonify({'status': 'error', 'message': 'Erreur lors de la connexion.'}), 500
 
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('user_id', None)
     return jsonify({'status': 'success', 'message': 'Déconnecté'})
+
 
 # --- IDENTIFICATION INTELLIGENTE (USER_ID ou DEVICE_ID) ---
 def get_device_id_raw():
@@ -39,19 +101,9 @@ def get_device_id_raw():
     return device_id
 
 def get_user_identity():
-    """Vérifie la session Flask ou le token Supabase, sinon retombe sur le device_id."""
+    """Vérifie la session Flask, sinon retombe sur le device_id."""
     if 'user_id' in session and session['user_id']:
         return {'type': 'user_id', 'id': session['user_id']}
-
-    auth_header = request.headers.get('Authorization')
-    if auth_header and auth_header.startswith('Bearer '):
-        token = auth_header.split(" ")[1]
-        try:
-            user_response = supabase.auth.get_user(token)
-            if user_response and user_response.user:
-                return {'type': 'user_id', 'id': user_response.user.id}
-        except:
-            pass
 
     return {'type': 'device_id', 'id': get_device_id_raw()}
 
@@ -358,7 +410,6 @@ def modifier_quantite():
             nouvelle_qty = 1 if action == 'plus' else 0
             if nouvelle_qty > 0:
                 insert_data = {'card_number': card_number, 'quantite': nouvelle_qty}
-                # On met soit user_id, soit device_id, mais pas les deux
                 insert_data[col] = identity['id']
 
                 supabase.table('user_collections').insert(insert_data).execute()
@@ -411,7 +462,6 @@ def toggle_wishlist():
             statut = "retire"
         else:
             insert_data = {'card_number': card_number}
-            # On met soit user_id, soit device_id, mais pas les deux
             insert_data[col] = identity['id']
 
             supabase.table('user_wishlists') \
@@ -457,16 +507,13 @@ def api_remove_from_deck():
 
         if deck_nom:
             identity = get_user_identity()
-            dev_id = get_device_id_raw()
             col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
 
             upsert_data = {
                 'nom_deck': deck_nom,
                 'structure_deck': deck_memoire,
-                'device_id': dev_id
             }
-            if identity['type'] == 'user_id':
-                upsert_data['user_id'] = identity['id']
+            upsert_data[col] = identity['id']
 
             supabase.table('user_decks').upsert(
                 upsert_data,
@@ -484,7 +531,6 @@ def sauvegarder_deck():
     try:
         data = request.get_json()
         identity = get_user_identity()
-        dev_id = get_device_id_raw()
         col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
 
         nom_deck = data.get('nom_deck') or data.get('nom')
@@ -510,10 +556,8 @@ def sauvegarder_deck():
             insert_data = {
                 'nom_deck': nom_deck,
                 'structure_deck': structure,
-                'device_id': dev_id
             }
-            if identity['type'] == 'user_id':
-                insert_data['user_id'] = identity['id']
+            insert_data[col] = identity['id']
 
             supabase.table('user_decks').insert(insert_data).execute()
 
@@ -610,16 +654,13 @@ def api_add_to_deck():
 
         if deck_nom:
             identity = get_user_identity()
-            dev_id = get_device_id_raw()
             col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
 
             upsert_data = {
                 'nom_deck': deck_nom,
                 'structure_deck': deck_memoire,
-                'device_id': dev_id
             }
-            if identity['type'] == 'user_id':
-                upsert_data['user_id'] = identity['id']
+            upsert_data[col] = identity['id']
 
             supabase.table('user_decks').upsert(
                 upsert_data,
