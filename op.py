@@ -5,22 +5,41 @@ from supabase import create_client
 
 # --- CONFIGURATION SUPABASE ---
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://kbjdxxrryvvnahcnsjys.supabase.co")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "Remplacer_Par_Ta_Cle_Anon_Public")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtiamR4eHJyeXZ2bmFoY25zanlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTY2NTQsImV4cCI6MjEwMTY3MjY1NH0.duiZjw8DWDWnuhgP9lgRFBvCDm9JoheOuaKlutoI37E")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
 
 
-# --- UTILITAIRES APPAREIL & CACHE LOCAL ---
-def get_device_id():
-    """Récupère l'identifiant unique du joueur (cookie ou header)."""
+# --- IDENTIFICATION INTELLIGENTE (USER_ID ou DEVICE_ID) ---
+def get_user_identity():
+    """Vérifie si un token Supabase est présent (utilisateur connecté),
+    sinon retombe sur le device_id (invité)."""
+    auth_header = request.headers.get('Authorization')
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header.split(" ")[1]
+        try:
+            user_response = supabase.auth.get_user(token)
+            if user_response and user_response.user:
+                return {'type': 'user_id', 'id': user_response.user.id}
+        except:
+            pass
+
+    # Fallback sur l'ancien système de cookies/headers
     device_id = request.cookies.get('op_device_id')
     if not device_id:
         device_id = request.headers.get('X-Device-ID')
     if not device_id:
         device_id = 'default_device'
-    return device_id
+    return {'type': 'device_id', 'id': device_id}
+
+
+# --- UTILITAIRES APPAREIL & CACHE LOCAL ---
+def get_device_id():
+    """Rétrocompatibilité : renvoie l'identifiant brut (qu'il soit user_id ou device_id)."""
+    identity = get_user_identity()
+    return identity['id']
 
 
 def get_device_json_path(prefixe_fichier):
@@ -63,12 +82,15 @@ def sauvegarder_deck_actif_appareil(nom, deck):
 
 
 # --- FONCTIONS SUPABASE (COLLECTION, WISHLIST & DECKS) ---
-def charger_collection_supabase(device_id):
-    """Charge la collection d'un utilisateur depuis Supabase."""
+def charger_collection_supabase():
+    """Charge la collection de l'utilisateur depuis Supabase (User ou Device)."""
+    identity = get_user_identity()
+    col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
+
     try:
         reponse = supabase.table('user_collections') \
             .select('card_number, quantite') \
-            .eq('device_id', device_id) \
+            .eq(col, identity['id']) \
             .execute()
         return {row['card_number']: row['quantite'] for row in reponse.data} if reponse.data else {}
     except Exception as e:
@@ -78,22 +100,22 @@ def charger_collection_supabase(device_id):
 
 def appliquer_quantites_collection(donnees_json):
     """Injecte les quantités possédées depuis Supabase dans les objets cartes."""
-    device_id = get_device_id()
-    dict_collection = charger_collection_supabase(device_id)
+    dict_collection = charger_collection_supabase()
 
     for carte in donnees_json:
         id_carte = carte.get("card_number", "")
-        # CORRECTION : On utilise directement l'identifiant unique (qui contient déjà _p1, _p2...)
         carte["quantite"] = dict_collection.get(id_carte, 0)
 
 
 def appliquer_wishlist(donnees_json):
     """Marque les cartes de la wishlist depuis Supabase."""
-    device_id = get_device_id()
+    identity = get_user_identity()
+    col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
+
     try:
         reponse = supabase.table('user_wishlists') \
             .select('card_number') \
-            .eq('device_id', device_id) \
+            .eq(col, identity['id']) \
             .execute()
         cards_in_wishlist = {row['card_number'] for row in reponse.data} if reponse.data else set()
     except Exception as e:
@@ -107,11 +129,13 @@ def appliquer_wishlist(donnees_json):
 
 def charger_decks():
     """Charge tous les decks sauvegardés de l'utilisateur depuis Supabase."""
-    device_id = get_device_id()
+    identity = get_user_identity()
+    col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
+
     try:
         reponse = supabase.table('user_decks') \
             .select('nom_deck, structure_deck') \
-            .eq('device_id', device_id) \
+            .eq(col, identity['id']) \
             .execute()
         tous_les_decks = {row['nom_deck']: row['structure_deck'] for row in reponse.data} if reponse.data else {}
     except Exception as e:
@@ -308,14 +332,16 @@ def voir_serie(nom_serie):
 def modifier_quantite():
     try:
         data = request.get_json()
-        device_id = get_device_id()
+        identity = get_user_identity()
+        col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
 
         card_number = data.get('card_number')
         action = data.get('action')
 
+        # 1. Mise à jour dans Supabase
         reponse = supabase.table('user_collections') \
             .select('id, quantite') \
-            .eq('device_id', device_id) \
+            .eq(col, identity['id']) \
             .eq('card_number', card_number) \
             .execute()
 
@@ -330,14 +356,35 @@ def modifier_quantite():
         else:
             nouvelle_qty = 1 if action == 'plus' else 0
             if nouvelle_qty > 0:
-                supabase.table('user_collections').insert({
-                    'device_id': device_id,
+                insert_data = {
                     'card_number': card_number,
                     'quantite': nouvelle_qty
-                }).execute()
+                }
+                insert_data[col] = identity['id']
+                supabase.table('user_collections').insert(insert_data).execute()
 
-        return jsonify({'status': 'success', 'nouvelle_quantite': nouvelle_qty})
+        # 2. CORRECTION : Calcul du nouveau prix total pour le renvoyer au JavaScript
+        _, donnees_json = charger_donnees()
+        collection_a_jour = charger_collection_supabase()
+
+        nouveau_total = 0.0
+        for carte in donnees_json:
+            qte = collection_a_jour.get(carte.get("card_number"), 0)
+            if qte > 0:
+                try:
+                    prix = float(carte.get("prix", 0.0))
+                except:
+                    prix = 0.0
+                nouveau_total += qte * prix
+
+        # 3. On renvoie bien la variable attendue par le JS
+        return jsonify({
+            'status': 'success',
+            'nouvelle_quantite': nouvelle_qty,
+            'nouveau_total_prix': nouveau_total
+        })
     except Exception as e:
+        print(f"Erreur modifier_quantite: {e}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
@@ -345,26 +392,29 @@ def modifier_quantite():
 def toggle_wishlist():
     try:
         donnees = request.get_json()
-        device_id = get_device_id()
+        identity = get_user_identity()
+        col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
 
         card_number = donnees.get("card_number")
 
         check = supabase.table('user_wishlists') \
             .select('id') \
-            .eq('device_id', device_id) \
+            .eq(col, identity['id']) \
             .eq('card_number', card_number) \
             .execute()
 
         if check.data:
             supabase.table('user_wishlists') \
                 .delete() \
-                .eq('device_id', device_id) \
+                .eq(col, identity['id']) \
                 .eq('card_number', card_number) \
                 .execute()
             statut = "retire"
         else:
+            insert_data = {'card_number': card_number}
+            insert_data[col] = identity['id']
             supabase.table('user_wishlists') \
-                .insert({'device_id': device_id, 'card_number': card_number}) \
+                .insert(insert_data) \
                 .execute()
             statut = "ajoute"
 
@@ -405,12 +455,19 @@ def api_remove_from_deck():
         sauvegarder_deck_actif_appareil(deck_nom, deck_memoire)
 
         if deck_nom:
-            device_id = get_device_id()
-            supabase.table('user_decks').upsert({
-                'device_id': device_id,
+            identity = get_user_identity()
+            col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
+
+            upsert_data = {
                 'nom_deck': deck_nom,
                 'structure_deck': deck_memoire
-            }).execute()
+            }
+            upsert_data[col] = identity['id']
+
+            supabase.table('user_decks').upsert(
+                upsert_data,
+                on_conflict=f"{col}, nom_deck"
+            ).execute()
 
         return jsonify({"status": "success", "prix_total_deck": calculer_prix_deck_actuel(deck_memoire)})
     except Exception as e:
@@ -423,19 +480,20 @@ def api_remove_from_deck():
 def sauvegarder_deck():
     try:
         data = request.get_json()
-        device_id = get_device_id()
+        identity = get_user_identity()
+        col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
+
         nom_deck = data.get('nom_deck') or data.get('nom')
         structure = data.get('structure_deck') or data.get('deck')
 
         if not nom_deck:
             return jsonify({'status': 'error', 'message': 'Nom du deck manquant'}), 400
 
-        # Mettre à jour l'état actif localement pour ne pas perdre les cartes en mémoire
         sauvegarder_deck_actif_appareil(nom_deck, structure)
 
         check = supabase.table('user_decks') \
             .select('id') \
-            .eq('device_id', device_id) \
+            .eq(col, identity['id']) \
             .eq('nom_deck', nom_deck) \
             .execute()
 
@@ -445,11 +503,12 @@ def sauvegarder_deck():
                 'structure_deck': structure
             }).eq('id', row_id).execute()
         else:
-            supabase.table('user_decks').insert({
-                'device_id': device_id,
+            insert_data = {
                 'nom_deck': nom_deck,
                 'structure_deck': structure
-            }).execute()
+            }
+            insert_data[col] = identity['id']
+            supabase.table('user_decks').insert(insert_data).execute()
 
         return jsonify({'status': 'success'})
     except Exception as e:
@@ -461,10 +520,11 @@ def supprimer_deck():
     try:
         donnees = request.get_json()
         nom_deck_a_supprimer = donnees.get("nom")
-        device_id = get_device_id()
+        identity = get_user_identity()
+        col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
 
         supabase.table('user_decks').delete() \
-            .eq('device_id', device_id) \
+            .eq(col, identity['id']) \
             .eq('nom_deck', nom_deck_a_supprimer) \
             .execute()
 
@@ -545,17 +605,24 @@ def api_add_to_deck():
         sauvegarder_deck_actif_appareil(deck_nom, deck_memoire)
 
         if deck_nom:
-            device_id = get_device_id()
-            # On précise explicitement à Supabase de faire un upsert sur la paire (device_id, nom_deck)
-            supabase.table('user_decks').upsert({
-                'device_id': device_id,
+            identity = get_user_identity()
+            col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
+
+            upsert_data = {
                 'nom_deck': deck_nom,
                 'structure_deck': deck_memoire
-            }, on_conflict='device_id, nom_deck').execute()
+            }
+            upsert_data[col] = identity['id']
+
+            supabase.table('user_decks').upsert(
+                upsert_data,
+                on_conflict=f"{col}, nom_deck"
+            ).execute()
 
         return jsonify({"status": "success", "deck_actif": deck_nom, "prix_total_deck": calculer_prix_deck_actuel(deck_memoire)})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
 
 @app.route("/api/get_deck_status", methods=["GET"])
 def api_get_deck_status():
