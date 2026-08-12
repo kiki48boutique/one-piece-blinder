@@ -4,8 +4,8 @@
         👤 {% if session.get('user_id') %}Compte : {{ session.get('user_id') }}{% else %}Mon Compte{% endif %} ▾
     </button>
 
-    <!-- Menu déroulant -->
-    <div id="account-dropdown" style="display: none; position: absolute; right: 0; top: 120%; background: #1e1e1e; border: 1px solid #444; border-radius: 8px; padding: 15px; width: 260px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); z-index: 1000;">
+    <!-- Menu déroulant CORRIGÉ (left: 0 au lieu de right: 0) -->
+    <div id="account-dropdown" style="display: none; position: absolute; left: 0; top: 120%; background: #1e1e1e; border: 1px solid #444; border-radius: 8px; padding: 15px; width: 260px; max-width: 85vw; box-shadow: 0 8px 16px rgba(0,0,0,0.5); z-index: 1000; box-sizing: border-box;">
         
         {% if session.get('user_id') %}
             <!-- SECTION CONNECTÉ -->
@@ -16,7 +16,7 @@
                 </button>
             </div>
         {% else %}
-            <!-- SECTION DÉCONNECTÉ (Onglets Connexion / Inscription) -->
+            <!-- SECTION DÉCONNECTÉ -->
             <div>
                 <!-- Boutons d'onglets -->
                 <div style="display: flex; margin-bottom: 12px; border-bottom: 1px solid #444;">
@@ -41,7 +41,6 @@
         {% endif %}
     </div>
 </div>
-
 <script>
 function toggleAccountMenu() {
     const dropdown = document.getElementById('account-dropdown');
