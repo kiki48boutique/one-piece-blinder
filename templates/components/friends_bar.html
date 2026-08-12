@@ -5,22 +5,21 @@
     </button>
 
     <!-- Menu déroulant -->
-    <div id="friends-dropdown" style="display: none; position: absolute; right: 0; top: 120%; background: #1e1e1e; border: 1px solid #444; border-radius: 8px; padding: 15px; width: 250px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); z-index: 1000;">
+    <div id="friends-dropdown" style="display: none; position: absolute; right: 0; top: 120%; background: #1e1e1e; border: 1px solid #444; border-radius: 8px; padding: 15px; width: 280px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); z-index: 1000;">
         
         <!-- Ajouter Ami -->
         <div style="margin-bottom: 15px;">
-            <input type="text" id="friend-pseudo" placeholder="Pseudo de l'ami..." style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; margin-bottom: 5px;">
-            <button onclick="ajouterAmi()" style="width: 100%; background: #4caf50; color: white; border: none; padding: 6px; border-radius: 4px; cursor: pointer;">+ Ajouter</button>
+            <input type="text" id="friend-pseudo" placeholder="Pseudo de l'ami..." style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; color: #fff; border-radius: 4px; margin-bottom: 8px; box-sizing: border-box;">
+            <button onclick="ajouterAmi()" style="width: 100%; background: #4caf50; color: white; border: none; padding: 8px; font-weight: bold; border-radius: 4px; cursor: pointer;">+ Ajouter</button>
         </div>
 
         <hr style="border: 0; border-top: 1px solid #444; margin: 10px 0;">
 
         <!-- Liste des amis -->
         <div>
-            <p style="color: #ffcc00; font-weight: bold; margin-bottom: 10px;">Mes Amis :</p>
+            <p style="color: #ffcc00; font-weight: bold; margin-bottom: 10px; margin-top: 0;">Mes Amis :</p>
             <ul id="friends-list" style="list-style: none; padding: 0; margin: 0; color: #ccc; max-height: 200px; overflow-y: auto;">
-                <!-- Les amis s'afficheront ici -->
-                <li style="padding: 5px 0;">Chargement...</li>
+                <li style="padding: 5px 0; color: #888;">Chargement...</li>
             </ul>
         </div>
     </div>
@@ -29,32 +28,68 @@
 <script>
 function toggleFriendsMenu() {
     const dropdown = document.getElementById('friends-dropdown');
-    dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
+    const isHidden = dropdown.style.display === 'none' || dropdown.style.display === '';
+    dropdown.style.display = isHidden ? 'block' : 'none';
     
-    // Si on ouvre le menu, on charge les amis
-    if (dropdown.style.display === 'block') {
+    if (isHidden) {
         chargerAmis();
     }
 }
 
 function chargerAmis() {
-    // Ici, tu appelleras ton API Flask pour récupérer les amis
-    // Pour l'instant, c'est juste un exemple visuel
     const list = document.getElementById('friends-list');
-    list.innerHTML = '<li style="padding: 5px 0; border-bottom: 1px solid #333;">JeanDu91</li><li style="padding: 5px 0;">ProPlayer</li>';
+    list.innerHTML = '<li style="padding: 5px 0; color: #888;">Chargement...</li>';
+
+    fetch('/api/friends/list')
+        .then(r => r.json())
+        .then(amis => {
+            list.innerHTML = '';
+            if (!amis || amis.length === 0) {
+                list.innerHTML = '<li style="padding: 5px 0; color: #888;">Aucun ami pour le moment.</li>';
+                return;
+            }
+            amis.forEach(ami => {
+                list.innerHTML += `
+                    <li style="padding: 8px 0; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: #fff;">${ami.pseudo}</strong><br>
+                            <small style="color: #4caf50;">💎 ${ami.valeur_collection} €</small>
+                        </div>
+                        <a href="/ami/${ami.pseudo}/collection" style="background: #2196f3; color: white; text-decoration: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;">Voir</a>
+                    </li>
+                `;
+            });
+        })
+        .catch(() => {
+            list.innerHTML = '<li style="padding: 5px 0; color: #ff4757;">Erreur de chargement</li>';
+        });
 }
 
 function ajouterAmi() {
-    const pseudo = document.getElementById('friend-pseudo').value;
-    alert("Demande d'ajout envoyée à : " + pseudo);
-    // Plus tard : fetch('/api/add-friend', { ... })
+    const input = document.getElementById('friend-pseudo');
+    const pseudo = input.value.trim();
+    if (!pseudo) return;
+
+    fetch('/api/friends/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ pseudo: pseudo })
+    })
+    .then(r => r.json())
+    .then(res => {
+        alert(res.message);
+        if (res.status === 'success') {
+            input.value = '';
+            chargerAmis();
+        }
+    });
 }
 
-// Fermer le menu si on clique ailleurs
 window.addEventListener('click', function(e) {
     const container = document.querySelector('.friends-menu-container');
     if (container && !container.contains(e.target)) {
-        document.getElementById('friends-dropdown').style.display = 'none';
+        const dropdown = document.getElementById('friends-dropdown');
+        if (dropdown) dropdown.style.display = 'none';
     }
 });
 </script>
