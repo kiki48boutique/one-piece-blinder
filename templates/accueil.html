@@ -36,49 +36,14 @@
             align-items: center;
         }
 
-        /* --- BARRE D'AUTHENTIFICATION --- */
-        .auth-bar {
+        /* --- BARRE DE NAVIGATION HAUTE (Compte à gauche, Amis à droite) --- */
+        .top-nav-bar {
             width: 100%;
-            background: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 12px;
-            padding: 12px 20px;
-            margin-bottom: 25px;
-            box-sizing: border-box;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .auth-input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .auth-input-group input {
-            background: #121212;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 6px;
-            outline: none;
-        }
-
-        .auth-input-group button {
-            background: #ffcc00;
-            color: #121212;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .auth-input-group button:hover {
-            background: #e6b800;
+            margin-bottom: 25px;
+            box-sizing: border-box;
         }
 
         h1 {
@@ -231,7 +196,7 @@
 
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#121212">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="OP Binder">
     <link rel="apple-touch-icon" href="/static/icon-192.png">
@@ -263,32 +228,6 @@
             options.headers['X-Device-ID'] = currentDeviceId;
             return originalFetch(url, options);
         };
-
-        /* --- FONCTIONS DE CONNEXION / DÉCONNEXION --- */
-        function seConnecter() {
-            const username = document.getElementById('username-input').value;
-            if (!username) return alert("Veuillez entrer un pseudo !");
-
-            fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_id: username })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    location.reload();
-                } else {
-                    alert(data.message);
-                }
-            });
-        }
-
-        function seDeconnecter() {
-            fetch('/logout', { method: 'POST' })
-            .then(res => res.json())
-            .then(data => location.reload());
-        }
     </script>
 </head>
 <body>
@@ -301,10 +240,17 @@
         <!-- CONTENU CENTRAL -->
         <div class="central-content">
 
-            <!-- 0. BARRE DE CONNEXION COMPTE -->
-     
-                {% include 'components/profil_bar.html' %}
-            
+            <!-- BARRE DE NAVIGATION HAUTE (Compte à gauche / Amis à droite) -->
+            <div class="top-nav-bar">
+                <!-- Menu Compte à GAUCHE -->
+                <div class="nav-left">
+                    {% include 'components/profil_bar.html' %}
+                </div>
+                <!-- Menu Amis à DROITE -->
+                <div class="nav-right">
+                    {% include 'components/friends_bar.html' %}
+                </div>
+            </div>
 
             <h1>🏴‍☠️ One Piece Card Game — Mon Manager</h1>
 
