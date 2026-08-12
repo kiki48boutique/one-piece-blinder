@@ -13,6 +13,29 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "votre_cle_secrete_ultra_securisee")
 
+
+# --- RECONNEXION AUTOMATIQUE ---
+@app.before_request
+def auto_login_from_device():
+    # Si l'utilisateur est déjà connecté dans sa session active, on ne fait rien
+    if 'user_id' in session:
+        return
+
+    # On lit le cookie d'appareil envoyé par le navigateur
+    device_id = request.cookies.get('op_device_id')
+    if not device_id:
+        return
+
+    try:
+        # On cherche si cet appareil est enregistré dans Supabase
+        res = supabase.table('device_sessions').select('user_id').eq('device_id', device_id).execute()
+        if res.data and len(res.data) > 0:
+            # Reconnexion automatique !
+            session['user_id'] = res.data[0]['user_id']
+    except Exception as e:
+        print(f"Erreur Reconnexion Auto: {e}")
+
+
 # --- AUTHENTIFICATION (INSCRIPTION & CONNEXION) ---
 @app.route('/api/register', methods=['POST'])
 def register():
@@ -47,6 +70,14 @@ def register():
 
         # 5. Connecter l'utilisateur
         session['user_id'] = pseudo
+
+        # 6. Sauvegarder la session permanente de l'appareil
+        if dev_id:
+            supabase.table('device_sessions').upsert({
+                'device_id': dev_id,
+                'user_id': pseudo
+            }).execute()
+
         return jsonify({'status': 'success', 'message': f'Compte créé avec succès ! Bienvenue {pseudo}.'})
 
     except Exception as e:
@@ -76,6 +107,15 @@ def login():
         # 2. Vérifier si le mot de passe entré est valide
         if check_password_hash(hash_enregistre, password):
             session['user_id'] = pseudo
+
+            # 3. Sauvegarder la session permanente de l'appareil
+            dev_id = get_device_id_raw()
+            if dev_id:
+                supabase.table('device_sessions').upsert({
+                    'device_id': dev_id,
+                    'user_id': pseudo
+                }).execute()
+
             return jsonify({'status': 'success', 'message': f'Ravi de te revoir, {pseudo} !'})
         else:
             return jsonify({'status': 'error', 'message': 'Mot de passe incorrect.'}), 401
@@ -84,10 +124,19 @@ def login():
         print(f"Erreur Login: {e}")
         return jsonify({'status': 'error', 'message': 'Erreur lors de la connexion.'}), 500
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['POST', 'GET'])
 def logout():
-    session.pop('user_id', None)
-    return jsonify({'status': 'success', 'message': 'Déconnecté'})
+    try:
+        dev_id = request.cookies.get('op_device_id')
+        if dev_id:
+            # On supprime l'appareil de la base Supabase
+            supabase.table('device_sessions').delete().eq('device_id', dev_id).execute()
+
+        # On vide la session Flask
+        session.pop('user_id', None)
+        return jsonify({'status': 'success', 'message': 'Déconnecté'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
 # --- IDENTIFICATION INTELLIGENTE (USER_ID ou DEVICE_ID) ---
