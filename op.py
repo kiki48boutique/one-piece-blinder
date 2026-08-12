@@ -1,5 +1,7 @@
 import json
 import os
+import uuid
+from datetime import timedelta
 from flask import Flask, jsonify, render_template, request, session
 from supabase import create_client
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -12,25 +14,34 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "votre_cle_secrete_ultra_securisee")
+app.permanent_session_lifetime = timedelta(days=30) # Sessions valides 30 jours
+
+
+# --- GESTION DU COOKIE APPAREIL UNIQUE ---
+@app.after_request
+def set_device_cookie(response):
+    """Génère un identifiant d'appareil unique si aucun n'existe dans les cookies."""
+    if not request.cookies.get('op_device_id'):
+        new_device_id = str(uuid.uuid4())
+        # Dépose le cookie valide 10 ans sur le navigateur
+        response.set_cookie('op_device_id', new_device_id, max_age=315360000, httponly=True, samesite='Lax')
+    return response
 
 
 # --- RECONNEXION AUTOMATIQUE ---
 @app.before_request
 def auto_login_from_device():
-    # Si l'utilisateur est déjà connecté dans sa session active, on ne fait rien
+    session.permanent = True
     if 'user_id' in session:
         return
 
-    # On lit le cookie d'appareil envoyé par le navigateur
     device_id = request.cookies.get('op_device_id')
     if not device_id:
         return
 
     try:
-        # On cherche si cet appareil est enregistré dans Supabase
         res = supabase.table('device_sessions').select('user_id').eq('device_id', device_id).execute()
         if res.data and len(res.data) > 0:
-            # Reconnexion automatique !
             session['user_id'] = res.data[0]['user_id']
     except Exception as e:
         print(f"Erreur Reconnexion Auto: {e}")
@@ -39,7 +50,6 @@ def auto_login_from_device():
 # --- AUTHENTIFICATION (INSCRIPTION & CONNEXION) ---
 @app.route('/api/register', methods=['POST'])
 def register():
-    """Inscription : Crée un compte avec pseudo unique et transfère les données de l'invité."""
     try:
         data = request.get_json()
         pseudo = data.get('pseudo')
@@ -48,30 +58,24 @@ def register():
         if not pseudo or not password:
             return jsonify({'status': 'error', 'message': 'Le pseudo et le mot de passe sont requis.'}), 400
 
-        # 1. Vérifier si le pseudo existe déjà dans Supabase
         check = supabase.table('utilisateurs').select('pseudo').eq('pseudo', pseudo).execute()
         if check.data:
             return jsonify({'status': 'error', 'message': 'Ce pseudo est déjà pris. Choisis-en un autre !'}), 409
 
-        # 2. Hasher le mot de passe
         hashed_pw = generate_password_hash(password)
 
-        # 3. Enregistrer l'utilisateur dans Supabase
         supabase.table('utilisateurs').insert({
             'pseudo': pseudo,
             'mot_de_passe': hashed_pw
         }).execute()
 
-        # 4. Migration des cartes de l'invité vers le nouveau profil
         dev_id = get_device_id_raw()
         supabase.table('user_collections').update({'user_id': pseudo}).eq('device_id', dev_id).is_('user_id', 'null').execute()
         supabase.table('user_wishlists').update({'user_id': pseudo}).eq('device_id', dev_id).is_('user_id', 'null').execute()
         supabase.table('user_decks').update({'user_id': pseudo}).eq('device_id', dev_id).is_('user_id', 'null').execute()
 
-        # 5. Connecter l'utilisateur
         session['user_id'] = pseudo
 
-        # 6. Sauvegarder la session permanente de l'appareil
         if dev_id:
             supabase.table('device_sessions').upsert({
                 'device_id': dev_id,
@@ -87,7 +91,6 @@ def register():
 @app.route('/login', methods=['POST'])
 @app.route('/api/login', methods=['POST'])
 def login():
-    """Connexion avec vérification du mot de passe."""
     try:
         data = request.get_json()
         pseudo = data.get('pseudo') or data.get('user_id')
@@ -96,7 +99,6 @@ def login():
         if not pseudo or not password:
             return jsonify({'status': 'error', 'message': 'Pseudo et mot de passe requis.'}), 400
 
-        # 1. Récupérer le mot de passe de la base
         reponse = supabase.table('utilisateurs').select('mot_de_passe').eq('pseudo', pseudo).execute()
 
         if not reponse.data:
@@ -104,11 +106,9 @@ def login():
 
         hash_enregistre = reponse.data[0]['mot_de_passe']
 
-        # 2. Vérifier si le mot de passe entré est valide
         if check_password_hash(hash_enregistre, password):
             session['user_id'] = pseudo
 
-            # 3. Sauvegarder la session permanente de l'appareil
             dev_id = get_device_id_raw()
             if dev_id:
                 supabase.table('device_sessions').upsert({
@@ -129,11 +129,11 @@ def logout():
     try:
         dev_id = request.cookies.get('op_device_id')
         if dev_id:
-            # On supprime l'appareil de la base Supabase
             supabase.table('device_sessions').delete().eq('device_id', dev_id).execute()
 
-        # On vide la session Flask
         session.pop('user_id', None)
+        # Reinitialise le deck actif local
+        sauvegarder_deck_actif_appareil(None, {"leader": None, "cards": []})
         return jsonify({'status': 'success', 'message': 'Déconnecté'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
@@ -141,7 +141,6 @@ def logout():
 
 # --- IDENTIFICATION INTELLIGENTE (USER_ID ou DEVICE_ID) ---
 def get_device_id_raw():
-    """Récupère l'identifiant physique de l'appareil."""
     device_id = request.cookies.get('op_device_id')
     if not device_id:
         device_id = request.headers.get('X-Device-ID')
@@ -150,7 +149,6 @@ def get_device_id_raw():
     return device_id
 
 def get_user_identity():
-    """Vérifie la session Flask, sinon retombe sur le device_id."""
     if 'user_id' in session and session['user_id']:
         return {'type': 'user_id', 'id': session['user_id']}
 
@@ -770,4 +768,4 @@ def service_worker():
     return app.send_static_file('sw.js')
 
 if __name__ == "__main__":
-    app.run(debug=False, port=5000)
+    app.run(debug=True, port=5000)
