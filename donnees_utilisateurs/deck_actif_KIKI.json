@@ -1,0 +1,14 @@
+{
+    "nom": null,
+    "deck": {
+        "leader": null,
+        "cards": [
+            {
+                "card_number": "OP03-002",
+                "name": "Adio",
+                "image_url": "/static/OP03-002.jpg",
+                "quantite_deck": 1
+            }
+        ]
+    }
+}
