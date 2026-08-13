@@ -871,16 +871,23 @@ def list_friends():
 
 @app.route("/api/friends/requests", methods=["GET"])
 def list_friend_requests():
+    """Récupère les demandes reçues ET envoyées en attente"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
-            return jsonify([])
+            return jsonify({"recues": [], "envoyees": []})
 
-        reponse = supabase.table('amis').select('user_id').eq('friend_id', mon_pseudo).eq('statut', 'en_attente').execute()
-        demandes = [row['user_id'] for row in reponse.data] if reponse.data else []
-        return jsonify(demandes)
+        # Demandes reçues (qui m'attendent)
+        recues_resp = supabase.table('amis').select('user_id').eq('friend_id', mon_pseudo).eq('statut', 'en_attente').execute()
+        recues = [r['user_id'] for r in recues_resp.data] if recues_resp.data else []
+
+        # Demandes envoyées (que j'ai transmises)
+        envoyees_resp = supabase.table('amis').select('friend_id').eq('user_id', mon_pseudo).eq('statut', 'en_attente').execute()
+        envoyees = [r['friend_id'] for r in envoyees_resp.data] if envoyees_resp.data else []
+
+        return jsonify({"recues": recues, "envoyees": envoyees})
     except Exception as e:
-        return jsonify([])
+        return jsonify({"recues": [], "envoyees": []})
 
 
 @app.route("/api/friends/accept", methods=["POST"])
@@ -907,6 +914,27 @@ def decline_friend():
         demandeur = request.json.get("pseudo")
         supabase.table('amis').delete().eq("user_id", demandeur).eq("friend_id", mon_pseudo).execute()
         return jsonify({"status": "success", "message": "Demande refusée."})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/api/friends/remove", methods=["POST"])
+def remove_friend():
+    """Supprimer un ami de sa liste ou annuler une demande d'ami"""
+    try:
+        mon_pseudo = get_current_user()
+        if not mon_pseudo:
+            return jsonify({"status": "error", "message": "Non connecté"}), 401
+
+        ami_pseudo = request.json.get("pseudo")
+        if not ami_pseudo:
+            return jsonify({"status": "error", "message": "Pseudo manquant"}), 400
+
+        # Supprimer la relation dans les deux sens possibles
+        supabase.table('amis').delete().or_(
+            f"and(user_id.eq.{mon_pseudo},friend_id.eq.{ami_pseudo}),and(user_id.eq.{ami_pseudo},friend_id.eq.{mon_pseudo})"
+        ).execute()
+
+        return jsonify({"status": "success", "message": f"{ami_pseudo} a été retiré de vos amis."})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
