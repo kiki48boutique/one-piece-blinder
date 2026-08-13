@@ -829,23 +829,29 @@ def add_friend():
 
 @app.route("/api/friends/list", methods=["GET"])
 def list_friends():
+    """Lister les amis confirmés (statut = accepte)"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
             return jsonify([])
 
+        # Récupérer les amitiés 'accepte' où je suis émetteur ou récepteur
         reponse = supabase.table('amis').select('*').eq('statut', 'accepte').or_(
-            f"user_id.eq.{mon_pseudo},friend_id.eq.{mon_pseudo}"
+            f"user_id.ilike.{mon_pseudo},friend_id.ilike.{mon_pseudo}"
         ).execute()
+
+        if not reponse.data:
+            return jsonify([])
 
         pseudos_amis = []
         for row in reponse.data:
-            ami_pseudo = row['friend_id'] if row['user_id'] == mon_pseudo else row['user_id']
+            ami_pseudo = row['friend_id'] if row['user_id'].lower() == mon_pseudo.lower() else row['user_id']
             pseudos_amis.append(ami_pseudo)
 
         if not pseudos_amis:
             return jsonify([])
 
+        # Calcul des valeurs de collection
         _, donnees_json = charger_donnees()
         dict_prix = {c["card_number"]: float(c.get("prix") or 0.0) for c in donnees_json}
 
@@ -857,8 +863,10 @@ def list_friends():
                 u_id = row['user_id']
                 qte = row['quantite']
                 prix = dict_prix.get(row['card_number'], 0.0)
-                if u_id in valeurs_par_ami:
-                    valeurs_par_ami[u_id] += qte * prix
+                # Recherche insensible à la casse
+                for p in pseudos_amis:
+                    if p.lower() == u_id.lower():
+                        valeurs_par_ami[p] += qte * prix
 
         resultat = [
             {"pseudo": p, "valeur_collection": round(valeurs_par_ami[p], 2)}
@@ -871,34 +879,40 @@ def list_friends():
 
 @app.route("/api/friends/requests", methods=["GET"])
 def list_friend_requests():
-    """Récupère les demandes reçues ET envoyées en attente"""
+    """Récupérer les demandes en attente"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
             return jsonify({"recues": [], "envoyees": []})
 
-        # Demandes reçues (qui m'attendent)
-        recues_resp = supabase.table('amis').select('user_id').eq('friend_id', mon_pseudo).eq('statut', 'en_attente').execute()
+        recues_resp = supabase.table('amis').select('user_id').ilike('friend_id', mon_pseudo).eq('statut', 'en_attente').execute()
         recues = [r['user_id'] for r in recues_resp.data] if recues_resp.data else []
 
-        # Demandes envoyées (que j'ai transmises)
-        envoyees_resp = supabase.table('amis').select('friend_id').eq('user_id', mon_pseudo).eq('statut', 'en_attente').execute()
+        envoyees_resp = supabase.table('amis').select('friend_id').ilike('user_id', mon_pseudo).eq('statut', 'en_attente').execute()
         envoyees = [r['friend_id'] for r in envoyees_resp.data] if envoyees_resp.data else []
 
         return jsonify({"recues": recues, "envoyees": envoyees})
     except Exception as e:
         return jsonify({"recues": [], "envoyees": []})
 
-
 @app.route("/api/friends/accept", methods=["POST"])
 def accept_friend():
+    """Accepter une demande d'ami"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
             return jsonify({"status": "error", "message": "Non connecté"}), 401
 
         demandeur = request.json.get("pseudo")
-        supabase.table('amis').update({"statut": "accepte"}).eq("user_id", demandeur).eq("friend_id", mon_pseudo).execute()
+        if not demandeur:
+            return jsonify({"status": "error", "message": "Pseudo manquant"}), 400
+
+        # Met à jour le statut en 'accepte' (insensible aux majuscules)
+        supabase.table('amis').update({"statut": "accepte"})\
+            .ilike("user_id", demandeur)\
+            .ilike("friend_id", mon_pseudo)\
+            .execute()
+
         return jsonify({"status": "success", "message": f"Vous êtes désormais ami avec {demandeur} !"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -906,20 +920,26 @@ def accept_friend():
 
 @app.route("/api/friends/decline", methods=["POST"])
 def decline_friend():
+    """Refuser une demande d'ami"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
             return jsonify({"status": "error", "message": "Non connecté"}), 401
 
         demandeur = request.json.get("pseudo")
-        supabase.table('amis').delete().eq("user_id", demandeur).eq("friend_id", mon_pseudo).execute()
+
+        supabase.table('amis').delete()\
+            .ilike("user_id", demandeur)\
+            .ilike("friend_id", mon_pseudo)\
+            .execute()
+
         return jsonify({"status": "success", "message": "Demande refusée."})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/api/friends/remove", methods=["POST"])
 def remove_friend():
-    """Supprimer un ami de sa liste ou annuler une demande d'ami"""
+    """Retirer un ami ou annuler une demande"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
@@ -929,12 +949,11 @@ def remove_friend():
         if not ami_pseudo:
             return jsonify({"status": "error", "message": "Pseudo manquant"}), 400
 
-        # Supprimer la relation dans les deux sens possibles
         supabase.table('amis').delete().or_(
-            f"and(user_id.eq.{mon_pseudo},friend_id.eq.{ami_pseudo}),and(user_id.eq.{ami_pseudo},friend_id.eq.{mon_pseudo})"
+            f"and(user_id.ilike.{mon_pseudo},friend_id.ilike.{ami_pseudo}),and(user_id.ilike.{ami_pseudo},friend_id.ilike.{mon_pseudo})"
         ).execute()
 
-        return jsonify({"status": "success", "message": f"{ami_pseudo} a été retiré de vos amis."})
+        return jsonify({"status": "success", "message": f"Ami ou invitation retiré(e)."})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
