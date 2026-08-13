@@ -17,6 +17,18 @@ app.secret_key = os.environ.get("FLASK_SECRET_KEY", "votre_cle_secrete_ultra_sec
 app.permanent_session_lifetime = timedelta(days=30) # Sessions valides 30 jours
 
 
+def get_current_user():
+    """Récupère le pseudo de l'utilisateur connecté peu importe où il est stocké"""
+    return (
+        session.get("username") or
+        session.get("pseudo") or
+        session.get("user") or
+        request.cookies.get("username") or
+        request.cookies.get("op_username") or
+        request.cookies.get("pseudo")
+    )
+
+
 # --- GESTION DU COOKIE APPAREIL UNIQUE ---
 @app.after_request
 def set_device_cookie(response):
@@ -770,7 +782,7 @@ def service_worker():
 @app.route("/api/friends/add", methods=["POST"])
 def add_friend():
     try:
-        mon_pseudo = request.cookies.get("op_username")
+        mon_pseudo = get_current_user()
         pseudo_ami = request.json.get("pseudo", "").strip()
 
         if not mon_pseudo:
@@ -780,7 +792,7 @@ def add_friend():
         if mon_pseudo.lower() == pseudo_ami.lower():
             return jsonify({"status": "error", "message": "Vous ne pouvez pas vous ajouter vous-même."}), 400
 
-        # Vérifier si une relation/demande existe déjà dans un sens ou dans l'autre
+        # Vérifier si une relation/demande existe déjà
         existant = supabase.table('amis').select('*').or_(
             f"and(user_id.eq.{mon_pseudo},friend_id.eq.{pseudo_ami}),and(user_id.eq.{pseudo_ami},friend_id.eq.{mon_pseudo})"
         ).execute()
@@ -788,7 +800,7 @@ def add_friend():
         if existant.data:
             return jsonify({"status": "error", "message": "Une demande ou une amitié existe déjà avec cet utilisateur."}), 400
 
-        # Insérer la demande avec statut 'en_attente'
+        # Insérer la demande
         supabase.table('amis').insert({
             "user_id": mon_pseudo,
             "friend_id": pseudo_ami,
@@ -803,16 +815,14 @@ def add_friend():
 @app.route("/api/friends/list", methods=["GET"])
 def list_friends():
     try:
-        mon_pseudo = request.cookies.get("op_username")
+        mon_pseudo = get_current_user()
         if not mon_pseudo:
             return jsonify([])
 
-        # 1. Récupérer uniquement les amitiés ACCEPTÉES (où je suis émetteur ou récepteur)
         reponse = supabase.table('amis').select('*').eq('statut', 'accepte').or_(
             f"user_id.eq.{mon_pseudo},friend_id.eq.{mon_pseudo}"
         ).execute()
 
-        # Extraire le pseudo de l'ami (qui est soit user_id soit friend_id)
         pseudos_amis = []
         for row in reponse.data:
             ami_pseudo = row['friend_id'] if row['user_id'] == mon_pseudo else row['user_id']
@@ -821,7 +831,6 @@ def list_friends():
         if not pseudos_amis:
             return jsonify([])
 
-        # 2. Charger les données pour calculer la valeur de leur collection
         _, donnees_json = charger_donnees()
         dict_prix = {c["card_number"]: float(c.get("prix") or 0.0) for c in donnees_json}
 
@@ -847,9 +856,8 @@ def list_friends():
 
 @app.route("/api/friends/requests", methods=["GET"])
 def list_friend_requests():
-    """Récupère les demandes reçues en attente"""
     try:
-        mon_pseudo = request.cookies.get("op_username")
+        mon_pseudo = get_current_user()
         if not mon_pseudo:
             return jsonify([])
 
@@ -862,11 +870,12 @@ def list_friend_requests():
 
 @app.route("/api/friends/accept", methods=["POST"])
 def accept_friend():
-    """Accepter une demande d'ami"""
     try:
-        mon_pseudo = request.cookies.get("op_username")
-        demandeur = request.json.get("pseudo")
+        mon_pseudo = get_current_user()
+        if not mon_pseudo:
+            return jsonify({"status": "error", "message": "Non connecté"}), 401
 
+        demandeur = request.json.get("pseudo")
         supabase.table('amis').update({"statut": "accepte"}).eq("user_id", demandeur).eq("friend_id", mon_pseudo).execute()
         return jsonify({"status": "success", "message": f"Vous êtes désormais ami avec {demandeur} !"})
     except Exception as e:
@@ -875,11 +884,12 @@ def accept_friend():
 
 @app.route("/api/friends/decline", methods=["POST"])
 def decline_friend():
-    """Refuser une demande d'ami"""
     try:
-        mon_pseudo = request.cookies.get("op_username")
-        demandeur = request.json.get("pseudo")
+        mon_pseudo = get_current_user()
+        if not mon_pseudo:
+            return jsonify({"status": "error", "message": "Non connecté"}), 401
 
+        demandeur = request.json.get("pseudo")
         supabase.table('amis').delete().eq("user_id", demandeur).eq("friend_id", mon_pseudo).execute()
         return jsonify({"status": "success", "message": "Demande refusée."})
     except Exception as e:
