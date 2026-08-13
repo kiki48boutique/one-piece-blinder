@@ -18,17 +18,27 @@ app.permanent_session_lifetime = timedelta(days=30) # Sessions valides 30 jours
 
 
 def get_current_user():
-    """Récupère le pseudo de manière sécurisée sans faire planter le serveur"""
+    """Récupère le pseudo de l'utilisateur connecté via session, cookies ou device_sessions"""
     try:
-        user = (
-            session.get("username") or
-            session.get("pseudo") or
-            session.get("user") or
-            request.cookies.get("username") or
-            request.cookies.get("op_username") or
-            request.cookies.get("pseudo")
-        )
-        return user
+        # 1. Vérifier la session Flask
+        for key in ["username", "pseudo", "user", "user_id"]:
+            if session.get(key):
+                return session.get(key)
+
+        # 2. Vérifier les cookies directs
+        for key in ["op_username", "username", "pseudo", "user"]:
+            if request.cookies.get(key):
+                return request.cookies.get(key)
+
+        # 3. Vérifier via l'identifiant d'appareil (device_sessions dans Supabase)
+        device_id = request.headers.get("X-Device-ID") or request.cookies.get("op_device_id")
+        if device_id:
+            res = supabase.table("device_sessions").select("*").eq("device_id", device_id).execute()
+            if res.data and len(res.data) > 0:
+                sess = res.data[0]
+                return sess.get("username") or sess.get("pseudo") or sess.get("user_id") or sess.get("user")
+
+        return None
     except Exception as e:
         print(f"Erreur get_current_user: {e}")
         return None
