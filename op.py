@@ -18,15 +18,20 @@ app.permanent_session_lifetime = timedelta(days=30) # Sessions valides 30 jours
 
 
 def get_current_user():
-    """Récupère le pseudo de l'utilisateur connecté peu importe où il est stocké"""
-    return (
-        session.get("username") or
-        session.get("pseudo") or
-        session.get("user") or
-        request.cookies.get("username") or
-        request.cookies.get("op_username") or
-        request.cookies.get("pseudo")
-    )
+    """Récupère le pseudo de manière sécurisée sans faire planter le serveur"""
+    try:
+        user = (
+            session.get("username") or
+            session.get("pseudo") or
+            session.get("user") or
+            request.cookies.get("username") or
+            request.cookies.get("op_username") or
+            request.cookies.get("pseudo")
+        )
+        return user
+    except Exception as e:
+        print(f"Erreur get_current_user: {e}")
+        return None
 
 
 # --- GESTION DU COOKIE APPAREIL UNIQUE ---
