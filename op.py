@@ -50,7 +50,6 @@ def set_device_cookie(response):
     """Génère un identifiant d'appareil unique si aucun n'existe dans les cookies."""
     if not request.cookies.get('op_device_id'):
         new_device_id = str(uuid.uuid4())
-        # Dépose le cookie valide 10 ans sur le navigateur
         response.set_cookie('op_device_id', new_device_id, max_age=315360000, httponly=True, samesite='Lax')
     return response
 
@@ -159,14 +158,13 @@ def logout():
             supabase.table('device_sessions').delete().eq('device_id', dev_id).execute()
 
         session.pop('user_id', None)
-        # Reinitialise le deck actif local
         sauvegarder_deck_actif_appareil(None, {"leader": None, "cards": []})
         return jsonify({'status': 'success', 'message': 'Déconnecté'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
-# --- IDENTIFICATION INTELLIGENTE (USER_ID ou DEVICE_ID) ---
+# --- IDENTIFICATION INTELLIGENTE ---
 def get_device_id_raw():
     device_id = request.cookies.get('op_device_id')
     if not device_id:
@@ -222,7 +220,7 @@ def sauvegarder_deck_actif_appareil(nom, deck):
     sauvegarder_json_appareil('deck_actif', {"nom": nom, "deck": deck})
 
 
-# --- FONCTIONS SUPABASE (COLLECTION, WISHLIST & DECKS) ---
+# --- FONCTIONS SUPABASE ---
 def charger_collection_supabase():
     identity = get_user_identity()
     col = 'user_id' if identity['type'] == 'user_id' else 'device_id'
@@ -306,11 +304,27 @@ def formater_carte_image(carte):
     try: carte["prix"] = float(carte.get("prix", 0.0))
     except: carte["prix"] = 0.0
 
-    # Sécurité pour la fiche d'identité (valeurs par défaut)
-    if "cout" not in carte or carte["cout"] is None:
-        carte["cout"] = "-"
-    if "effet" not in carte or not carte["effet"]:
-        carte["effet"] = "Aucun effet"
+    # --- CORRECTION DES FALLBACKS POUR LA FICHE D'IDENTITÉ ---
+    # Recherche du coût (FR/EN)
+    cout_brut = (
+        carte.get("cout") if carte.get("cout") is not None
+        else (carte.get("cost") if carte.get("cost") is not None
+        else carte.get("card_cost"))
+    )
+    carte["cout"] = cout_brut if cout_brut is not None else "-"
+
+    # Recherche de l'effet (FR/EN)
+    effet_brut = (
+        carte.get("effet") or carte.get("effect") or
+        carte.get("text") or carte.get("card_text") or carte.get("ability")
+    )
+    carte["effet"] = effet_brut if effet_brut else "Aucun effet"
+
+    # Harmonisation type et rareté au besoin
+    if not carte.get("type"):
+        carte["type"] = carte.get("card_type") or "-"
+    if not carte.get("rarity"):
+        carte["rarity"] = carte.get("rarete") or "-"
 
     card_number = carte.get("card_number", "")
     a_un_suffixe_alt = any(f"_p{i}" in card_number for i in range(1, 10))
@@ -322,7 +336,7 @@ def formater_carte_image(carte):
     else:
         carte["image_url"] = f"/static/{card_number}.jpg"
 
-    couleur_brute = carte.get("color", "unknown")
+    couleur_brute = carte.get("color") or carte.get("couleur") or "unknown"
     if isinstance(couleur_brute, list):
         couleur_propre = "-".join([str(c).lower().strip() for c in couleur_brute])
     else:
@@ -555,7 +569,7 @@ def toggle_wishlist():
         return jsonify({"status": "error", "message": str(e)}), 500
 
 
-# --- ROUTES DECKS (SUPABASE) ---
+# --- ROUTES DECKS ---
 @app.route("/api/get_deck", methods=["GET"])
 def api_get_deck():
     etat = charger_deck_actif_appareil()
@@ -813,7 +827,6 @@ def add_friend():
         if mon_pseudo.lower() == pseudo_ami.lower():
             return jsonify({"status": "error", "message": "Vous ne pouvez pas vous ajouter vous-même."}), 400
 
-        # Vérifier si une relation/demande existe déjà
         existant = supabase.table('amis').select('*').or_(
             f"and(user_id.eq.{mon_pseudo},friend_id.eq.{pseudo_ami}),and(user_id.eq.{pseudo_ami},friend_id.eq.{mon_pseudo})"
         ).execute()
@@ -821,7 +834,6 @@ def add_friend():
         if existant.data:
             return jsonify({"status": "error", "message": "Une demande ou une amitié existe déjà avec cet utilisateur."}), 400
 
-        # Insérer la demande
         supabase.table('amis').insert({
             "user_id": mon_pseudo,
             "friend_id": pseudo_ami,
@@ -835,13 +847,11 @@ def add_friend():
 
 @app.route("/api/friends/list", methods=["GET"])
 def list_friends():
-    """Lister les amis confirmés (statut = accepte)"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
             return jsonify([])
 
-        # Récupérer les amitiés 'accepte' où je suis émetteur ou récepteur
         reponse = supabase.table('amis').select('*').eq('statut', 'accepte').or_(
             f"user_id.ilike.{mon_pseudo},friend_id.ilike.{mon_pseudo}"
         ).execute()
@@ -857,7 +867,6 @@ def list_friends():
         if not pseudos_amis:
             return jsonify([])
 
-        # Calcul des valeurs de collection
         _, donnees_json = charger_donnees()
         dict_prix = {c["card_number"]: float(c.get("prix") or 0.0) for c in donnees_json}
 
@@ -869,7 +878,6 @@ def list_friends():
                 u_id = row['user_id']
                 qte = row['quantite']
                 prix = dict_prix.get(row['card_number'], 0.0)
-                # Recherche insensible à la casse
                 for p in pseudos_amis:
                     if p.lower() == u_id.lower():
                         valeurs_par_ami[p] += qte * prix
@@ -885,7 +893,6 @@ def list_friends():
 
 @app.route("/api/friends/requests", methods=["GET"])
 def list_friend_requests():
-    """Récupérer les demandes en attente"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
@@ -903,7 +910,6 @@ def list_friend_requests():
 
 @app.route("/api/friends/accept", methods=["POST"])
 def accept_friend():
-    """Accepter une demande d'ami"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
@@ -913,7 +919,6 @@ def accept_friend():
         if not demandeur:
             return jsonify({"status": "error", "message": "Pseudo manquant"}), 400
 
-        # Met à jour le statut en 'accepte' (insensible aux majuscules)
         supabase.table('amis').update({"statut": "accepte"})\
             .ilike("user_id", demandeur)\
             .ilike("friend_id", mon_pseudo)\
@@ -926,7 +931,6 @@ def accept_friend():
 
 @app.route("/api/friends/decline", methods=["POST"])
 def decline_friend():
-    """Refuser une demande d'ami"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
@@ -945,7 +949,6 @@ def decline_friend():
 
 @app.route("/api/friends/remove", methods=["POST"])
 def remove_friend():
-    """Retirer un ami ou annuler une demande"""
     try:
         mon_pseudo = get_current_user()
         if not mon_pseudo:
@@ -969,7 +972,7 @@ def remove_friend():
 def voir_collection_ami(pseudo):
     try:
         _, donnees_json = charger_donnees()
-        _, tous_les_decks = charger_decks() # <-- Charger les decks
+        _, tous_les_decks = charger_decks()
 
         reponse = supabase.table('user_collections').select('card_number, quantite').eq('user_id', pseudo).execute()
         dict_col = {row['card_number']: row['quantite'] for row in reponse.data} if reponse.data else {}
@@ -991,7 +994,7 @@ def voir_collection_ami(pseudo):
             cartes_python=liste_cartes,
             total_prix=total_prix,
             nom_de_la_serie=f"Collection de {pseudo}",
-            decks_sauvegardes=tous_les_decks, # <-- Transmis au template
+            decks_sauvegardes=tous_les_decks,
             mode_lecture_seule=True
         )
     except Exception as e:
