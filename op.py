@@ -304,23 +304,32 @@ def formater_carte_image(carte):
     try: carte["prix"] = float(carte.get("prix", 0.0))
     except: carte["prix"] = 0.0
 
-    # --- CORRECTION DES FALLBACKS POUR LA FICHE D'IDENTITÉ ---
-    # Recherche du coût (FR/EN)
-    cout_brut = (
-        carte.get("cout") if carte.get("cout") is not None
-        else (carte.get("cost") if carte.get("cost") is not None
-        else carte.get("card_cost"))
-    )
-    carte["cout"] = cout_brut if cout_brut is not None else "-"
+    # 1. Extraction du Coût (supporte 0, gère les "" et synchronise FR/EN)
+    valeurs_cout = [carte.get("cout"), carte.get("cost"), carte.get("card_cost")]
+    cout_trouve = "-"
+    for v in valeurs_cout:
+        if v is not None and str(v).strip() != "":
+            cout_trouve = str(v).strip()
+            break
 
-    # Recherche de l'effet (FR/EN)
-    effet_brut = (
-        carte.get("effet") or carte.get("effect") or
-        carte.get("text") or carte.get("card_text") or carte.get("ability")
-    )
-    carte["effet"] = effet_brut if effet_brut else "Aucun effet"
+    carte["cout"] = cout_trouve
+    carte["cost"] = cout_trouve  # Synchronise pour le JS
 
-    # Harmonisation type et rareté au besoin
+    # 2. Extraction de l'Effet (nettoie les retours à la ligne et synchronise FR/EN)
+    valeurs_effet = [
+        carte.get("effet"), carte.get("effect"), carte.get("text"),
+        carte.get("card_text"), carte.get("ability"), carte.get("description")
+    ]
+    effet_trouve = "Aucun effet"
+    for e in valeurs_effet:
+        if e is not None and str(e).strip() != "":
+            effet_trouve = str(e).strip().replace("\r\n", " ").replace("\n", " ")
+            break
+
+    carte["effet"] = effet_trouve
+    carte["effect"] = effet_trouve  # Synchronise pour le JS
+
+    # Harmonisation type et rareté
     if not carte.get("type"):
         carte["type"] = carte.get("card_type") or "-"
     if not carte.get("rarity"):
