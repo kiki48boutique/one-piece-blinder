@@ -452,7 +452,8 @@
              data-rarity="{{ carte.rarity|lower if carte.rarity else 'unknown' }}"
              data-type="{{ carte.type|lower if carte.type else 'unknown' }}"
              data-price="{{ carte.prix or 0.0 }}"
-             data-variation="{{ pct }}">
+             data-variation="{{ pct }}"
+             data-card='{{ carte | tojson | forceescape }}'>
             
             <div class="wishlist-coeur" onclick="toggleWishlist('{{ carte.card_number }}', this)">
                 <span style="font-size: 18px; padding-top: 2px;">
@@ -460,9 +461,9 @@
                 </span>
             </div>
 
-            <img src="{{ carte.image_url or '/static/images/placeholder.png' }}" alt="{{ carte.name }}" onclick='showCardDetails({{ carte | tojson }})'>
+            <img src="{{ carte.image_url or '/static/images/placeholder.png' }}" alt="{{ carte.name }}" onclick="showCardDetails(this)">
             
-            <div class="card-title" onclick='showCardDetails({{ carte | tojson }})'>
+            <div class="card-title" onclick="showCardDetails(this)">
                 {{ carte.name }} 
                 {% if carte.is_alt_p2 %} (Alt 2) 
                 {% elif carte.is_alternative %} (Alt) 
@@ -551,38 +552,47 @@
             trierLaGrille();
         });
 
-        function showCardDetails(cardData) {
-    document.getElementById('modal-card-img').src = cardData.image_url || cardData.image || '/static/images/placeholder.png';
-    document.getElementById('modal-card-name').innerText = cardData.name || cardData.card_number || 'Sans nom';
+        function showCardDetails(target) {
+            let cardData = target;
+            
+            // Si la fonction reçoit un élément HTML (clic sur l'image, titre, etc.)
+            if (target instanceof HTMLElement) {
+                const cardElement = target.closest('.card') || target;
+                const rawJson = cardElement.getAttribute('data-card');
+                cardData = JSON.parse(rawJson);
+            }
 
-    // Gestion souple du coût (supporte cout, cost, card_cost)
-    const costVal = cardData.cout ?? cardData.cost ?? cardData.card_cost;
-    document.getElementById('modal-card-cost').innerText = `Coût: ${costVal !== undefined && costVal !== null ? costVal : '-'}`;
+            document.getElementById('modal-card-img').src = cardData.image_url || cardData.image || '/static/images/placeholder.png';
+            document.getElementById('modal-card-name').innerText = cardData.name || cardData.card_number || 'Sans nom';
 
-    // Informations complémentaires
-    document.getElementById('modal-card-color').innerText = `Couleur: ${cardData.color || cardData.couleur_propre || cardData.couleur || '-'}`;
-    document.getElementById('modal-card-type').innerText = `Type: ${cardData.type || '-'}`;
-    document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || '-'}`;
-    document.getElementById('modal-card-id').innerText = `Réf: ${cardData.card_number || cardData.id || '-'}`;
-    
-    // Prix
-    let priceText = 'Prix indispo';
-    if (cardData.prix && cardData.prix > 0) {
-        priceText = `${parseFloat(cardData.prix).toFixed(2)} €`;
-    }
-    document.getElementById('modal-card-price').innerText = priceText;
+            // Gestion souple du coût
+            const costVal = cardData.cout ?? cardData.cost ?? cardData.card_cost;
+            document.getElementById('modal-card-cost').innerText = `Coût: ${costVal !== undefined && costVal !== null ? costVal : '-'}`;
 
-    // Gestion souple de l'effet (supporte effet, effect, text, card_text, description, ability)
-    const effectText = cardData.effet || cardData.effect || cardData.text || cardData.card_text || cardData.description || cardData.ability;
-    
-    if (effectText && effectText.trim() !== '' && effectText !== '-') {
-        document.getElementById('modal-card-effect').innerText = effectText;
-    } else {
-        document.getElementById('modal-card-effect').innerText = 'Aucun effet (Carte Vanilla)';
-    }
+            // Informations complémentaires
+            document.getElementById('modal-card-color').innerText = `Couleur: ${cardData.color || cardData.couleur_propre || cardData.couleur || '-'}`;
+            document.getElementById('modal-card-type').innerText = `Type: ${cardData.type || '-'}`;
+            document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || '-'}`;
+            document.getElementById('modal-card-id').innerText = `Réf: ${cardData.card_number || cardData.id || '-'}`;
+            
+            // Prix
+            let priceText = 'Prix indispo';
+            if (cardData.prix && cardData.prix > 0) {
+                priceText = `${parseFloat(cardData.prix).toFixed(2)} €`;
+            }
+            document.getElementById('modal-card-price').innerText = priceText;
 
-    document.getElementById('card-detail-modal').style.display = 'flex';
-}
+            // Effet (innerHTML permet d'afficher correctement les balises <em>)
+            const effectText = cardData.effet || cardData.effect || cardData.text || cardData.card_text || cardData.description || cardData.ability;
+            
+            if (effectText && effectText.trim() !== '' && effectText !== '-') {
+                document.getElementById('modal-card-effect').innerHTML = effectText;
+            } else {
+                document.getElementById('modal-card-effect').innerText = 'Aucun effet (Carte Vanilla)';
+            }
+
+            document.getElementById('card-detail-modal').style.display = 'flex';
+        }
 
         function closeCardModal(e) {
             if (!e || e.target.id === 'card-detail-modal' || e.target.classList.contains('card-modal-close')) {
