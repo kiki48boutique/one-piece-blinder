@@ -306,6 +306,12 @@ def formater_carte_image(carte):
     try: carte["prix"] = float(carte.get("prix", 0.0))
     except: carte["prix"] = 0.0
 
+    # Sécurité pour la fiche d'identité (valeurs par défaut)
+    if "cout" not in carte or carte["cout"] is None:
+        carte["cout"] = "-"
+    if "effet" not in carte or not carte["effet"]:
+        carte["effet"] = "Aucun effet"
+
     card_number = carte.get("card_number", "")
     a_un_suffixe_alt = any(f"_p{i}" in card_number for i in range(1, 10))
 
