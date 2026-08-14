@@ -552,24 +552,37 @@
         });
 
         function showCardDetails(cardData) {
-            document.getElementById('modal-card-img').src = cardData.image_url || '/static/images/placeholder.png';
-            document.getElementById('modal-card-name').innerText = cardData.name || cardData.card_number || 'Sans nom';
-            document.getElementById('modal-card-cost').innerText = `Coût: ${cardData.cout !== undefined && cardData.cout !== null ? cardData.cout : '-'}`;
-            document.getElementById('modal-card-color').innerText = `Couleur: ${cardData.color || cardData.couleur_propre || '-'}`;
-            document.getElementById('modal-card-type').innerText = `Type: ${cardData.type || '-'}`;
-            document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || '-'}`;
-            document.getElementById('modal-card-id').innerText = `Réf: ${cardData.card_number || '-'}`;
-            
-            let priceText = 'Prix indispo';
-            if (cardData.prix && cardData.prix > 0) {
-                priceText = `${parseFloat(cardData.prix).toFixed(2)} €`;
-            }
-            document.getElementById('modal-card-price').innerText = priceText;
+    document.getElementById('modal-card-img').src = cardData.image_url || cardData.image || '/static/images/placeholder.png';
+    document.getElementById('modal-card-name').innerText = cardData.name || cardData.card_number || 'Sans nom';
 
-            document.getElementById('modal-card-effect').innerText = cardData.effet || 'Aucun effet spécifié.';
+    // Gestion souple du coût (supporte cout, cost, card_cost)
+    const costVal = cardData.cout ?? cardData.cost ?? cardData.card_cost;
+    document.getElementById('modal-card-cost').innerText = `Coût: ${costVal !== undefined && costVal !== null ? costVal : '-'}`;
 
-            document.getElementById('card-detail-modal').style.display = 'flex';
-        }
+    // Informations complémentaires
+    document.getElementById('modal-card-color').innerText = `Couleur: ${cardData.color || cardData.couleur_propre || cardData.couleur || '-'}`;
+    document.getElementById('modal-card-type').innerText = `Type: ${cardData.type || '-'}`;
+    document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || '-'}`;
+    document.getElementById('modal-card-id').innerText = `Réf: ${cardData.card_number || cardData.id || '-'}`;
+    
+    // Prix
+    let priceText = 'Prix indispo';
+    if (cardData.prix && cardData.prix > 0) {
+        priceText = `${parseFloat(cardData.prix).toFixed(2)} €`;
+    }
+    document.getElementById('modal-card-price').innerText = priceText;
+
+    // Gestion souple de l'effet (supporte effet, effect, text, card_text, description, ability)
+    const effectText = cardData.effet || cardData.effect || cardData.text || cardData.card_text || cardData.description || cardData.ability;
+    
+    if (effectText && effectText.trim() !== '' && effectText !== '-') {
+        document.getElementById('modal-card-effect').innerText = effectText;
+    } else {
+        document.getElementById('modal-card-effect').innerText = 'Aucun effet (Carte Vanilla)';
+    }
+
+    document.getElementById('card-detail-modal').style.display = 'flex';
+}
 
         function closeCardModal(e) {
             if (!e || e.target.id === 'card-detail-modal' || e.target.classList.contains('card-modal-close')) {
