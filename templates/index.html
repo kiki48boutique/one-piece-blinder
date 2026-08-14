@@ -555,40 +555,52 @@
         function showCardDetails(target) {
             let cardData = target;
             
-            // Si la fonction reçoit un élément HTML (clic sur l'image, titre, etc.)
             if (target instanceof HTMLElement) {
                 const cardElement = target.closest('.card') || target;
                 const rawJson = cardElement.getAttribute('data-card');
-                cardData = JSON.parse(rawJson);
+                try {
+                    cardData = JSON.parse(rawJson);
+                } catch (e) {
+                    console.error("Erreur de lecture data-card :", e);
+                    cardData = {};
+                }
             }
 
             document.getElementById('modal-card-img').src = cardData.image_url || cardData.image || '/static/images/placeholder.png';
             document.getElementById('modal-card-name').innerText = cardData.name || cardData.card_number || 'Sans nom';
 
-            // Gestion souple du coût
-            const costVal = cardData.cout ?? cardData.cost ?? cardData.card_cost;
-            document.getElementById('modal-card-cost').innerText = `Coût: ${costVal !== undefined && costVal !== null ? costVal : '-'}`;
+            // 1. Extraction et fallback robuste du Coût (gère le coût 0 et évite les chaînes vides)
+            const rawCost = [cardData.cout, cardData.cost, cardData.card_cost]
+                .find(v => v !== undefined && v !== null && String(v).trim() !== '');
+            const costVal = rawCost !== undefined ? String(rawCost).trim() : '-';
+            document.getElementById('modal-card-cost').innerText = `Coût: ${costVal}`;
 
-            // Informations complémentaires
-            document.getElementById('modal-card-color').innerText = `Couleur: ${cardData.color || cardData.couleur_propre || cardData.couleur || '-'}`;
-            document.getElementById('modal-card-type').innerText = `Type: ${cardData.type || '-'}`;
-            document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || '-'}`;
+            // 2. Informations complémentaires
+            const colorVal = [cardData.color, cardData.couleur_propre, cardData.couleur]
+                .find(c => c && String(c).trim() !== '');
+            document.getElementById('modal-card-color').innerText = `Couleur: ${colorVal || '-'}`;
+            document.getElementById('modal-card-type').innerText = `Type: ${cardData.type || cardData.card_type || '-'}`;
+            document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || cardData.rarete || '-'}`;
             document.getElementById('modal-card-id').innerText = `Réf: ${cardData.card_number || cardData.id || '-'}`;
             
-            // Prix
+            // 3. Prix
             let priceText = 'Prix indispo';
-            if (cardData.prix && cardData.prix > 0) {
+            if (cardData.prix && parseFloat(cardData.prix) > 0) {
                 priceText = `${parseFloat(cardData.prix).toFixed(2)} €`;
             }
             document.getElementById('modal-card-price').innerText = priceText;
 
-            // Effet (innerHTML permet d'afficher correctement les balises <em>)
-            const effectText = cardData.effet || cardData.effect || cardData.text || cardData.card_text || cardData.description || cardData.ability;
+            // 4. Extraction et fallback robuste de l'Effet (balaye toutes les clés possibles FR/EN)
+            const effectCandidates = [
+                cardData.effet, cardData.effect, cardData.text,
+                cardData.card_text, cardData.description, cardData.ability, cardData.rules
+            ];
+            const effectText = effectCandidates.find(e => e && String(e).trim() !== '' && String(e).trim() !== '-');
             
-            if (effectText && effectText.trim() !== '' && effectText !== '-') {
+            if (effectText && effectText.trim() !== 'Aucun effet') {
                 document.getElementById('modal-card-effect').innerHTML = effectText;
             } else {
-                document.getElementById('modal-card-effect').innerText = 'Aucun effet (Carte Vanilla)';
+                document.getElementById('modal-card-effect').innerText = 'Aucun effet';
             }
 
             document.getElementById('card-detail-modal').style.display = 'flex';
