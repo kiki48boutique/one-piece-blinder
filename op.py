@@ -300,42 +300,64 @@ def trier_cartes(liste_cartes):
     return liste_cartes
 
 def formater_carte_image(carte):
-    # 1. Récupération du coût depuis TOUTES les clés possibles du JSON d'origine
-    cout_brut = (
-        carte.get("cost") or
-        carte.get("cout") or
-        carte.get("card_cost") or
-        carte.get("cost_text")
-    )
+    if "quantite" not in carte: carte["quantite"] = 0
+    try: carte["prix"] = float(carte.get("prix", 0.0))
+    except: carte["prix"] = 0.0
 
-    # Préserve le coût s'il existe (même si c'est 0), sinon met "-"
-    if cout_brut is not None and str(cout_brut).strip() != "" and str(cout_brut).strip() != "-":
-        valeur_cout = str(cout_brut).strip()
+# 1. Extraction du Coût (Ignore les vides ET les tirets par défaut)
+    valeurs_cout = [carte.get("cout"), carte.get("cost"), carte.get("card_cost")]
+    cout_trouve = "-"
+    for v in valeurs_cout:
+        if v is not None:
+            val_str = str(v).strip()
+            # On ignore si c'est vide ou si c'est juste un tiret
+            if val_str not in ["", "-"]:
+                cout_trouve = val_str
+                break
+
+    carte["cout"] = cout_trouve
+    carte["cost"] = cout_trouve  # Synchronise pour le JS
+
+    # 2. Extraction de l'Effet (Ignore les vides, tirets et "Aucun effet")
+    valeurs_effet = [
+        carte.get("effet"), carte.get("effect"), carte.get("text"),
+        carte.get("card_text"), carte.get("ability"), carte.get("description")
+    ]
+    effet_trouve = "Aucun effet"
+    for e in valeurs_effet:
+        if e is not None:
+            eff_str = str(e).strip()
+            # On ignore si c'est vide, un tiret, ou le texte "Aucun effet"
+            if eff_str not in ["", "-", "Aucun effet"]:
+                effet_trouve = eff_str.replace("\r\n", " ").replace("\n", " ")
+                break
+
+    carte["effet"] = effet_trouve
+    carte["effect"] = effet_trouve  # Synchronise pour le JS
+
+    # Harmonisation type et rareté
+    if not carte.get("type"):
+        carte["type"] = carte.get("card_type") or "-"
+    if not carte.get("rarity"):
+        carte["rarity"] = carte.get("rarete") or "-"
+
+    card_number = carte.get("card_number", "")
+    a_un_suffixe_alt = any(f"_p{i}" in card_number for i in range(1, 10))
+
+    if a_un_suffixe_alt:
+        carte["image_url"] = f"/static/{card_number}.jpg"
+    elif carte.get("is_alternative"):
+        carte["image_url"] = f"/static/{card_number}_p1.jpg"
     else:
-        valeur_cout = "-"
+        carte["image_url"] = f"/static/{card_number}.jpg"
 
-    carte["cost"] = valeur_cout
-    carte["cout"] = valeur_cout
-
-    # 2. Récupération de l'effet depuis TOUTES les clés possibles du JSON d'origine
-    effet_brut = (
-        carte.get("effect") or
-        carte.get("effet") or
-        carte.get("text") or
-        carte.get("card_text") or
-        carte.get("description") or
-        carte.get("ability") or
-        carte.get("rules")
-    )
-
-    if effet_brut and str(effet_brut).strip() not in ["", "-", "Aucun effet"]:
-        valeur_effet = str(effet_brut).strip().replace("\r\n", " ").replace("\n", " ")
+    couleur_brute = carte.get("color") or carte.get("couleur") or "unknown"
+    if isinstance(couleur_brute, list):
+        couleur_propre = "-".join([str(c).lower().strip() for c in couleur_brute])
     else:
-        valeur_effet = "Aucun effet"
+        couleur_propre = str(couleur_brute).lower().replace("/", "-").replace(" ", "").strip()
 
-    carte["effect"] = valeur_effet
-    carte["effet"] = valeur_effet
-
+    carte["couleur_propre"] = couleur_propre
     return carte
 
 def calculer_prix_deck_actuel(deck_memoire=None):
