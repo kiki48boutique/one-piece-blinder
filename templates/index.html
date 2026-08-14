@@ -136,6 +136,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
         }
 
         .card-id {
@@ -211,20 +212,135 @@
 
         .btn-deck:hover { background-color: #0b7dda; }
 
-        .modal {
+        /* MODALE FICHE D'IDENTITÉ DES CARTES */
+        .card-modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.8);
+            background-color: rgba(0, 0, 0, 0.85);
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
         }
 
-        .modal img {
-            max-width: 90%;
-            max-height: 85vh;
+        .card-modal-content {
+            background: #1e1e1e;
+            border: 2px solid #ffcc00;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .card-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffcc00;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .card-modal-close:hover {
+            color: #fff;
+        }
+
+        .card-modal-body {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .card-modal-image-container {
+            flex: 1 1 220px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .card-modal-image-container img {
+            width: 100%;
+            max-width: 260px;
             border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-modal-info {
+            flex: 2 1 280px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .modal-header-row h2 {
+            margin: 0;
+            color: #ffcc00;
+            font-size: 1.3rem;
+        }
+
+        .badge-cost {
+            background: #ffcc00;
+            color: #121212;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .modal-subhead-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge-info {
+            background: #2a2a2a;
+            color: #ddd;
+            border: 1px solid #444;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            text-transform: capitalize;
+        }
+
+        .modal-section {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .modal-section label {
+            font-weight: bold;
+            color: #aaa;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .modal-text-box {
+            background: #2a2a2a;
+            border: 1px solid #333;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #fff;
+            white-space: pre-wrap;
         }
     </style>
 
@@ -344,9 +460,9 @@
                 </span>
             </div>
 
-            <img src="{{ carte.image_url or '/static/images/placeholder.png' }}" alt="{{ carte.name }}" onclick="ouvrirZoom(this.src)">
+            <img src="{{ carte.image_url or '/static/images/placeholder.png' }}" alt="{{ carte.name }}" onclick='showCardDetails({{ carte | tojson }})'>
             
-            <div class="card-title">
+            <div class="card-title" onclick='showCardDetails({{ carte | tojson }})'>
                 {{ carte.name }} 
                 {% if carte.is_alt_p2 %} (Alt 2) 
                 {% elif carte.is_alternative %} (Alt) 
@@ -383,8 +499,38 @@
         {% endfor %}
     </div>
 
-    <div id="modal-zoom-generique" class="modal" onclick="fermerZoom()">
-        <img id="image-zoomee-cible" src="" alt="Zoom carte">
+    <!-- MODALE FICHE D'IDENTITÉ DE LA CARTE -->
+    <div id="card-detail-modal" class="card-modal-overlay" onclick="closeCardModal(event)">
+        <div class="card-modal-content" onclick="event.stopPropagation()">
+            <span class="card-modal-close" onclick="closeCardModal()">&times;</span>
+            <div class="card-modal-body">
+                <div class="card-modal-image-container">
+                    <img id="modal-card-img" src="" alt="Image Carte">
+                </div>
+                <div class="card-modal-info">
+                    <div class="modal-header-row">
+                        <h2 id="modal-card-name">Nom</h2>
+                        <div id="modal-card-cost" class="badge-cost">Coût: -</div>
+                    </div>
+                    <div class="modal-subhead-row">
+                        <span id="modal-card-color" class="badge-info">Couleur: -</span>
+                        <span id="modal-card-type" class="badge-info">Type: -</span>
+                        <span id="modal-card-rarity" class="badge-info">Rareté: -</span>
+                    </div>
+                    <div class="modal-section">
+                        <label>Détails & Prix</label>
+                        <div style="display: flex; gap: 15px; align-items: center; font-size: 0.95rem;">
+                            <span id="modal-card-id" style="color:#aaa;">-</span>
+                            <span id="modal-card-price" style="color:#2ecc71; font-weight:bold;">-</span>
+                        </div>
+                    </div>
+                    <div class="modal-section">
+                        <label>Effet de la carte :</label>
+                        <div id="modal-card-effect" class="modal-text-box">Aucun effet</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -404,6 +550,32 @@
 
             trierLaGrille();
         });
+
+        function showCardDetails(cardData) {
+            document.getElementById('modal-card-img').src = cardData.image_url || '/static/images/placeholder.png';
+            document.getElementById('modal-card-name').innerText = cardData.name || cardData.card_number || 'Sans nom';
+            document.getElementById('modal-card-cost').innerText = `Coût: ${cardData.cout !== undefined && cardData.cout !== null ? cardData.cout : '-'}`;
+            document.getElementById('modal-card-color').innerText = `Couleur: ${cardData.color || cardData.couleur_propre || '-'}`;
+            document.getElementById('modal-card-type').innerText = `Type: ${cardData.type || '-'}`;
+            document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || '-'}`;
+            document.getElementById('modal-card-id').innerText = `Réf: ${cardData.card_number || '-'}`;
+            
+            let priceText = 'Prix indispo';
+            if (cardData.prix && cardData.prix > 0) {
+                priceText = `${parseFloat(cardData.prix).toFixed(2)} €`;
+            }
+            document.getElementById('modal-card-price').innerText = priceText;
+
+            document.getElementById('modal-card-effect').innerText = cardData.effet || 'Aucun effet spécifié.';
+
+            document.getElementById('card-detail-modal').style.display = 'flex';
+        }
+
+        function closeCardModal(e) {
+            if (!e || e.target.id === 'card-detail-modal' || e.target.classList.contains('card-modal-close')) {
+                document.getElementById('card-detail-modal').style.display = 'none';
+            }
+        }
 
         function filtrerLesCartes() {
             const recherche = document.getElementById('search-bar').value.toLowerCase().trim();
@@ -535,15 +707,6 @@
             });
 
             cartes.forEach(carte => grille.appendChild(carte));
-        }
-
-        function ouvrirZoom(urlImage) {
-            document.getElementById('modal-zoom-generique').style.display = 'flex';
-            document.getElementById('image-zoomee-cible').src = urlImage;
-        }
-        
-        function fermerZoom() {
-            document.getElementById('modal-zoom-generique').style.display = 'none';
         }
 
         function modifierQty(btn, id, nom, action, isAlt) {
