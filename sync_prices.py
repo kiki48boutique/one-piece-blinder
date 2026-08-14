@@ -205,6 +205,10 @@ def synchroniser_toutes_les_series():
                     pourcentage = "-"
                     tendance = "pas dispo"
 
+                # Extraction du coût et de l'effet
+                cout_brut = ligne.get("extCost") or ligne.get("cost") or "-"
+                effet_brut = ligne.get("extDescription") or ligne.get("extText") or ligne.get("description") or "Aucun effet"
+
                 toutes_les_cartes_extraites[(cle_carte, est_alt)] = {
                     "card_number": cle_carte,
                     "name": nom_propre,
@@ -217,7 +221,9 @@ def synchroniser_toutes_les_series():
                     "prix": prix_final,
                     "disponible": disponible,
                     "tendance_prix": tendance,
-                    "pourcentage_prix": pourcentage
+                    "pourcentage_prix": pourcentage,
+                    "cout": cout_brut,
+                    "effet": effet_brut
                 }
 
     chemin_ajouts = os.path.join(dossier_actuel, "ajouts_manuels.json")
@@ -230,6 +236,8 @@ def synchroniser_toutes_les_series():
                     if "disponible" not in carte: carte["disponible"] = True
                     if "tendance_prix" not in carte: carte["tendance_prix"] = "stable"
                     if "pourcentage_prix" not in carte: carte["pourcentage_prix"] = 0.0
+                    if "cout" not in carte: carte["cout"] = "-"
+                    if "effet" not in carte: carte["effet"] = "Aucun effet"
                     toutes_les_cartes_extraites[cle] = carte
         except Exception as e: print(f"⚠️ Erreur ajouts_manuels.json : {e}")
 
