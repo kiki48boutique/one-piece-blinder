@@ -224,124 +224,134 @@
             backdrop-filter: blur(4px);
         }
 
-        .card-modal-content {
-            background: #1e1e1e;
-            border: 2px solid #ffcc00;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 650px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-        }
+        /* ==========================================
+   FICHE D'IDENTITÉ MOBILE (STYLE CAPTURE)
+   ========================================== */
+@media (max-width: 768px) {
 
-        .card-modal-close {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #ffcc00;
-            cursor: pointer;
-            z-index: 10;
-        }
+    /* Conteneur principal de la modale */
+    .card-modal-content {
+        width: 92% !important;
+        padding: 16px !important;
+        border: 2px solid #ffcc00 !important;
+        border-radius: 16px !important;
+        background-color: #181818 !important;
+        max-height: 90vh !important;
+    }
 
-        .card-modal-close:hover {
-            color: #fff;
-        }
+    /* Bouton fermer (Croix) */
+    .card-modal-close {
+        color: #ffcc00 !important;
+        top: 10px !important;
+        right: 15px !important;
+        font-size: 24px !important;
+    }
 
-        .card-modal-body {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+    /* Alignement vertical */
+    .card-modal-body {
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 15px !important;
+    }
 
-        .card-modal-image-container {
-            flex: 1 1 220px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
+    /* Image agrandie et centrée */
+    .card-modal-image-container {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
 
-        .card-modal-image-container img {
-            width: 100%;
-            max-width: 260px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }
+    .card-modal-image-container img {
+        width: 80% !important;
+        max-width: 260px !important;
+        border-radius: 12px !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+    }
 
-        .card-modal-info {
-            flex: 2 1 280px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+    .card-modal-info {
+        width: 100% !important;
+        gap: 10px !important;
+    }
 
-        .modal-header-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
-            padding-bottom: 8px;
-        }
+    /* Ligne Titre + Coût */
+    .modal-header-row {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+    }
 
-        .modal-header-row h2 {
-            margin: 0;
-            color: #ffcc00;
-            font-size: 1.3rem;
-        }
+    .modal-header-row h2 {
+        color: #ffcc00 !important;
+        font-size: 1.35rem !important;
+        font-weight: bold !important;
+    }
 
-        .badge-cost {
-            background: #ffcc00;
-            color: #121212;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            white-space: nowrap;
-        }
+    .badge-cost {
+        background: #ffcc00 !important;
+        color: #000000 !important;
+        padding: 6px 14px !important;
+        border-radius: 20px !important;
+        font-weight: bold !important;
+        font-size: 0.95rem !important;
+    }
 
-        .modal-subhead-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+    /* Badges (Couleur, Type, Rareté) */
+    .modal-subhead-row {
+        display: flex !important;
+        gap: 8px !important;
+        flex-wrap: wrap !important;
+        margin: 4px 0 !important;
+    }
 
-        .badge-info {
-            background: #2a2a2a;
-            color: #ddd;
-            border: 1px solid #444;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            text-transform: capitalize;
-        }
+    .badge-info {
+        background: #2a2a2a !important;
+        border: 1px solid #3d3d3d !important;
+        color: #e0e0e0 !important;
+        padding: 6px 12px !important;
+        border-radius: 8px !important;
+        font-size: 0.85rem !important;
+    }
 
-        .modal-section {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+    /* Section Détails & Prix */
+    .modal-section label {
+        color: #888888 !important;
+        font-size: 0.8rem !important;
+        font-weight: bold !important;
+        letter-spacing: 0.5px !important;
+    }
 
-        .modal-section label {
-            font-weight: bold;
-            color: #aaa;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
+    .prix-ligne {
+        display: flex !important;
+        gap: 12px !important;
+        align-items: center !important;
+        font-size: 1rem !important;
+        margin-top: 2px !important;
+    }
 
-        .modal-text-box {
-            background: #2a2a2a;
-            border: 1px solid #333;
-            padding: 10px 12px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            color: #fff;
-            white-space: pre-wrap;
-        }
+    .card-ref {
+        color: #aaa !important;
+    }
+
+    .prix-hausse {
+        color: #2ecc71 !important;
+        font-weight: bold !important;
+        font-size: 1.1rem !important;
+    }
+
+    /* Encadré d'Effet */
+    .modal-text-box {
+        background: #242424 !important;
+        border: 1px solid #333333 !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+        color: #dddddd !important;
+        font-size: 0.9rem !important;
+        line-height: 1.4 !important;
+        margin-top: 4px !important;
+    }
+}
 
         /* ==========================================
            ADAPTATIONS MOBILE : ACCUEIL, DECK & MODALE
