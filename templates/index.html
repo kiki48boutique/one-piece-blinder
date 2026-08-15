@@ -2,9 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Classeur One Piece Card Game</title>
 
-<style>
+    <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #121212;
@@ -212,7 +213,9 @@
 
         .btn-deck:hover { background-color: #0b7dda; }
 
-        /* MODALE FICHE D'IDENTITÉ DES CARTES */
+        /* ==========================================
+           MODALE FICHE D'IDENTITÉ (STYLE PC / DÉFAUT)
+           ========================================== */
         .card-modal-overlay {
             display: none;
             position: fixed;
@@ -224,162 +227,202 @@
             backdrop-filter: blur(4px);
         }
 
+        .card-modal-content {
+            background: #181818;
+            border: 2px solid #ffcc00;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px; /* Plus large sur PC pour accommoder 2 colonnes */
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        }
+
+        .card-modal-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffcc00;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .card-modal-close:hover {
+            color: #fff;
+        }
+
+        .card-modal-body {
+            display: flex;
+            flex-direction: row; /* Image gauche, texte droite */
+            gap: 24px;
+            align-items: flex-start;
+        }
+
+        .card-modal-image-container {
+            flex: 0 0 240px; /* Largeur fixe de l'image sur PC */
+        }
+
+        .card-modal-image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-modal-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .modal-header-row h2 {
+            margin: 0;
+            color: #ffcc00;
+            font-size: 1.4rem;
+        }
+
+        .badge-cost {
+            background: #ffcc00;
+            color: #121212;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .modal-subhead-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .badge-info {
+            background: #2a2a2a;
+            color: #ddd;
+            border: 1px solid #444;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            text-transform: capitalize;
+        }
+
+        .modal-section {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .modal-section label {
+            font-weight: bold;
+            color: #aaa;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .prix-ligne {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .card-ref {
+            color: #aaa;
+        }
+
+        .prix-hausse {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .modal-text-box {
+            background: #242424;
+            border: 1px solid #333;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #fff;
+            white-space: pre-wrap;
+        }
+
         /* ==========================================
-   FICHE D'IDENTITÉ MOBILE (STYLE CAPTURE)
-   ========================================== */
-@media (max-width: 768px) {
-
-    /* Conteneur principal de la modale */
-    .card-modal-content {
-        width: 92% !important;
-        padding: 16px !important;
-        border: 2px solid #ffcc00 !important;
-        border-radius: 16px !important;
-        background-color: #181818 !important;
-        max-height: 90vh !important;
-    }
-
-    /* Bouton fermer (Croix) */
-    .card-modal-close {
-        color: #ffcc00 !important;
-        top: 10px !important;
-        right: 15px !important;
-        font-size: 24px !important;
-    }
-
-    /* Alignement vertical */
-    .card-modal-body {
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 15px !important;
-    }
-
-    /* Image agrandie et centrée */
-    .card-modal-image-container {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: center !important;
-    }
-
-    .card-modal-image-container img {
-        width: 80% !important;
-        max-width: 260px !important;
-        border-radius: 12px !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
-    }
-
-    .card-modal-info {
-        width: 100% !important;
-        gap: 10px !important;
-    }
-
-    /* Ligne Titre + Coût */
-    .modal-header-row {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        border-bottom: none !important;
-        padding-bottom: 0 !important;
-    }
-
-    .modal-header-row h2 {
-        color: #ffcc00 !important;
-        font-size: 1.35rem !important;
-        font-weight: bold !important;
-    }
-
-    .badge-cost {
-        background: #ffcc00 !important;
-        color: #000000 !important;
-        padding: 6px 14px !important;
-        border-radius: 20px !important;
-        font-weight: bold !important;
-        font-size: 0.95rem !important;
-    }
-
-    /* Badges (Couleur, Type, Rareté) */
-    .modal-subhead-row {
-        display: flex !important;
-        gap: 8px !important;
-        flex-wrap: wrap !important;
-        margin: 4px 0 !important;
-    }
-
-    .badge-info {
-        background: #2a2a2a !important;
-        border: 1px solid #3d3d3d !important;
-        color: #e0e0e0 !important;
-        padding: 6px 12px !important;
-        border-radius: 8px !important;
-        font-size: 0.85rem !important;
-    }
-
-    /* Section Détails & Prix */
-    .modal-section label {
-        color: #888888 !important;
-        font-size: 0.8rem !important;
-        font-weight: bold !important;
-        letter-spacing: 0.5px !important;
-    }
-
-    .prix-ligne {
-        display: flex !important;
-        gap: 12px !important;
-        align-items: center !important;
-        font-size: 1rem !important;
-        margin-top: 2px !important;
-    }
-
-    .card-ref {
-        color: #aaa !important;
-    }
-
-    .prix-hausse {
-        color: #2ecc71 !important;
-        font-weight: bold !important;
-        font-size: 1.1rem !important;
-    }
-
-    /* Encadré d'Effet */
-    .modal-text-box {
-        background: #242424 !important;
-        border: 1px solid #333333 !important;
-        border-radius: 8px !important;
-        padding: 12px !important;
-        color: #dddddd !important;
-        font-size: 0.9rem !important;
-        line-height: 1.4 !important;
-        margin-top: 4px !important;
-    }
-}
-
-        /* ==========================================
-           ADAPTATIONS MOBILE : ACCUEIL, DECK & MODALE
+           ADAPTATIONS MOBILE (Écrans < 768px)
            ========================================== */
         @media (max-width: 768px) {
 
             /* 1. MODALE (ZOOM DE CARTE) */
             .card-modal-content {
-                width: 95% !important;
-                padding: 12px !important;
-                max-height: 90vh !important;
+                width: 92%;
+                padding: 16px;
+                border-radius: 16px;
+                max-height: 90vh;
+            }
+
+            .card-modal-close {
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
             }
 
             .card-modal-body {
-                flex-direction: column !important;
+                flex-direction: column; /* Image au-dessus du texte */
                 align-items: center;
-                gap: 12px !important;
+                gap: 15px;
+            }
+
+            .card-modal-image-container {
+                flex: auto;
+                width: 100%;
+                display: flex;
+                justify-content: center;
             }
 
             .card-modal-image-container img {
-                max-width: 180px !important;
+                width: 80%;
+                max-width: 260px;
+                border-radius: 12px;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
             }
 
             .card-modal-info {
-                width: 100% !important;
+                width: 100%;
+                gap: 10px;
             }
 
-            /* 2. ACCUEIL (GRILLE DES SÉRIES OP / ST / EB / PRB) */
+            .modal-header-row {
+                border-bottom: none;
+                padding-bottom: 0;
+            }
+
+            .modal-header-row h2 {
+                font-size: 1.35rem;
+            }
+
+            .badge-cost {
+                padding: 6px 14px;
+            }
+
+            .prix-ligne {
+                margin-top: 2px;
+                font-size: 1.1rem;
+            }
+
+            /* 2. ACCUEIL (GRILLE DES SÉRIES) */
             .series-container, 
             div[class*="series"], 
             div[class*="grid-series"] {
@@ -571,14 +614,14 @@
                         <span id="modal-card-rarity" class="badge-info">Rareté: -</span>
                     </div>
                     <div class="modal-section">
-                        <label>Détails & Prix</label>
-                        <div style="display: flex; gap: 15px; align-items: center; font-size: 0.95rem;">
-                            <span id="modal-card-id" style="color:#aaa;">-</span>
-                            <span id="modal-card-price" style="color:#2ecc71; font-weight:bold;">-</span>
+                        <label>DÉTAILS & PRIX</label>
+                        <div class="prix-ligne">
+                            <span id="modal-card-id" class="card-ref">-</span>
+                            <span id="modal-card-price" class="prix-hausse">-</span>
                         </div>
                     </div>
                     <div class="modal-section">
-                        <label>Effet de la carte :</label>
+                        <label>EFFET DE LA CARTE :</label>
                         <div id="modal-card-effect" class="modal-text-box">Aucun effet</div>
                     </div>
                 </div>
@@ -621,13 +664,13 @@
             document.getElementById('modal-card-img').src = cardData.image_url || cardData.image || '/static/images/placeholder.png';
             document.getElementById('modal-card-name').innerText = cardData.name || cardData.card_number || 'Sans nom';
 
-            // 1. Extraction et fallback robuste du Coût (gère le coût 0 et évite les chaînes vides)
+            // Extraction et fallback robuste du Coût
             const rawCost = [cardData.cout, cardData.cost, cardData.card_cost]
                 .find(v => v !== undefined && v !== null && String(v).trim() !== '');
             const costVal = rawCost !== undefined ? String(rawCost).trim() : '-';
             document.getElementById('modal-card-cost').innerText = `Coût: ${costVal}`;
 
-            // 2. Informations complémentaires
+            // Informations complémentaires
             const colorVal = [cardData.color, cardData.couleur_propre, cardData.couleur]
                 .find(c => c && String(c).trim() !== '');
             document.getElementById('modal-card-color').innerText = `Couleur: ${colorVal || '-'}`;
@@ -635,14 +678,14 @@
             document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || cardData.rarete || '-'}`;
             document.getElementById('modal-card-id').innerText = `Réf: ${cardData.card_number || cardData.id || '-'}`;
             
-            // 3. Prix
+            // Prix
             let priceText = 'Prix indispo';
             if (cardData.prix && parseFloat(cardData.prix) > 0) {
                 priceText = `${parseFloat(cardData.prix).toFixed(2)} €`;
             }
             document.getElementById('modal-card-price').innerText = priceText;
 
-            // 4. Extraction et fallback robuste de l'Effet (balaye toutes les clés possibles FR/EN)
+            // Extraction et fallback robuste de l'Effet
             const effectCandidates = [
                 cardData.effet, cardData.effect, cardData.text,
                 cardData.card_text, cardData.description, cardData.ability, cardData.rules
