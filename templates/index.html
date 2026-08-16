@@ -50,6 +50,29 @@
             transform: scale(1.05);
         }
 
+        /* --- STYLE VALEUR COLLECTION --- */
+        .valeur-collection {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            background: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #4caf50;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .valeur-prix {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
         .filter-container {
             display: flex;
             flex-wrap: wrap;
@@ -365,6 +388,40 @@
            ========================================== */
         @media (max-width: 768px) {
 
+            /* AJUSTEMENT PRIX MOBILE */
+            .valeur-collection {
+                font-size: 0.95rem;
+                padding: 8px 16px;
+                width: 90%;
+                box-sizing: border-box;
+                white-space: nowrap; /* Tente de forcer sur 1 seule ligne */
+            }
+
+            /* --- NOUVEAU LAYOUT DES FILTRES SUR MOBILE --- */
+            .filter-container {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                padding: 12px !important;
+            }
+
+            .filter-container input#search-bar {
+                grid-column: 1 / -1;
+                width: 100% !important;
+            }
+
+            .filter-container select {
+                width: 100% !important;
+                font-size: 0.85rem !important;
+                padding: 8px !important;
+                box-sizing: border-box;
+            }
+
+            .filter-container select#filter-rarity,
+            .filter-container select#sort-order {
+                grid-column: 1 / -1;
+            }
+            
             /* 1. MODALE (ZOOM DE CARTE) - Inchangée comme demandé */
             .card-modal-content {
                 width: 92%;
@@ -545,8 +602,8 @@
 
     <h1>🏴‍☠️ Mon Classeur Card Game — {{ nom_de_la_serie }}</h1>
     
-    <div style="text-align: center; margin-bottom: 15px; font-size: 1.2rem; background: #222; display: inline-block; padding: 10px 20px; border-radius: 20px; border: 1px solid #4caf50; margin-left: 50%; transform: translateX(-50%);">
-        💰 Valeur estimée des cartes possédées : <span id="global-total-price" style="color: #4caf50; font-weight: bold;">{{ "%.2f"|format(total_prix or 0.0) }}</span> €
+    <div class="valeur-collection">
+        💰 Valeur estimée : <span id="global-total-price" class="valeur-prix">{{ "%.2f"|format(total_prix or 0.0) }}</span> €
     </div>
 
     <div id="deck-status-indicator" style="text-align: center; color: #2196f3; font-weight: bold; margin-bottom: 15px;">
@@ -566,6 +623,14 @@
             <option value="noir">Noir</option>
         </select>
 
+        <select id="filter-type" onchange="filtrerLesCartes()">
+            <option value="tous">Tous les Types</option>
+            <option value="leader">Leader</option>
+            <option value="character">Character</option>
+            <option value="event">Event</option>
+            <option value="stage">Stage</option>
+        </select>
+
         <select id="filter-rarity" onchange="filtrerLesCartes()">
             <option value="tous">Toutes les Raretés</option>
             <option value="only_alts">✨ Seulement les Alternatives (Alt/Manga/SP)</option>
@@ -575,14 +640,6 @@
             <option value="r">Rare (R)</option>
             <option value="uc">Uncommon (UC)</option>
             <option value="c">Common (C)</option>
-        </select>
-
-        <select id="filter-type" onchange="filtrerLesCartes()">
-            <option value="tous">Tous les Types</option>
-            <option value="leader">Leader</option>
-            <option value="character">Character</option>
-            <option value="event">Event</option>
-            <option value="stage">Stage</option>
         </select>
 
         <select id="sort-order" onchange="trierLaGrille()">
