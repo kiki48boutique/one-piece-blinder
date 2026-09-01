@@ -116,6 +116,8 @@
             transition: transform 0.2s, border-color 0.2s;
             position: relative;
             cursor: pointer;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .card:hover {
@@ -149,6 +151,8 @@
             aspect-ratio: 2/3;
             object-fit: cover;
             background-color: #2a2a2a;
+            cursor: pointer;
+            display: block;
         }
 
         .card-title {
@@ -160,6 +164,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            word-break: break-word;
         }
 
         .card-id {
@@ -231,6 +237,7 @@
             cursor: pointer;
             width: 100%;
             font-weight: bold;
+            box-sizing: border-box;
         }
 
         .btn-deck:hover { background-color: #0b7dda; }
@@ -387,7 +394,6 @@
            ========================================== */
         @media (max-width: 768px) {
 
-            /* AJUSTEMENT PRIX MOBILE */
             .valeur-collection {
                 font-size: 0.95rem;
                 padding: 8px 16px;
@@ -396,7 +402,6 @@
                 white-space: nowrap;
             }
 
-            /* --- NOUVEAU LAYOUT DES FILTRES SUR MOBILE --- */
             .filter-container {
                 display: grid !important;
                 grid-template-columns: 1fr 1fr;
@@ -421,7 +426,6 @@
                 grid-column: 1 / -1;
             }
             
-            /* 1. MODALE (ZOOM DE CARTE) */
             .card-modal-content {
                 width: 92%;
                 padding: 16px;
@@ -478,9 +482,9 @@
                 font-size: 1.1rem;
             }
 
-            /* 2. GRILLE PRINCIPALE (3 CARTES PAR LIGNE) */
+            /* GRILLE STRICTEMENT ÉGALE ET SANS DEBORDEMENT */
             .grid {
-                grid-template-columns: repeat(3, 1fr) !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
                 gap: 5px !important;
             }
 
@@ -499,8 +503,9 @@
             }
 
             .card-price {
-                font-size: 0.8rem !important;
+                font-size: 0.75rem !important;
                 margin: 4px 0 !important;
+                white-space: nowrap;
             }
 
             .badge-variation {
@@ -526,8 +531,9 @@
 
             .btn-deck {
                 padding: 4px 2px !important;
-                font-size: 0.65rem !important;
+                font-size: 0.6rem !important;
                 margin-top: 5px !important;
+                white-space: nowrap;
             }
 
             .wishlist-coeur {
@@ -540,19 +546,6 @@
             .wishlist-coeur span {
                 font-size: 12px !important;
                 padding-top: 0 !important;
-            }
-
-            .series-container, 
-            div[class*="series"], 
-            div[class*="grid-series"] {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 8px !important;
-            }
-
-            .deck-builder-container,
-            .deck-section {
-                flex-direction: column !important;
-                padding: 10px !important;
             }
         }
     </style>
@@ -667,7 +660,7 @@
              data-type="{{ carte.type|lower if carte.type else 'unknown' }}"
              data-price="{{ carte.prix or 0.0 }}"
              data-variation="{{ pct }}"
-             data-card='{{ carte | tojson | forceescape }}'>
+             data-card="{{ carte | tojson | forceescape }}">
             
             <div class="wishlist-coeur" onclick="event.stopPropagation(); toggleWishlist('{{ carte.card_number }}', this)">
                 <span style="font-size: 18px; padding-top: 2px;">
@@ -679,10 +672,11 @@
                 src="{{ carte.image_url }}" 
                 alt="{{ carte.name }}" 
                 loading="lazy" 
+                onclick="event.stopPropagation(); showCardDetails(this)"
                 onerror="this.onerror=null; this.src='https://via.placeholder.com/300x420?text=Image+Non+Disponible';"
             >
             
-            <div class="card-title">
+            <div class="card-title" onclick="event.stopPropagation(); showCardDetails(this)">
                 {{ carte.name }} 
                 {% if carte.is_alt_p2 %} (Alt 2) 
                 {% elif carte.is_alternative %} (Alt) 
@@ -788,13 +782,11 @@
             document.getElementById('modal-card-img').src = cardData.image_url || cardData.image || '/static/images/placeholder.png';
             document.getElementById('modal-card-name').innerText = cardData.name || cardData.card_number || 'Sans nom';
 
-            // Extraction et fallback robuste du Coût
             const rawCost = [cardData.cout, cardData.cost, cardData.card_cost]
                 .find(v => v !== undefined && v !== null && String(v).trim() !== '');
             const costVal = rawCost !== undefined ? String(rawCost).trim() : '-';
             document.getElementById('modal-card-cost').innerText = `Coût: ${costVal}`;
 
-            // Informations complémentaires
             const colorVal = [cardData.color, cardData.couleur_propre, cardData.couleur]
                 .find(c => c && String(c).trim() !== '');
             document.getElementById('modal-card-color').innerText = `Couleur: ${colorVal || '-'}`;
@@ -802,14 +794,12 @@
             document.getElementById('modal-card-rarity').innerText = `Rareté: ${cardData.rarity || cardData.rarete || '-'}`;
             document.getElementById('modal-card-id').innerText = `Réf: ${cardData.card_number || cardData.id || '-'}`;
             
-            // Prix
             let priceText = 'Prix indispo';
             if (cardData.prix && parseFloat(cardData.prix) > 0) {
                 priceText = `${parseFloat(cardData.prix).toFixed(2)} €`;
             }
             document.getElementById('modal-card-price').innerText = priceText;
 
-            // Extraction et fallback robuste de l'Effet
             const effectCandidates = [
                 cardData.effet, cardData.effect, cardData.text,
                 cardData.card_text, cardData.description, cardData.ability, cardData.rules
