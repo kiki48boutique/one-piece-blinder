@@ -677,7 +677,12 @@
                 </span>
             </div>
 
-            <img src="{{ carte.image_url or '/static/images/placeholder.png' }}" alt="{{ carte.name }}" onclick="showCardDetails(this)">
+            <img 
+    src="{{ carte.image_url }}" 
+    alt="{{ carte.name }}" 
+    loading="lazy" 
+    onerror="this.onerror=null; this.src='https://via.placeholder.com/300x420?text=Image+Non+Disponible';"
+>
             
             <div class="card-title" onclick="showCardDetails(this)">
                 {{ carte.name }} 
