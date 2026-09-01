@@ -115,6 +115,7 @@
             border: 1px solid #333;
             transition: transform 0.2s, border-color 0.2s;
             position: relative;
+            cursor: pointer;
         }
 
         .card:hover {
@@ -145,7 +146,6 @@
         .card img {
             width: 100%;
             border-radius: 5px;
-            cursor: pointer;
             aspect-ratio: 2/3;
             object-fit: cover;
             background-color: #2a2a2a;
@@ -160,7 +160,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
         }
 
         .card-id {
@@ -394,7 +393,7 @@
                 padding: 8px 16px;
                 width: 90%;
                 box-sizing: border-box;
-                white-space: nowrap; /* Tente de forcer sur 1 seule ligne */
+                white-space: nowrap;
             }
 
             /* --- NOUVEAU LAYOUT DES FILTRES SUR MOBILE --- */
@@ -422,7 +421,7 @@
                 grid-column: 1 / -1;
             }
             
-            /* 1. MODALE (ZOOM DE CARTE) - Inchangée comme demandé */
+            /* 1. MODALE (ZOOM DE CARTE) */
             .card-modal-content {
                 width: 92%;
                 padding: 16px;
@@ -482,16 +481,15 @@
             /* 2. GRILLE PRINCIPALE (3 CARTES PAR LIGNE) */
             .grid {
                 grid-template-columns: repeat(3, 1fr) !important;
-                gap: 5px !important; /* On réduit l'espace pour que ça rentre */
+                gap: 5px !important;
             }
 
-            /* Ajustements internes de la carte pour que le contenu tienne sur 3 colonnes */
             .card {
                 padding: 5px !important;
             }
 
             .card-title {
-                font-size: 0.7rem !important; /* Texte plus petit */
+                font-size: 0.7rem !important;
                 min-height: 25px !important;
                 margin-top: 5px !important;
             }
@@ -544,7 +542,6 @@
                 padding-top: 0 !important;
             }
 
-            /* Autres conteneurs (Accueil, Decks, etc.) */
             .series-container, 
             div[class*="series"], 
             div[class*="grid-series"] {
@@ -662,6 +659,7 @@
         {% set couleur_carte = carte.color if carte.color is defined else (carte.couleur_propre if carte.couleur_propre is defined else '') %}
 
         <div class="card" 
+             onclick="showCardDetails(this)"
              data-id="{{ carte.card_number }}"
              data-name="{{ carte.name }}" 
              data-color="{{ couleur_carte }}"
@@ -671,20 +669,20 @@
              data-variation="{{ pct }}"
              data-card='{{ carte | tojson | forceescape }}'>
             
-            <div class="wishlist-coeur" onclick="toggleWishlist('{{ carte.card_number }}', this)">
+            <div class="wishlist-coeur" onclick="event.stopPropagation(); toggleWishlist('{{ carte.card_number }}', this)">
                 <span style="font-size: 18px; padding-top: 2px;">
                     {% if carte.in_wishlist %}❤️{% else %}🤍{% endif %}
                 </span>
             </div>
 
             <img 
-    src="{{ carte.image_url }}" 
-    alt="{{ carte.name }}" 
-    loading="lazy" 
-    onerror="this.onerror=null; this.src='https://via.placeholder.com/300x420?text=Image+Non+Disponible';"
->
+                src="{{ carte.image_url }}" 
+                alt="{{ carte.name }}" 
+                loading="lazy" 
+                onerror="this.onerror=null; this.src='https://via.placeholder.com/300x420?text=Image+Non+Disponible';"
+            >
             
-            <div class="card-title" onclick="showCardDetails(this)">
+            <div class="card-title">
                 {{ carte.name }} 
                 {% if carte.is_alt_p2 %} (Alt 2) 
                 {% elif carte.is_alternative %} (Alt) 
@@ -711,12 +709,12 @@
             </div>
             
             <div class="controls">
-                <button class="btn" onclick='modifierQty(this, "{{ carte.card_number }}", {{ carte.name|tojson }}, "moins", {{ "true" if carte.is_alternative else "false" }})'>-</button>
+                <button class="btn" onclick='event.stopPropagation(); modifierQty(this, "{{ carte.card_number }}", {{ carte.name|tojson }}, "moins", {{ "true" if carte.is_alternative else "false" }})'>-</button>
                 <span class="qty">{{ carte.quantite }}</span>
-                <button class="btn" onclick='modifierQty(this, "{{ carte.card_number }}", {{ carte.name|tojson }}, "plus", {{ "true" if carte.is_alternative else "false" }})'>+</button>
+                <button class="btn" onclick='event.stopPropagation(); modifierQty(this, "{{ carte.card_number }}", {{ carte.name|tojson }}, "plus", {{ "true" if carte.is_alternative else "false" }})'>+</button>
             </div>
             
-            <button class="btn-deck" onclick='ajouterAuDeckActif("{{ carte.card_number }}", {{ carte.name|tojson }}, {{ "true" if carte.type|lower == "leader" else "false" }}, {{ "true" if carte.is_alternative else "false" }}, event)'>➕ Ajouter au Deck</button>
+            <button class="btn-deck" onclick='event.stopPropagation(); ajouterAuDeckActif("{{ carte.card_number }}", {{ carte.name|tojson }}, {{ "true" if carte.type|lower == "leader" else "false" }}, {{ "true" if carte.is_alternative else "false" }}, event)'>➕ Ajouter au Deck</button>
         </div>
         {% endfor %}
     </div>
