@@ -67,6 +67,7 @@ def synchroniser_toutes_les_series():
         ("The Time of Battle", "24664", "OP16"), ("Extra Booster Memorial Collection", "23333", "EB01"),
         ("Extra Booster Anime 25th Collection", "23834", "EB02"), ("Extra Booster One Piece Heroines Edition", "24545", "EB03"),
         ("Premium Booster -The Best-", "23496", "PRB01"), ("Premium Booster -The Best-VOL 2", "24305", "PRB02"),
+        ("The World's Strongest Warriors", "24736", "OP17"),
         ("Starter Deck 1 Straw Hat Crew", "3189", "ST01"), ("Starter Deck 2 Worst Generation", "3191", "ST02"),
         ("Starter Deck 3 The Seven Warlords of The Sea", "3192", "ST03"), ("Starter Deck 4 Animal Kingdom Pirates", "3190", "ST04"),
         ("Starter Deck 5 Film Edition", "17687", "ST05"), ("Starter Deck 6 Absolute Justice", "17699", "ST06"),
@@ -82,6 +83,8 @@ def synchroniser_toutes_les_series():
         ("Starter Deck 25 BLUE Buggy", "24284", "ST25"), ("Starter Deck 26 PURPLE BLACK Monkey.D.Luffy", "24285", "ST26"),
         ("Starter Deck 27 BLACK Marshall.D.Teach", "24286", "ST27"), ("Starter Deck 28 GREEN YELLOW Yamato", "24287", "ST28"),
         ("Starter Deck 29 Egghead", "24575", "ST29"), ("Starter Deck EX Luffy & Ace", "24678", "ST30"),
+        ("Starter Deck 31 RED Monkey.D.Luffy", "24749", "ST31"),("Starter Deck 32 GREEN Roronoa Zoro", "24750", "ST32"),("Starter Deck 33 BLUE Kuzan", "24751", "ST33"),
+        ("Starter Deck 34 PURPLE Charlotte Katakuri", "24752", "ST34"),("Starter Deck 35 RED BLACK Sabo", "24753", "ST35"),("Starter Deck 36 YELLOW EustassCaptainKid", "24754", "ST36"),
         ("One Piece Promotion Cards", "17675", "P"), ("One Piece Demo Deck Cards", "23907", "D"),
         ("Learn Together Deck Set", "24306", "LD")
     ]
@@ -102,6 +105,12 @@ def synchroniser_toutes_les_series():
         "StarterDeck25BLUEBuggyProductsAndPrices.csv": "ST25", "StarterDeck26PURPLEBLACKMonkey.D.LuffyProductsAndPrices.csv": "ST26",
         "StarterDeck27BLACKMarshall.D.TeachProductsAndPrices.csv": "ST27", "StarterDeck28GREENYELLOWYamatoProductsAndPrices.csv": "ST28",
         "StarterDeck29EggheadProductsAndPrices.csv": "ST29", "StarterDeckEXLuffy&AceProductsAndPrices.csv": "ST30",
+        "StarterDeck31REDMonkey.D.LuffyProductsAndPrices.csv": "ST31",
+"StarterDeck32GREENRoronoaZoroProductsAndPrices.csv": "ST32",
+        "StarterDeck33BLUEKuzanProductsAndPrices.csv": "ST33",
+"StarterDeck34PURPLECharlotteKatakuriProductsAndPrices.csv": "ST34",
+        "StarterDeck35REDBLACKSaboProductsAndPrices.csv": "ST35",
+"StarterDeck36YELLOWEustassCaptainKidProductsAndPrices.csv": "ST36",
         "OnePiecePromotionCardsProductsAndPrices.csv" : "P", "OnePieceDemoDeckCardsProductsAndPrices.csv" : "D",
         "LearnTogetherDeckSetProductsAndPrices.csv" : "LD"
     }
@@ -116,10 +125,12 @@ def synchroniser_toutes_les_series():
         url_csv = f"https://tcgcsv.com/tcgplayer/68/{id_tcg}/ProductsAndPrices.csv"
 
         try:
-            requete = urllib.request.Request(url_csv, headers={"User-Agent": "Mozilla/5.0"})
+            # User-Agent personnalisé exigé par l'API TCGCSV pour éviter le blocage
+            requete = urllib.request.Request(url_csv, headers={"User-Agent": "MonClasseurOnePiece/1.0"})
             with urllib.request.urlopen(requete) as reponse:
                 with open(chemin_csv, "wb") as f_csv: f_csv.write(reponse.read())
-        except Exception:
+        except Exception as e:
+            print(f"⚠️ Erreur lors du téléchargement de {nom_serie} : {e}")
             if not os.path.exists(chemin_csv): continue
 
         with open(chemin_csv, mode="r", encoding="utf-8", newline="") as f:
